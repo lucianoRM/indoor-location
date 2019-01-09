@@ -37,6 +37,7 @@ class Database:
         :raise KeyDoesNotExistException if the key is not in the db.
         :return: The value related to that key
         """
+        raise NotImplementedError
 
     @abstractmethod
     def remove(self, key, **kwargs):
@@ -46,6 +47,7 @@ class Database:
         :return: removed value
         :raise KeyDoesNotExistException if the key is not in the DB
         """
+        raise NotImplementedError
 
 
 class DatabaseException(Exception):
