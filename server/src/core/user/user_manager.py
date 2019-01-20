@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 
 class UserManager:
     """
-    API for handling clients
+    API for handling Users
     """
     __metaclass__ = ABCMeta
 
@@ -18,10 +18,10 @@ class UserManager:
         raise NotImplementedError
 
     @abstractmethod
-    def remove_user(self, id):
+    def remove_user(self, userId):
         """
         Remove an user by id
-        :param id: The id to uniquely locate the user to remove
+        :param userId: The id to uniquely locate the user to remove
         :raise: UnkownUserException: If the user is not found
         :return: The user with the given id
         """

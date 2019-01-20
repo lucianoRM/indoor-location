@@ -1,10 +1,15 @@
-from .database import Database, KeyDoesNotExistException, KeyAlreadyExistsException
+
 from copy import deepcopy
 
+from src.core.database.kv_database import KeyDoesNotExistException, KVDatabase, KeyAlreadyExistsException
 
-class MemoryDatabase(Database):
-    CREATE_MISSING_KEYS_ARG = 'createMissingKeys'
-    KEYS_DELIMITER = '.'
+
+class MemoryKVDatabase(KVDatabase):
+    """
+    Key-value database implementation that keeps information stored in a dictionary.
+    """
+
+    __CREATE_MISSING_KEYS_ARG = 'createMissingKeys'
 
     def __init__(self):
         self.__database = {}
@@ -12,7 +17,7 @@ class MemoryDatabase(Database):
     def __get_keys(self, key):
         if (not isinstance(key, str)):
             raise TypeError("Keys must be strings")
-        return key.split(self.KEYS_DELIMITER)
+        return key.split(self.get_keys_delimiter())
 
     def __retrieve(self, keys, createMissingKeys=False):
         current_dicc = self.__database
@@ -28,11 +33,11 @@ class MemoryDatabase(Database):
                     current_dicc[key] = tmp_value
                 else:
                     raise KeyDoesNotExistException(
-                        'The key: \'' + self.KEYS_DELIMITER.join(accessed_keys) + '\' is not present in the DB')
+                        'The key: \'' + self.get_keys_delimiter().join(accessed_keys) + '\' is not present in the DB')
             elif not isinstance(tmp_value, dict) and key is not last_key:
                 # in this case we should fail because we don't know how to get something from things that are not dics
                 raise KeyDoesNotExistException(
-                    'The key: \'' + self.KEYS_DELIMITER.join(accessed_keys) + '\' already references a leaf element, '
+                    'The key: \'' + self.get_keys_delimiter().join(accessed_keys) + '\' already references a leaf element, '
                                                                               'can not rerieve any further')
             current_dicc = tmp_value
         return tmp_value
@@ -41,17 +46,17 @@ class MemoryDatabase(Database):
         keys = self.__get_keys(key)
         last_key = keys[-1]
         last_dicc = self.__retrieve(keys[:-1:], createMissingKeys)
-        if (len(last_dicc) != 0 and failIfPresent):
+        if (last_dicc.has_key(last_key) and failIfPresent):
             raise KeyAlreadyExistsException("There is a value already associated with the key " + key)
         last_dicc[last_key] = deepcopy(value)
         return value
 
     def insert(self, key, value, **kwargs):
-        createMissingKeys = kwargs.get(self.CREATE_MISSING_KEYS_ARG, False)
+        createMissingKeys = kwargs.get(self.__CREATE_MISSING_KEYS_ARG, True)
         return self.__insert(key, value, createMissingKeys=createMissingKeys, failIfPresent=True)
 
     def upsert(self, key, value, **kwargs):
-        createMissingKeys = kwargs.get(self.CREATE_MISSING_KEYS_ARG, False)
+        createMissingKeys = kwargs.get(self.__CREATE_MISSING_KEYS_ARG, True)
         return self.__insert(key, value, createMissingKeys=createMissingKeys, failIfPresent=False)
 
     def retrieve(self, key, **kwargs):

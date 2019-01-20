@@ -1,11 +1,19 @@
 from abc import ABCMeta, abstractmethod
 
 
-class Database:
+class KVDatabase:
     """
-    API for defining Database implementations. Note that the DB does not handle logic for sea
+    API for defining key-value Database implementations.
+    DB should be able to handle complex keys using a Key delimiter.
+    For example, with "." as the delimiter:
+
+    insert("a.b.c", "ABC")
+    insert("a.b.d", "ABD")
+    retrieve("a.b") should return: {"c": "ABC" , "d" : "ABD"}
     """
     __metaclass__ = ABCMeta
+
+    __KEYS_DELIMITER = "."
 
     @abstractmethod
     def insert(self, key, value, **kwargs):
@@ -14,7 +22,7 @@ class Database:
         :param key: key that defines where to add the new value.
         It can be composed by multiple keys. It's up to the implementation to know how to interpret the key
         :param value: New value to add
-        :raise ValueAlreadyExistsException if the key is already in use.
+        :raise KeyAlreadyExistsException if the key is already in use.
         :return added value
         """
         raise NotImplementedError
@@ -48,6 +56,12 @@ class Database:
         :raise KeyDoesNotExistException if the key is not in the DB
         """
         raise NotImplementedError
+
+    def get_keys_delimiter(self):
+        """
+        :return: Keys delimiter used to build complex keys
+        """
+        return self.__KEYS_DELIMITER
 
 
 class DatabaseException(Exception):
