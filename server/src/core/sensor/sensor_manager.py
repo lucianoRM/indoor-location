@@ -38,6 +38,17 @@ class SensorManager:
         raise NotImplementedError
 
     @abstractmethod
+    def update_sensor(self, sensorId, sensor):
+        """
+        Update an already existent sensor.
+        :param sensorId: The id of the sensor to be updated
+        :param sensor: The new sensor that will replace the old one with new information
+        :raise: UnknownSensorException if no sensor is found with the given id.
+        :return: The new sensor updated
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def get_all_sensors(self):
         """
         Return all registered sensors

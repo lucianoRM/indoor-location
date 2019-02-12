@@ -28,6 +28,17 @@ class UserManager:
         raise NotImplementedError
 
     @abstractmethod
+    def update_user(self, userId, user):
+        """
+        Update an already existent user.
+        :param userId: The id of the user to be updated
+        :param user: The new user that will replace the old one with new information
+        :raise: UnknownUserException if no user is found with the given id.
+        :return: The new user updated
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def get_all_users(self):
         """
         Return all registered users

@@ -32,6 +32,15 @@ class KVDBSensorManager(SensorManager, KVDBBackedManager):
         except KeyDoesNotExistException:
             raise UnknownSensorException("A sensor with id: " + sensorId + " does not exist")
 
+    def update_sensor(self, sensorId, sensor):
+        try:
+            return self._database.update(
+                self._build_complex_key(self.__SENSORS_LOCATION_KEY, sensorId),
+                sensor
+            )
+        except KeyDoesNotExistException:
+            raise UnknownSensorException("A sensor with id: " + sensorId + " does not exist")
+
     def remove_sensor(self, sensorId):
         try:
             return self._database.remove(

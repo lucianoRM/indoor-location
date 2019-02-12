@@ -19,6 +19,13 @@ class MemoryKVDatabase(KVDatabase):
             raise TypeError("Keys must be strings")
         return key.split(self.get_keys_delimiter())
 
+    def __has_key(self, key):
+        try:
+            self.__retrieve(self.__get_keys(key))
+            return True
+        except KeyDoesNotExistException:
+            return False
+
     def __retrieve(self, keys, createMissingKeys=False):
         current_dicc = self.__database
         tmp_value = self.__database
@@ -54,6 +61,11 @@ class MemoryKVDatabase(KVDatabase):
     def insert(self, key, value, **kwargs):
         createMissingKeys = kwargs.get(self.__CREATE_MISSING_KEYS_ARG, True)
         return self.__insert(key, value, createMissingKeys=createMissingKeys, failIfPresent=True)
+
+    def update(self, key, value, **kwargs):
+        if self.__has_key(key):
+            return self.upsert(key, value, createMissingKeys=False, failIfPresent=False)
+        raise KeyDoesNotExistException("The key: " + key + " does not exists in the DB")
 
     def upsert(self, key, value, **kwargs):
         createMissingKeys = kwargs.get(self.__CREATE_MISSING_KEYS_ARG, True)

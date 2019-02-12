@@ -90,6 +90,31 @@ class MemoryDatabaseTestCase(unittest.TestCase):
         self.assertRaises(KeyDoesNotExistException, self.__database.retrieve, key2)
         self.assertEquals(self.__database.retrieve(key3), value2)
 
+    def test_update_missing_simple_key(self):
+        self.assertRaises(KeyDoesNotExistException, self.__database.update, "somekey", "somevalue", createMissingKeys=False)
+
+    def test_update_missing_complex_key(self):
+        key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
+        self.assertRaises(KeyDoesNotExistException, self.__database.update, key, "somevalue",createMissingKeys=False)
+
+    def test_update_with_simple_key(self):
+        key = "thekey"
+        value = "initialValue"
+        self.__database.insert(key, value)
+        self.assertTrue(self.__database.retrieve(key), value)
+        newValue = "newValue"
+        self.__database.update(key, newValue)
+        self.assertTrue(self.__database.retrieve(key), newValue)
+
+    def test_update_with_complex_key(self):
+        key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
+        value = "initialValue"
+        self.__database.insert(key, value)
+        self.assertTrue(self.__database.retrieve(key), value)
+        newValue = "newValue"
+        self.__database.update(key, newValue)
+        self.assertTrue(self.__database.retrieve(key), newValue)
+
     def test_upsert_complex_missing_flag(self):
         key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
         value = 1

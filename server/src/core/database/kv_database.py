@@ -28,6 +28,17 @@ class KVDatabase:
         raise NotImplementedError
 
     @abstractmethod
+    def update(self, key, value, **kwargs):
+        """
+        Update a value from the DB. If the value does not exist, fail with KeyDoesNotExistsException.
+        :param key: The key of the value to update
+        :param value: The new value that will replace the old one in the DB
+        :raise KeyDoesNotExistsException: if the key is not found in the DB.
+        :return: The new value updated in the DB
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def upsert(self, key, value, **kwargs):
         """
         Insert a new value reached by the provided key. If the value with that key already exists, replace it.
