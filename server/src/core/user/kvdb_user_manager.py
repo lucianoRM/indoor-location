@@ -32,6 +32,15 @@ class KVDBUserManager(UserManager, KVDBBackedManager):
         except KeyDoesNotExistException:
             raise UnknownUserException("An user with id: " + userId + " does not exist")
 
+    def update_user(self, userId, user):
+        try:
+            return self._database.update(
+                self._build_complex_key(self.__USERS_LOCATION_KEY, userId),
+                user
+            )
+        except KeyDoesNotExistException:
+            raise UnknownUserException("An user with id: " + userId + " does not exist")
+
     def remove_user(self, userId):
         try:
             return self._database.remove(

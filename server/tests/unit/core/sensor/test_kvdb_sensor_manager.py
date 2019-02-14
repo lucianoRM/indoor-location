@@ -44,9 +44,14 @@ class KVDBSensorManagerTestCase(TestCase):
     def test_get_sensor_from_empty_db(self):
         self.assertRaises(UnknownSensorException,self.__sensor_manager.get_sensor, self.__SENSOR_ID)
 
-
     def test_update_sensor(self):
         self.__sensor_manager.add_sensor(self.__test_sensor)
         newSensor = Sensor(**{ID_KEY : self.__SENSOR_ID,
-                                     NAME_KEY : "",
-                                     LOCATION_KEY : (0,0)})
+                              NAME_KEY : "newSensorName",
+                              LOCATION_KEY : (1,1)})
+        self.__sensor_manager.update_sensor(self.__SENSOR_ID,
+                                            newSensor)
+        self.assertEquals(self.__sensor_manager.get_sensor(self.__SENSOR_ID), newSensor)
+
+    def test_update_not_existent_sensor(self):
+        self.assertRaises(UnknownSensorException,self.__sensor_manager.update_sensor, "missingSensorId", {})

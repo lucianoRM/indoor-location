@@ -43,3 +43,15 @@ class KVDBUserManagerTestCase(TestCase):
 
     def test_get_user_from_empty_db(self):
         self.assertRaises(UnknownUserException,self.__user_manager.get_user, self.__USER_ID)
+
+    def test_update_user(self):
+        self.__user_manager.add_user(self.__test_user)
+        newUser = User(**{ID_KEY: self.__USER_ID,
+                          NAME_KEY: "newUserName",
+                          LOCATION_KEY: (1, 1)})
+        self.__user_manager.update_user(self.__USER_ID,
+                                            newUser)
+        self.assertEquals(self.__user_manager.get_user(self.__USER_ID), newUser)
+
+    def test_update_not_existent_user(self):
+        self.assertRaises(UnknownUserException, self.__user_manager.update_user, "missingUserId", {})
