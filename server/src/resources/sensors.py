@@ -1,7 +1,7 @@
 from flask import Blueprint
 
 '''
-This file handles endpoints for creating, deleting, and updating information related to sensors.
+This file handles resources for creating, deleting, and updating information related to sensors.
 '''
 
 bp = Blueprint('sensors', __name__, url_prefix='/sensors')

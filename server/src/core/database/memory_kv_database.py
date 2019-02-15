@@ -15,7 +15,7 @@ class MemoryKVDatabase(KVDatabase):
         self.__database = {}
 
     def __get_keys(self, key):
-        if (not isinstance(key, str)):
+        if (not isinstance(key, str) and not isinstance(key, unicode)):
             raise TypeError("Keys must be strings")
         return key.split(self.get_keys_delimiter())
 
