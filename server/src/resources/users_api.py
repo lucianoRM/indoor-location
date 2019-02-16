@@ -1,37 +1,40 @@
-
 '''
 This file handles resources for creating, deleting, and updating information related to users.
 '''
+
+import flask_restful
 from flask import request
-from flask_restful import Resource
 from marshmallow import Schema, fields, post_load
 
 from src.core.user.user import User, ID_KEY, LOCATION_KEY, NAME_KEY
 from src.dependency_container import USER_MANAGER
+from src.resources.abstract_resource import AbstractResource
 
-class UserListAPI(Resource):
+
+class UserListAPI(AbstractResource):
 
     def __init__(self, **kwargs):
+        super(UserListAPI, self).__init__(**kwargs)
         self.__user_manager = kwargs[USER_MANAGER]
         self.__users_schema = UserSchema(many=True)
         self.__user_schema = UserSchema()
 
-    def get(self):
+    def _do_get(self):
         return self.__users_schema.dumps(self.__user_manager.get_all_users())
 
-    def post(self):
+    def _do_post(self):
         user = self.__user_schema.load(request.form.to_dict()).data
         return self.__user_schema.dumps(self.__user_manager.add_user(user))
 
 
-
-class UserAPI(Resource):
+class UserAPI(AbstractResource):
 
     def __init__(self, **kwargs):
+        super(UserAPI, self).__init__(**kwargs)
         self.__user_manager = kwargs[USER_MANAGER]
         self.__user_schema = UserSchema()
 
-    def get(self, user_id):
+    def _do_get(self, user_id):
         return self.__user_schema.dumps(self.__user_manager.get_user(user_id))
 
 
