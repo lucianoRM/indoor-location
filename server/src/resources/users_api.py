@@ -2,7 +2,6 @@
 This file handles resources for creating, deleting, and updating information related to users.
 '''
 
-import flask_restful
 from flask import request
 from marshmallow import Schema, fields, post_load
 

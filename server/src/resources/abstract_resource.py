@@ -1,5 +1,5 @@
 import flask_restful
-from flask_restful import Resource, HTTPException
+from flask_restful import Resource
 from werkzeug.exceptions import NotFound
 
 

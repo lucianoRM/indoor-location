@@ -1,4 +1,5 @@
 from src.core.database.memory_kv_database import MemoryKVDatabase
+from src.core.sensor.kvdb_sensor_manager import KVDBSensorManager
 from src.core.user.kvdb_user_manager import KVDBUserManager
 
 """
@@ -9,6 +10,7 @@ Each dependency needs to have a key for the resource to be able to find them
 
 #KEYS
 USER_MANAGER = "user_manager"
+SENSOR_MANAGER = "sensor_manager"
 
 
 #Common objects
@@ -16,5 +18,6 @@ __database = MemoryKVDatabase()
 
 
 DEPENDENCY_CONTAINER = {
-    USER_MANAGER : KVDBUserManager(__database)
+    USER_MANAGER : KVDBUserManager(__database),
+    SENSOR_MANAGER : KVDBSensorManager(__database)
 }
