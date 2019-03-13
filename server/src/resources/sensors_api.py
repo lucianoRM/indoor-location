@@ -36,6 +36,17 @@ class SensorAPI(AbstractResource):
     def _do_get(self, sensor_id):
         return self.__sensor_schema.dumps(self.__sensor_manager.get_sensor(sensor_id))
 
+    def _do_put(self, sensor_id):
+        sensor = self.__sensor_manager.get_sensor(sensor_id)
+        # If sensor does not exist, request should fail
+        args = request.form.to_dict()
+        if (args.has_key(LOCATION_KEY)):
+            # TODO: Validate location first
+            sensor.location = args[LOCATION_KEY]
+        if (args.has_key(NAME_KEY)):
+            sensor.name = args[NAME_KEY]
+        return self.__sensor_schema.dumps(self.__sensor_manager.update_sensor(sensor_id, sensor))
+
 
 class SensorSchema(Schema):
 
@@ -44,5 +55,5 @@ class SensorSchema(Schema):
     location = fields.String(attribute=LOCATION_KEY)
 
     @post_load
-    def make_sensor(self, args):
-        return Sensor(**args)
+    def make_sensor(self, kwargs):
+        return Sensor(**kwargs)

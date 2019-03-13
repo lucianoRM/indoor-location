@@ -45,7 +45,6 @@ class AbstractResource(Resource):
         """
         Base method for implementing HTTP GET requests.
         Child classes should not re implement this, but the Template method: _do_get
-        :param args: args defined in the url
         :param kwargs: extra kwargs
         :return: the response to send to the client
         """
@@ -55,16 +54,23 @@ class AbstractResource(Resource):
         """
         Base method for implementing HTTP POST requests.
         Child classes should not re implement this, but the Template method: _do_post
-        :param args: args defined in the url
         :param kwargs: extra kwargs
         :return: the response to send to the client
         """
         return self.__execute_handling(self._do_post, **kwargs)
 
+    def put(self, **kwargs):
+        """
+        Base method for implementing HTTP PUT requests
+        Child classes should not re implement this, but the Template method: _do_put
+        :param kwargs: extra kwargs
+        :return: the response to send to the client
+        """
+        return self.__execute_handling(self._do_put, **kwargs)
+
     def _do_get(self, **kwargs):
         """
         Template method to implement for handling an HTTP GET on the resource
-        :param args: uri parameters
         :param kwargs: extra kwargs
         :return: processed response
         """
@@ -73,8 +79,15 @@ class AbstractResource(Resource):
     def _do_post(self, **kwargs):
         """
         Template method to implement for handling an HTTP POST on the resource
-        :param args: uri parameters
         :param kwargs: extra kwargs
         :return: processed response
+        """
+        raise NotFound()
+
+    def _do_put(self, **kwargs):
+        """
+        Template method to implement for handling an HTTP PUT on the resource
+        :param kwargs: extra kwargs
+        :return: pocessed response
         """
         raise NotFound()

@@ -36,6 +36,18 @@ class UserAPI(AbstractResource):
     def _do_get(self, user_id):
         return self.__user_schema.dumps(self.__user_manager.get_user(user_id))
 
+    def _do_put(self, user_id):
+        user = self.__user_manager.get_user(user_id)
+        # If user does not exist, request should fail
+        args = request.form.to_dict()
+        if (args.has_key(LOCATION_KEY)):
+            # TODO: Validate location first
+            user.location = args[LOCATION_KEY]
+        if (args.has_key(NAME_KEY)):
+            user.name = args[NAME_KEY]
+        return self.__user_schema.dumps(self.__user_manager.update_user(user_id, user))
+
+
 
 class UserSchema(Schema):
 
@@ -44,5 +56,5 @@ class UserSchema(Schema):
     location = fields.String(attribute=LOCATION_KEY)
 
     @post_load
-    def make_user(self, args):
-        return User(**args)
+    def make_user(self, kwargs):
+        return User(**kwargs)
