@@ -1,37 +1,32 @@
-from src.core.exception.exceptions import IllegalArgumentException
+from abc import ABCMeta
+from copy import deepcopy
 
-NAME_KEY = "name"
-ID_KEY = "id"
-LOCATION_KEY = "location"
+from src.core.object.positionable_object import PositionableObject
 
-class Sensor:
+
+class Sensor(PositionableObject):
     """
-    Stores all information related to a sensor that is part of the system
+    Stores all information related to a sensor that is part of the system.
+    Keep in mind that sensors can be any kind of device that senses data. If it contributes new data to the system,
+    it should be a Sensor.
     """
 
-    def __init__(self, **kwargs):
-        """
-        Constructor for Sensor.  It receives keyworded arguments to simulate a builder pattern.
-        Only mandatory parameters will be validated. Otherwise, a default value will be used.
-        :raises IllegalArgumentException: If mandatory arguments are not present
-        :param kwargs: arguments to build the sensor
-        """
-        self.name = kwargs.get(NAME_KEY)
-        self.id = kwargs.get(ID_KEY)
-        self.location = kwargs.get(LOCATION_KEY)
-        if not self.name:
-            raise IllegalArgumentException("Sensor must define a name")
-        if not self.id:
-            raise IllegalArgumentException("Sensor must define an id")
-        if not self.location:
-            raise IllegalArgumentException("Sensor must have a location")
+    def __init__(self, id, position, **kwargs):
+        super(Sensor, self).__init__(id, position, **kwargs)
 
+        #Dict to store the objects that where located by this sensor. It should have the objects id as key and the sensed data as value
+        self.__sensed_objects = {}
 
-    def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            return self.id == other.id and self.name == other.name and self.location == other.location
+    def update_sensed_objects(self, sensed_data, merge=False):
+        """
+        Updates stored sensed data with the new one
+        :param sensed_data: The new sensed data corresponding to this sensor
+        :param merge: True if the new data should be merged with the old, overriding values with same key. False if all old sensed data should be replaced with new.
+        """
+        if(merge):
+            for (key,value) in sensed_data.items() : self.__sensed_objects[key] = value
         else:
-            return False
+            self.__sensed_objects = sensed_data
 
-    def __ne__(self, other):
-        return not self.__eq__(other)
+    def get_sensed_objects(self):
+        return deepcopy(self.__sensed_objects)

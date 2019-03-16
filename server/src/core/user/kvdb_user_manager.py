@@ -6,7 +6,7 @@ from src.core.user.user_manager import UserManager, UserAlreadyExistsException, 
 class KVDBUserManager(UserManager, KVDBBackedManager):
     """User manager that stores information in a key-value database"""
 
-    __USERS_LOCATION_KEY = "users"
+    __USERS_POSITION_KEY = "users"
 
     def __init__(self, kv_database):
         """
@@ -18,7 +18,7 @@ class KVDBUserManager(UserManager, KVDBBackedManager):
     def add_user(self, user):
         try:
             return self._database.insert(
-                self._build_complex_key(self.__USERS_LOCATION_KEY, user.id),
+                self._build_complex_key(self.__USERS_POSITION_KEY, user.id),
                 user
             )
         except KeyAlreadyExistsException:
@@ -27,7 +27,7 @@ class KVDBUserManager(UserManager, KVDBBackedManager):
     def get_user(self, userId):
         try:
             return self._database.retrieve(
-                self._build_complex_key(self.__USERS_LOCATION_KEY, userId)
+                self._build_complex_key(self.__USERS_POSITION_KEY, userId)
             )
         except KeyDoesNotExistException:
             raise UnknownUserException("An user with id: " + userId + " does not exist")
@@ -35,7 +35,7 @@ class KVDBUserManager(UserManager, KVDBBackedManager):
     def update_user(self, userId, user):
         try:
             return self._database.update(
-                self._build_complex_key(self.__USERS_LOCATION_KEY, userId),
+                self._build_complex_key(self.__USERS_POSITION_KEY, userId),
                 user
             )
         except KeyDoesNotExistException:
@@ -44,14 +44,14 @@ class KVDBUserManager(UserManager, KVDBBackedManager):
     def remove_user(self, userId):
         try:
             return self._database.remove(
-                self._build_complex_key(self.__USERS_LOCATION_KEY, userId)
+                self._build_complex_key(self.__USERS_POSITION_KEY, userId)
             )
         except KeyDoesNotExistException:
             raise UnknownUserException("Attempting to remove an user that does not exist. With ID: " + userId)
 
     def get_all_users(self):
         try:
-            return self._database.retrieve(self.__USERS_LOCATION_KEY).values()
+            return self._database.retrieve(self.__USERS_POSITION_KEY).values()
         except KeyDoesNotExistException:
             return []
 

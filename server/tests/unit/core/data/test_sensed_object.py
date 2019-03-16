@@ -1,0 +1,15 @@
+from unittest import TestCase
+
+from src.core.data.sensed_object import SensedObject
+
+
+class SensedObjectUnitTest(TestCase):
+
+    def test_sensed_object_is_immutable(self):
+        sensed_object = SensedObject(object_id = None, distance= None)
+        try:
+            sensed_object.distance = 10
+            self.fail("Should not allow setter")
+        except AttributeError:
+            #ok, it should fail
+            pass

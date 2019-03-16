@@ -2,7 +2,7 @@ from src.core.exception.exceptions import IllegalArgumentException
 
 NAME_KEY = "name"
 ID_KEY = "id"
-LOCATION_KEY = "location"
+POSITION_KEY = "position"
 
 class User:
     """
@@ -18,18 +18,18 @@ class User:
         """
         self.name = kwargs.get(NAME_KEY)
         self.id = kwargs.get(ID_KEY)
-        self.location = kwargs.get(LOCATION_KEY, self.__generate_starting_location())
+        self.position = kwargs.get(POSITION_KEY, self.__generate_starting_position())
         if not self.name:
             raise IllegalArgumentException("User must define a name")
         if not self.id:
             raise IllegalArgumentException("User must define an id")
 
-    def __generate_starting_location(self):
+    def __generate_starting_position(self):
         return (0,0)
 
     def __eq__(self, other):
         if isinstance(other, self.__class__):
-            return self.id == other.id and self.name == other.name and self.location == other.location
+            return self.id == other.id and self.name == other.name and self.position == other.position
         return False
 
     def __ne__(self, other):

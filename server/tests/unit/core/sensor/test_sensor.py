@@ -1,7 +1,10 @@
 from unittest import TestCase
 
-from src.core.exception.exceptions import IllegalArgumentException
-from src.core.sensor.sensor import Sensor, NAME_KEY, ID_KEY, LOCATION_KEY
+from measurement.measures import Distance
+from mock import Mock
+
+from src.core.data.sensed_object import SensedObject
+from src.core.sensor.sensor import Sensor
 
 
 class SensorUnitTest(TestCase):
@@ -9,40 +12,82 @@ class SensorUnitTest(TestCase):
     def test_create_sensor_and_get_values(self):
         name = 'sensor1'
         id = 'sensorId'
-        location = (5,5)
-        sensor = Sensor(**{NAME_KEY:name, ID_KEY:id, LOCATION_KEY:location})
+        position = (5,5)
+        sensor = Sensor(id=id, position=position, name=name)
         self.assertEquals(sensor.name, name)
         self.assertEquals(sensor.id, id)
-        self.assertEquals(sensor.location, location)
+        self.assertEquals(sensor.position, position)
 
-    def test_sensor_creation_fails_if_missing_name(self):
-        self.assertRaises(IllegalArgumentException, Sensor, **{ID_KEY:"someId", LOCATION_KEY : (0,0)})
+    def test_sensor_update_no_merge(self):
+        sensor = Sensor(id=1, position=1)
 
-    def test_sensor_creation_fails_if_missing_id(self):
-        self.assertRaises(IllegalArgumentException, Sensor, **{NAME_KEY:"sensorName", LOCATION_KEY:(0,0)})
+        sensed_object_id1 = "id1"
+        sensed_distance1 = Distance(m=1)
+        sensed_object1 = SensedObject(object_id=sensed_object_id1, distance=sensed_distance1)
 
-    def test_sensor_creation_fails_if_missing_location(self):
-        self.assertRaises(IllegalArgumentException, Sensor, **{NAME_KEY : "sensorName" ,ID_KEY:"someId"})
+        sensor.update_sensed_objects({sensed_object_id1:sensed_object1})
+        sensed_objects = sensor.get_sensed_objects()
 
-    def test_sensor_equality(self):
-        name1 = 'sensor1'
-        id1 = 'sensorId'
-        location1 = (5, 5)
-        name2 = 'sensor1'
-        id2 = 'sensorId'
-        location2 = (5, 5)
-        sensor1 = Sensor(**{NAME_KEY:name1, ID_KEY:id1, LOCATION_KEY:location1})
-        sensor2 = Sensor(**{NAME_KEY:name2, ID_KEY:id2, LOCATION_KEY:location2})
-        self.assertEquals(sensor1,sensor2)
+        self.assertEquals(sensed_objects.get(sensed_object_id1).distance.m, sensed_distance1.m)
 
-    def test_sensor_inequality(self):
-        name1 = 'sensor1'
-        id1 = 'sensorId'
-        location1 = (5, 5)
-        sensor1 = Sensor(**{NAME_KEY:name1, ID_KEY:id1, LOCATION_KEY:location1})
-        differentId = Sensor(**{NAME_KEY:name1, ID_KEY:"otherId", LOCATION_KEY:location1})
-        self.assertNotEquals(sensor1,differentId)
-        differentName = Sensor(**{NAME_KEY:"otherName", ID_KEY:id1, LOCATION_KEY:location1})
-        self.assertNotEquals(sensor1,differentName)
-        differentLocation = Sensor(**{NAME_KEY:name1, ID_KEY:id1, LOCATION_KEY:(10,10)})
-        self.assertNotEquals(sensor1, differentLocation)
+        sensed_object_id2 = "id2"
+        sensed_distance2 = Distance(m=200)
+        sensed_object2 = SensedObject(object_id=sensed_object_id2, distance=sensed_distance2)
+
+        sensor.update_sensed_objects({sensed_object_id2: sensed_object2})
+        sensed_objects = sensor.get_sensed_objects()
+
+        self.assertEquals(len(sensed_objects), 1)
+        self.assertFalse(sensed_objects.has_key(sensed_object_id1))
+        self.assertEquals(sensed_objects.get(sensed_object_id2).distance.m, sensed_distance2.m)
+
+    def test_sensor_update_merge(self):
+        sensor = Sensor(id=1, position=1)
+
+        sensed_object_id1 = "id1"
+        sensed_distance1 = Distance(m=1)
+        sensed_object1 = SensedObject(object_id=sensed_object_id1, distance=sensed_distance1)
+
+        sensor.update_sensed_objects({sensed_object_id1:sensed_object1})
+        sensed_objects = sensor.get_sensed_objects()
+
+        self.assertEquals(sensed_objects.get(sensed_object_id1).distance.m, sensed_distance1.m)
+
+        sensed_object_id2 = "id2"
+        sensed_distance2 = Distance(m=200)
+        sensed_object2 = SensedObject(object_id=sensed_object_id2, distance=sensed_distance2)
+
+        sensor.update_sensed_objects({sensed_object_id2: sensed_object2}, merge=True)
+        sensed_objects = sensor.get_sensed_objects()
+
+        self.assertEquals(len(sensed_objects), 2)
+        self.assertEquals(sensed_objects.get(sensed_object_id1).distance.m, sensed_distance1.m)
+        self.assertEquals(sensed_objects.get(sensed_object_id2).distance.m, sensed_distance2.m)
+
+    def test_sensor_update_merge_new_value(self):
+        sensor = Sensor(id=1, position=1)
+
+        sensed_object_id1 = "id1"
+        sensed_distance1a= Distance(m=1)
+        sensed_object1 = SensedObject(object_id=sensed_object_id1, distance=sensed_distance1a)
+
+        sensor.update_sensed_objects({sensed_object_id1:sensed_object1})
+        sensed_objects = sensor.get_sensed_objects()
+
+        self.assertEquals(sensed_objects.get(sensed_object_id1).distance.m, sensed_distance1a.m)
+
+        sensed_distance1b = Distance(m=500)
+        sensed_object1 = SensedObject(object_id=sensed_object_id1, distance=sensed_distance1b)
+        sensed_object_id2 = "id2"
+        sensed_distance2 = Distance(m=200)
+        sensed_object2 = SensedObject(object_id=sensed_object_id2, distance=sensed_distance2)
+
+        sensor.update_sensed_objects(
+            {sensed_object_id1:sensed_object1,
+             sensed_object_id2: sensed_object2},
+            merge=True)
+        sensed_objects = sensor.get_sensed_objects()
+
+        self.assertEquals(len(sensed_objects), 2)
+        self.assertEquals(sensed_objects.get(sensed_object_id1).distance.m, sensed_distance1b.m)
+        self.assertEquals(sensed_objects.get(sensed_object_id2).distance.m, sensed_distance2.m)

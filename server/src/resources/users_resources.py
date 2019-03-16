@@ -7,7 +7,7 @@ from marshmallow import Schema, fields, post_load
 from marshmallow.base import FieldABC
 from marshmallow.fields import Field
 
-from src.core.user.user import User, ID_KEY, LOCATION_KEY, NAME_KEY
+from src.core.user.user import User, ID_KEY, POSITION_KEY, NAME_KEY
 from src.dependency_container import USER_MANAGER
 from src.resources.abstract_resource import AbstractResource
 
@@ -42,9 +42,9 @@ class UserResource(AbstractResource):
         user = self.__user_manager.get_user(user_id)
         # If user does not exist, request should fail
         args = request.form.to_dict()
-        if (args.has_key(LOCATION_KEY)):
-            # TODO: Validate location first
-            user.location = args[LOCATION_KEY]
+        if (args.has_key(POSITION_KEY)):
+            # TODO: Validate position first
+            user.position = args[POSITION_KEY]
         if (args.has_key(NAME_KEY)):
             user.name = args[NAME_KEY]
         return self.__user_schema.dumps(self.__user_manager.update_user(user_id, user))
@@ -59,9 +59,9 @@ class UserSensedInformationResource(AbstractResource):
         user = self.__user_manager.get_user(user_id)
         # If user does not exist, request should fail
         args = request.form.to_dict()
-        if (args.has_key(LOCATION_KEY)):
-            # TODO: Validate location first
-            user.location = args[LOCATION_KEY]
+        if (args.has_key(POSITION_KEY)):
+            # TODO: Validate position first
+            user.position = args[POSITION_KEY]
         if (args.has_key(NAME_KEY)):
             user.name = args[NAME_KEY]
         return self.__user_schema.dumps(self.__user_manager.update_user(user_id, user))
@@ -71,7 +71,7 @@ class UserSchema(Schema):
 
     id = fields.String(required=True, attribute=ID_KEY)
     name = fields.String(required=True, attribute=NAME_KEY)
-    location = fields.String(attribute=LOCATION_KEY)
+    position = fields.String(attribute=POSITION_KEY)
 
     @post_load
     def make_user(self, kwargs):
