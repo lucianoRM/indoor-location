@@ -10,10 +10,10 @@ from src.dependency_container import SENSOR_MANAGER
 from src.resources.abstract_resource import AbstractResource
 
 
-class SensorListAPI(AbstractResource):
+class SensorListResource(AbstractResource):
 
     def __init__(self, **kwargs):
-        super(SensorListAPI, self).__init__(**kwargs)
+        super(SensorListResource, self).__init__(**kwargs)
         self.__sensor_manager = kwargs[SENSOR_MANAGER]
         self.__sensors_schema = SensorSchema(many=True)
         self.__sensor_schema = SensorSchema()
@@ -26,10 +26,10 @@ class SensorListAPI(AbstractResource):
         return self.__sensor_schema.dumps(self.__sensor_manager.add_sensor(sensor))
 
 
-class SensorAPI(AbstractResource):
+class SensorResource(AbstractResource):
 
     def __init__(self, **kwargs):
-        super(SensorAPI, self).__init__(**kwargs)
+        super(SensorResource, self).__init__(**kwargs)
         self.__sensor_manager = kwargs[SENSOR_MANAGER]
         self.__sensor_schema = SensorSchema()
 
