@@ -1,8 +1,8 @@
 from unittest import TestCase
 
 from measurement.measures import Distance
-from mock import Mock
 
+from src.core.data.sensed_data import SensedData
 from src.core.data.sensed_object import SensedObject
 from src.core.sensor.sensor import Sensor
 
@@ -23,64 +23,71 @@ class SensorUnitTest(TestCase):
 
         sensed_object_id1 = "id1"
         sensed_distance1 = Distance(m=1)
-        sensed_object1 = SensedObject(object_id=sensed_object_id1, distance=sensed_distance1)
+        sensed_data1 = SensedData(distance=sensed_distance1)
+        sensed_object1 = SensedObject(object_id=sensed_object_id1, data=sensed_data1)
 
         sensor.update_sensed_objects({sensed_object_id1:sensed_object1})
         sensed_objects = sensor.get_sensed_objects()
 
-        self.assertEquals(sensed_objects.get(sensed_object_id1).distance.m, sensed_distance1.m)
+        self.assertEquals(sensed_objects.get(sensed_object_id1).data.distance.m, sensed_distance1.m)
 
         sensed_object_id2 = "id2"
         sensed_distance2 = Distance(m=200)
-        sensed_object2 = SensedObject(object_id=sensed_object_id2, distance=sensed_distance2)
+        sensed_data2 = SensedData(distance=sensed_distance2)
+        sensed_object2 = SensedObject(object_id=sensed_object_id2, data=sensed_data2)
 
         sensor.update_sensed_objects({sensed_object_id2: sensed_object2})
         sensed_objects = sensor.get_sensed_objects()
 
         self.assertEquals(len(sensed_objects), 1)
         self.assertFalse(sensed_objects.has_key(sensed_object_id1))
-        self.assertEquals(sensed_objects.get(sensed_object_id2).distance.m, sensed_distance2.m)
+        self.assertEquals(sensed_objects.get(sensed_object_id2).data.distance.m, sensed_distance2.m)
 
     def test_sensor_update_merge(self):
         sensor = Sensor(id=1, position=1)
 
         sensed_object_id1 = "id1"
         sensed_distance1 = Distance(m=1)
-        sensed_object1 = SensedObject(object_id=sensed_object_id1, distance=sensed_distance1)
+        sensed_data1 = SensedData(distance=sensed_distance1)
+        sensed_object1 = SensedObject(object_id=sensed_object_id1, data=sensed_data1)
 
         sensor.update_sensed_objects({sensed_object_id1:sensed_object1})
         sensed_objects = sensor.get_sensed_objects()
 
-        self.assertEquals(sensed_objects.get(sensed_object_id1).distance.m, sensed_distance1.m)
+        self.assertEquals(sensed_objects.get(sensed_object_id1).data.distance.m, sensed_distance1.m)
 
         sensed_object_id2 = "id2"
         sensed_distance2 = Distance(m=200)
-        sensed_object2 = SensedObject(object_id=sensed_object_id2, distance=sensed_distance2)
+        sensed_data2 = SensedData(distance=sensed_distance2)
+        sensed_object2 = SensedObject(object_id=sensed_object_id2, data=sensed_data2)
 
         sensor.update_sensed_objects({sensed_object_id2: sensed_object2}, merge=True)
         sensed_objects = sensor.get_sensed_objects()
 
         self.assertEquals(len(sensed_objects), 2)
-        self.assertEquals(sensed_objects.get(sensed_object_id1).distance.m, sensed_distance1.m)
-        self.assertEquals(sensed_objects.get(sensed_object_id2).distance.m, sensed_distance2.m)
+        self.assertEquals(sensed_objects.get(sensed_object_id1).data.distance.m, sensed_distance1.m)
+        self.assertEquals(sensed_objects.get(sensed_object_id2).data.distance.m, sensed_distance2.m)
 
     def test_sensor_update_merge_new_value(self):
         sensor = Sensor(id=1, position=1)
 
         sensed_object_id1 = "id1"
         sensed_distance1a= Distance(m=1)
-        sensed_object1 = SensedObject(object_id=sensed_object_id1, distance=sensed_distance1a)
+        sensed_data1a = SensedData(distance=sensed_distance1a)
+        sensed_object1 = SensedObject(object_id=sensed_object_id1, data=sensed_data1a)
 
         sensor.update_sensed_objects({sensed_object_id1:sensed_object1})
         sensed_objects = sensor.get_sensed_objects()
 
-        self.assertEquals(sensed_objects.get(sensed_object_id1).distance.m, sensed_distance1a.m)
+        self.assertEquals(sensed_objects.get(sensed_object_id1).data.distance.m, sensed_distance1a.m)
 
         sensed_distance1b = Distance(m=500)
-        sensed_object1 = SensedObject(object_id=sensed_object_id1, distance=sensed_distance1b)
+        sensed_data1b = SensedData(distance=sensed_distance1b)
+        sensed_object1 = SensedObject(object_id=sensed_object_id1, data=sensed_data1b)
         sensed_object_id2 = "id2"
         sensed_distance2 = Distance(m=200)
-        sensed_object2 = SensedObject(object_id=sensed_object_id2, distance=sensed_distance2)
+        sensed_data2 = SensedData(distance=sensed_distance2)
+        sensed_object2 = SensedObject(object_id=sensed_object_id2, data=sensed_data2)
 
         sensor.update_sensed_objects(
             {sensed_object_id1:sensed_object1,
@@ -89,5 +96,5 @@ class SensorUnitTest(TestCase):
         sensed_objects = sensor.get_sensed_objects()
 
         self.assertEquals(len(sensed_objects), 2)
-        self.assertEquals(sensed_objects.get(sensed_object_id1).distance.m, sensed_distance1b.m)
-        self.assertEquals(sensed_objects.get(sensed_object_id2).distance.m, sensed_distance2.m)
+        self.assertEquals(sensed_objects.get(sensed_object_id1).data.distance.m, sensed_distance1b.m)
+        self.assertEquals(sensed_objects.get(sensed_object_id2).data.distance.m, sensed_distance2.m)

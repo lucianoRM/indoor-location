@@ -4,6 +4,10 @@ from copy import deepcopy
 from unittest import TestCase
 
 from api import create_app
+from src.core.database.memory_kv_database import MemoryKVDatabase
+from src.core.sensor.kvdb_sensor_manager import KVDBSensorManager
+from src.core.user.kvdb_user_manager import KVDBUserManager
+from src.dependency_container import USER_MANAGER, SENSOR_MANAGER
 
 
 class ApiTestCase(TestCase):
@@ -12,7 +16,11 @@ class ApiTestCase(TestCase):
     __metaclass__ = ABCMeta
 
     def setUp(self):
-        self._app = create_app()
+        __database = MemoryKVDatabase()
+        self._app = create_app(dependency_container= {
+            USER_MANAGER: KVDBUserManager(__database),
+            SENSOR_MANAGER: KVDBSensorManager(__database)
+        })
         self._client = self._app.test_client
 
     def assert_response(self, response, expected_value):

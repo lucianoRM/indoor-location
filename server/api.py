@@ -9,22 +9,22 @@ USERS_ENDPOINT = "/users"
 SENSORS_ENDPOINT = "/sensors"
 
 
-def create_app():
+def create_app(dependency_container=DEPENDENCY_CONTAINER):
     app = Flask(__name__)
     api = Api(app)
 
     api.add_resource(UserListResource,
                      USERS_ENDPOINT,
-                     resource_class_kwargs=DEPENDENCY_CONTAINER)
+                     resource_class_kwargs=dependency_container)
     api.add_resource(UserResource,
                      USERS_ENDPOINT + '/<user_id>',
-                     resource_class_kwargs=DEPENDENCY_CONTAINER)
+                     resource_class_kwargs=dependency_container)
     api.add_resource(SensorListResource,
                      SENSORS_ENDPOINT,
-                     resource_class_kwargs=DEPENDENCY_CONTAINER)
+                     resource_class_kwargs=dependency_container)
     api.add_resource(SensorResource,
                      SENSORS_ENDPOINT + '/<sensor_id>',
-                     resource_class_kwargs=DEPENDENCY_CONTAINER)
+                     resource_class_kwargs=dependency_container)
     return app
 
 

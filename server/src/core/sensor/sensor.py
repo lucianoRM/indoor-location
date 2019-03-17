@@ -17,16 +17,16 @@ class Sensor(PositionableObject):
         #Dict to store the objects that where located by this sensor. It should have the objects id as key and the sensed data as value
         self.__sensed_objects = {}
 
-    def update_sensed_objects(self, sensed_data, merge=False):
+    def update_sensed_objects(self, sensed_objects, merge=False):
         """
         Updates stored sensed data with the new one
-        :param sensed_data: The new sensed data corresponding to this sensor
+        :param sensed_objects: The new sensed data corresponding to this sensor
         :param merge: True if the new data should be merged with the old, overriding values with same key. False if all old sensed data should be replaced with new.
         """
         if(merge):
-            for (key,value) in sensed_data.items() : self.__sensed_objects[key] = value
+            for (key,value) in sensed_objects.items() : self.__sensed_objects[key] = value
         else:
-            self.__sensed_objects = sensed_data
+            self.__sensed_objects = sensed_objects
 
     def get_sensed_objects(self):
         return deepcopy(self.__sensed_objects)

@@ -1,7 +1,6 @@
 from unittest import TestCase
 
-from src.core.exception.exceptions import IllegalArgumentException
-from src.core.user.user import User, POSITION_KEY, ID_KEY, NAME_KEY
+from src.core.user.user import User
 
 
 class UserTestCase(TestCase):
