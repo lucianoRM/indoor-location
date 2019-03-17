@@ -5,7 +5,7 @@ This file handles resources for creating, deleting, and updating information rel
 from flask import request
 from marshmallow import Schema, fields, post_load
 
-from src.core.sensor.sensor import Sensor, ID_KEY, POSITION_KEY, NAME_KEY
+from src.core.sensor.sensor import Sensor
 from src.dependency_container import SENSOR_MANAGER
 from src.resources.abstract_resource import AbstractResource
 
@@ -50,10 +50,14 @@ class SensorResource(AbstractResource):
 
 class SensorSchema(Schema):
 
-    id = fields.String(required=True, attribute=ID_KEY)
-    name = fields.String(required=True, attribute=NAME_KEY)
-    position = fields.String(attribute=POSITION_KEY)
+    id = fields.String(required=True)
+    name = fields.String()
+    position = fields.String(required=True)
 
     @post_load
     def make_sensor(self, kwargs):
         return Sensor(**kwargs)
+
+
+
+

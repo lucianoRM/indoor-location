@@ -1,7 +1,9 @@
 import flask_restful
+from flask import request
 from flask_restful import Resource
 from werkzeug.exceptions import NotFound
 
+APPLICATION_JSON = "application/json"
 
 class AbstractResource(Resource):
     """
@@ -40,6 +42,14 @@ class AbstractResource(Resource):
         code = error.get('code', 500)
         message = error.get('message', e.message)
         flask_restful.abort(code, message=message)
+
+    def _get_post_data_as_json(self):
+        """
+        Return post data as json or fail if not correctly formatter
+        :return: the post value data correctly formatted as JSON
+        """
+        return request.get_json(force=True)
+
 
     def get(self, **kwargs):
         """

@@ -10,14 +10,7 @@ class UserTestCase(TestCase):
         name = 'luciano'
         id = 'theId'
         position = (5,5)
-        user = User(**{NAME_KEY:name, ID_KEY:id, POSITION_KEY:position})
+        user = User(name=name, id=id, position=position)
         self.assertEquals(user.name, name)
         self.assertEquals(user.id, id)
         self.assertEquals(user.position, position)
-
-    def test_default_values(self):
-        user = User(**{NAME_KEY:'name', ID_KEY : "userId"})
-        self.assertIsNotNone(user.position)
-
-    def test_user_fails_if_missing_argument(self):
-        self.assertRaises(IllegalArgumentException, User)

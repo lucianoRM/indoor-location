@@ -8,6 +8,3 @@ class StaticObject(PositionableObject):
 
     def __init__(self, id, position, **kwargs):
         super(StaticObject, self).__init__(id, position, **kwargs)
-
-    def doSomething(self):
-        print "hola"

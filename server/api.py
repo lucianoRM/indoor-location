@@ -3,25 +3,30 @@ from flask_restful import Api
 
 from src.dependency_container import DEPENDENCY_CONTAINER
 from src.resources.sensors_resources import SensorResource, SensorListResource
-from src.resources.test_resource import TestResource
 from src.resources.users_resources import UserListResource, UserResource
 
-app = Flask(__name__)
-api = Api(app)
+USERS_ENDPOINT = "/users"
+SENSORS_ENDPOINT = "/sensors"
 
-api.add_resource(TestResource, '/test')
-api.add_resource(UserListResource,
-                 '/users',
-                 resource_class_kwargs=DEPENDENCY_CONTAINER)
-api.add_resource(UserResource,
-                 '/users/<user_id>',
-                 resource_class_kwargs=DEPENDENCY_CONTAINER)
-api.add_resource(SensorListResource,
-                 '/sensors',
-                 resource_class_kwargs=DEPENDENCY_CONTAINER)
-api.add_resource(SensorResource,
-                 '/sensors/<sensor_id>',
-                 resource_class_kwargs=DEPENDENCY_CONTAINER)
+
+def create_app():
+    app = Flask(__name__)
+    api = Api(app)
+
+    api.add_resource(UserListResource,
+                     USERS_ENDPOINT,
+                     resource_class_kwargs=DEPENDENCY_CONTAINER)
+    api.add_resource(UserResource,
+                     USERS_ENDPOINT + '/<user_id>',
+                     resource_class_kwargs=DEPENDENCY_CONTAINER)
+    api.add_resource(SensorListResource,
+                     SENSORS_ENDPOINT,
+                     resource_class_kwargs=DEPENDENCY_CONTAINER)
+    api.add_resource(SensorResource,
+                     SENSORS_ENDPOINT + '/<sensor_id>',
+                     resource_class_kwargs=DEPENDENCY_CONTAINER)
+    return app
+
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    create_app().run(debug=True)
