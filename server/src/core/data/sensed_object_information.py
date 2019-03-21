@@ -1,7 +1,7 @@
 
-class SensedData(object):
+class SensedObjectInformation(object):
     """
-    Class to model data being sensed from one sensor regarding one object
+    Class to model information being sensed from one sensor regarding one object
     """
 
     def __init__(self,distance):

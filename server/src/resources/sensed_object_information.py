@@ -1,12 +1,12 @@
 from marshmallow import Schema, fields, post_load
 from measurement.measures import Distance
 
-from src.core.data.sensed_data import SensedData
+from src.core.data.sensed_object_information import SensedObjectInformation
 
 
-class SensedDataSchema(Schema):
+class SensedObjectInformationSchema(Schema):
     """
-    Schema for serializing and deserializing sensed information corresponding to one sensor.
+    Schema for serializing and deserializing sensed information corresponding to one sensor related to one object.
     """
 
     distance = fields.Number(required=True)
@@ -17,4 +17,4 @@ class SensedDataSchema(Schema):
         distance_value = kwargs.get('distance')
         distance_unit = kwargs.get('distance_unit')
         distance = Distance(**{distance_unit:distance_value})
-        return SensedData(distance=distance)
+        return SensedObjectInformation(distance=distance)

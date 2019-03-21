@@ -1,7 +1,7 @@
 from marshmallow import fields, Schema, post_load
 
 from src.core.data.sensed_object import SensedObject
-from src.resources.sensed_object_data import SensedDataSchema
+from src.resources.sensed_object_information import SensedObjectInformationSchema
 
 
 class SensedObjectSchema(Schema):
@@ -13,11 +13,11 @@ class SensedObjectSchema(Schema):
     object_id = fields.String(required=True)
 
     #The data that was sensed by that object
-    sensed_data = fields.Nested(SensedDataSchema)
+    sensed_data = fields.Nested(SensedObjectInformationSchema)
 
     @post_load
     def make_sensed_object(self, **kwargs):
-        return SensedObject(object_id=kwargs.get('object_id'),
+        return SensedObject(id=kwargs.get('object_id'),
                             data=kwargs.get('sensed_data'))
 
 

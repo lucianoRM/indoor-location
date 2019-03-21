@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class SensorManager:
+class SensorManager(object):
     """
     API for handling Sensors
     """

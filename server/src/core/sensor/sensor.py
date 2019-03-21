@@ -1,4 +1,3 @@
-from abc import ABCMeta
 from copy import deepcopy
 
 from src.core.object.positionable_object import PositionableObject

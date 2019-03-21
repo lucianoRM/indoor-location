@@ -1,7 +1,7 @@
 from abc import ABCMeta
 
 
-class KVDBBackedManager:
+class KVDBBackedManager(object):
     """
     Parent class that handles values when stored in a key-value database
     """

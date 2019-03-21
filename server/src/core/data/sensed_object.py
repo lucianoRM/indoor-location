@@ -7,18 +7,18 @@ class SensedObject(object):
     Instances of this class should be immutable
     """
 
-    def __init__(self, object_id, data):
+    def __init__(self, id, data):
         """
         Constructor for sensed object
-        :param object_id: The id of the object sensed
+        :param id: The id of the object sensed
         :param data: Data being sensed regarding that object
         """
-        self.__object_id = object_id
+        self.__id = id
         self.__data = data
 
     @property
-    def object_id(self):
-        return self.__object_id
+    def id(self):
+        return self.__id
 
     @property
     def data(self):
