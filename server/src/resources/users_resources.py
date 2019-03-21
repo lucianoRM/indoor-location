@@ -4,7 +4,7 @@ This file handles resources for creating, deleting, and updating information rel
 from marshmallow import Schema, fields, post_load
 
 from src.core.user.user import User
-from src.dependency_container import USER_MANAGER
+from src.dependency_container import DependencyContainer
 from src.resources.abstract_resource import AbstractResource
 
 
@@ -12,7 +12,7 @@ class UserListResource(AbstractResource):
 
     def __init__(self, **kwargs):
         super(UserListResource, self).__init__(**kwargs)
-        self.__user_manager = kwargs[USER_MANAGER]
+        self.__user_manager = DependencyContainer.user_manager()
         self.__users_schema = UserSchema(many=True)
         self.__user_schema = UserSchema()
 
@@ -28,7 +28,7 @@ class UserResource(AbstractResource):
 
     def __init__(self, **kwargs):
         super(UserResource, self).__init__(**kwargs)
-        self.__user_manager = kwargs[USER_MANAGER]
+        self.__user_manager = DependencyContainer.user_manager()
         self.__user_schema = UserSchema()
 
     def _do_get(self, user_id):

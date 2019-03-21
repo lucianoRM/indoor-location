@@ -2,11 +2,10 @@
 This file handles resources for creating, deleting, and updating information related to sensors.
 '''
 
-from flask import request
 from marshmallow import Schema, fields, post_load
 
 from src.core.sensor.sensor import Sensor
-from src.dependency_container import SENSOR_MANAGER
+from src.dependency_container import DependencyContainer
 from src.resources.abstract_resource import AbstractResource
 from src.resources.sensed_object import SensedObjectSchema
 
@@ -15,7 +14,7 @@ class SensorListResource(AbstractResource):
 
     def __init__(self, **kwargs):
         super(SensorListResource, self).__init__(**kwargs)
-        self.__sensor_manager = kwargs[SENSOR_MANAGER]
+        self.__sensor_manager = DependencyContainer.sensor_manager()
         self.__sensors_schema = SensorSchema(many=True)
         self.__sensor_schema = SensorSchema()
         self.__sensed_objects_schema = SensedObjectSchema(many=True)
@@ -32,7 +31,7 @@ class SensorResource(AbstractResource):
 
     def __init__(self, **kwargs):
         super(SensorResource, self).__init__(**kwargs)
-        self.__sensor_manager = kwargs[SENSOR_MANAGER]
+        self.__sensor_manager = DependencyContainer.sensor_manager()
         self.__sensor_schema = SensorSchema()
 
     def _do_get(self, sensor_id):

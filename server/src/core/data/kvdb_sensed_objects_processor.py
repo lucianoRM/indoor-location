@@ -11,7 +11,6 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
     #Key to store which sensors have sensed which objects to be able to compute their location properly
     __SENSED_OBJECTS_KEY = "sensed_objects"
 
-    #TODO: inject
     def __init__(self, database, sensor_manager, user_manager):
         super(KVDBSensedObjectsProcessor, self).__init__(database)
         self.__sensor_manager = sensor_manager
