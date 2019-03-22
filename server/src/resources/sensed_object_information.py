@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields, post_load
 from measurement.measures import Distance
 
-from src.core.data.sensed_object_information import SensedObjectInformation
+from src.core.data.sensing_data import SensingData
 
 
 class SensedObjectInformationSchema(Schema):
@@ -17,4 +17,4 @@ class SensedObjectInformationSchema(Schema):
         distance_value = kwargs.get('distance')
         distance_unit = kwargs.get('distance_unit')
         distance = Distance(**{distance_unit:distance_value})
-        return SensedObjectInformation(distance=distance)
+        return SensingData(distance=distance)

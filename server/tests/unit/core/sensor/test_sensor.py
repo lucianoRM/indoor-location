@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from measurement.measures import Distance
 
-from src.core.data.sensed_object_information import SensedObjectInformation
+from src.core.data.sensing_data import SensingData
 from src.core.data.sensed_object import SensedObject
 from src.core.sensor.sensor import Sensor
 
@@ -23,8 +23,8 @@ class SensorUnitTest(TestCase):
 
         sensed_object_id1 = "id1"
         sensed_distance1 = Distance(m=1)
-        sensed_data1 = SensedObjectInformation(distance=sensed_distance1)
-        sensed_object1 = SensedObject(id=sensed_object_id1, data=sensed_data1)
+        sensed_data1 = SensingData(distance=sensed_distance1, timestamp=1)
+        sensed_object1 = SensedObject(id=sensed_object_id1, data=sensed_data1, sensor=None)
 
         sensor.update_sensed_objects({sensed_object_id1:sensed_object1})
         sensed_objects = sensor.get_sensed_objects()
@@ -33,8 +33,8 @@ class SensorUnitTest(TestCase):
 
         sensed_object_id2 = "id2"
         sensed_distance2 = Distance(m=200)
-        sensed_data2 = SensedObjectInformation(distance=sensed_distance2)
-        sensed_object2 = SensedObject(id=sensed_object_id2, data=sensed_data2)
+        sensed_data2 = SensingData(distance=sensed_distance2, timestamp=1)
+        sensed_object2 = SensedObject(id=sensed_object_id2, data=sensed_data2, sensor=None)
 
         sensor.update_sensed_objects({sensed_object_id2: sensed_object2})
         sensed_objects = sensor.get_sensed_objects()
@@ -48,8 +48,8 @@ class SensorUnitTest(TestCase):
 
         sensed_object_id1 = "id1"
         sensed_distance1 = Distance(m=1)
-        sensed_data1 = SensedObjectInformation(distance=sensed_distance1)
-        sensed_object1 = SensedObject(id=sensed_object_id1, data=sensed_data1)
+        sensed_data1 = SensingData(distance=sensed_distance1, timestamp=1)
+        sensed_object1 = SensedObject(id=sensed_object_id1, data=sensed_data1, sensor=None)
 
         sensor.update_sensed_objects({sensed_object_id1:sensed_object1})
         sensed_objects = sensor.get_sensed_objects()
@@ -58,8 +58,8 @@ class SensorUnitTest(TestCase):
 
         sensed_object_id2 = "id2"
         sensed_distance2 = Distance(m=200)
-        sensed_data2 = SensedObjectInformation(distance=sensed_distance2)
-        sensed_object2 = SensedObject(id=sensed_object_id2, data=sensed_data2)
+        sensed_data2 = SensingData(distance=sensed_distance2, timestamp=1)
+        sensed_object2 = SensedObject(id=sensed_object_id2, data=sensed_data2, sensor=None)
 
         sensor.update_sensed_objects({sensed_object_id2: sensed_object2}, merge=True)
         sensed_objects = sensor.get_sensed_objects()
@@ -73,8 +73,8 @@ class SensorUnitTest(TestCase):
 
         sensed_object_id1 = "id1"
         sensed_distance1a= Distance(m=1)
-        sensed_data1a = SensedObjectInformation(distance=sensed_distance1a)
-        sensed_object1 = SensedObject(id=sensed_object_id1, data=sensed_data1a)
+        sensed_data1a = SensingData(distance=sensed_distance1a, timestamp=1)
+        sensed_object1 = SensedObject(id=sensed_object_id1, data=sensed_data1a, sensor=None)
 
         sensor.update_sensed_objects({sensed_object_id1:sensed_object1})
         sensed_objects = sensor.get_sensed_objects()
@@ -82,12 +82,12 @@ class SensorUnitTest(TestCase):
         self.assertEquals(sensed_objects.get(sensed_object_id1).data.distance.m, sensed_distance1a.m)
 
         sensed_distance1b = Distance(m=500)
-        sensed_data1b = SensedObjectInformation(distance=sensed_distance1b)
-        sensed_object1 = SensedObject(id=sensed_object_id1, data=sensed_data1b)
+        sensed_data1b = SensingData(distance=sensed_distance1b, timestamp=1)
+        sensed_object1 = SensedObject(id=sensed_object_id1, data=sensed_data1b, sensor=None)
         sensed_object_id2 = "id2"
         sensed_distance2 = Distance(m=200)
-        sensed_data2 = SensedObjectInformation(distance=sensed_distance2)
-        sensed_object2 = SensedObject(id=sensed_object_id2, data=sensed_data2)
+        sensed_data2 = SensingData(distance=sensed_distance2, timestamp=1)
+        sensed_object2 = SensedObject(id=sensed_object_id2, data=sensed_data2, sensor=None)
 
         sensor.update_sensed_objects(
             {sensed_object_id1:sensed_object1,
