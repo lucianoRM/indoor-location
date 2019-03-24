@@ -16,8 +16,9 @@ class SensedObjectsProcessorUnitTest(TestCase):
 
         self.__user_manager = Mock()
         self.__sensor_manager = Mock()
+        self.__location_service = Mock()
 
-        self.__processor = KVDBSensedObjectsProcessor(database=__database, user_manager=self.__user_manager , sensor_manager=self.__sensor_manager)
+        self.__processor = KVDBSensedObjectsProcessor(database=__database, user_manager=self.__user_manager , sensor_manager=self.__sensor_manager, location_service=self.__location_service)
 
     def test_sensor_information_is_added(self):
         sensed_object_id = 1

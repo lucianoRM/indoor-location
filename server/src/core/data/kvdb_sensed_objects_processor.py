@@ -1,9 +1,9 @@
 from src.core.data.sensed_objects_processor import SensedObjectsProcessor
 from src.core.database.kv_database import KeyDoesNotExistException
-from src.core.manager.kvdb_backed_manager import KVDBBackedManager
+from src.core.manager.kvdb_backed_manager import KVDBBacked
 
 
-class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
+class KVDBSensedObjectsProcessor(KVDBBacked, SensedObjectsProcessor):
     """
     A data processor that backs all information needed in a Key-Value database
     """
@@ -11,10 +11,11 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
     #Key to store which sensors have sensed which objects to be able to compute their location properly
     __SENSED_OBJECTS_KEY = "sensed_objects"
 
-    def __init__(self, database, sensor_manager, user_manager):
+    def __init__(self, database, sensor_manager, user_manager, location_service):
         super(KVDBSensedObjectsProcessor, self).__init__(database)
         self.__sensor_manager = sensor_manager
         self.__user_manager = user_manager
+        self.__location_service = location_service
 
 
     def process_new_data(self, sensor_id, objects):
@@ -44,6 +45,7 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
                 sensors_in_range.remove(sensor_id)
 
         sensor.update_sensed_objects(objects)
+        self.__sensor_manager.update_sensor(sensorId=sensor_id, sensor=sensor)
 
         self._database.upsert(self.__SENSED_OBJECTS_KEY, sensed_objects_information)
 

@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from src.core.database.memory_kv_database import MemoryKVDatabase
 from src.core.user.user import User
-from src.core.user.kvdb_user_manager import KVDBUserManager
+from src.core.user.kvdb_user_manager import KVDBUser
 from src.core.user.user_manager import UserAlreadyExistsException, UnknownUserException
 
 
@@ -14,7 +14,7 @@ class KVDBUserManagerTestCase(TestCase):
         self.__test_user = User(id=self.__USER_ID,
                                 name="userName",
                                 position=(0,0))
-        self.__user_manager = KVDBUserManager(MemoryKVDatabase())
+        self.__user_manager = KVDBUser(MemoryKVDatabase())
 
     def test_add_user(self):
         self.__user_manager.add_user(self.__test_user)

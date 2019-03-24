@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from src.core.database.memory_kv_database import MemoryKVDatabase
 from src.core.sensor.sensor import Sensor
-from src.core.sensor.kvdb_sensor_manager import KVDBSensorManager
+from src.core.sensor.kvdb_sensor_manager import KVDBSensor
 from src.core.sensor.sensor_manager import SensorAlreadyExistsException, UnknownSensorException
 
 
@@ -14,7 +14,7 @@ class KVDBSensorManagerTestCase(TestCase):
         self.__test_sensor = Sensor( id=self.__SENSOR_ID,
                                      position=(0,0),
                                      name="sensorName")
-        self.__sensor_manager = KVDBSensorManager(MemoryKVDatabase())
+        self.__sensor_manager = KVDBSensor(MemoryKVDatabase())
 
     def test_add_sensor(self):
         self.__sensor_manager.add_sensor(self.__test_sensor)

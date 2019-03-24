@@ -1,9 +1,9 @@
 from src.core.database.kv_database import KeyAlreadyExistsException, KeyDoesNotExistException
-from src.core.manager.kvdb_backed_manager import KVDBBackedManager
+from src.core.manager.kvdb_backed_manager import KVDBBacked
 from src.core.user.user_manager import UserManager, UserAlreadyExistsException, UnknownUserException
 
 
-class KVDBUserManager(UserManager, KVDBBackedManager):
+class KVDBUser(UserManager, KVDBBacked):
     """User manager that stores information in a key-value database"""
 
     __USERS_POSITION_KEY = "users"
@@ -13,7 +13,7 @@ class KVDBUserManager(UserManager, KVDBBackedManager):
         Constructor for Manager.
         :param kv_database: key-value database to store information about users
         """
-        super(KVDBUserManager, self).__init__(kv_database)
+        super(KVDBUser, self).__init__(kv_database)
 
     def add_user(self, user):
         try:

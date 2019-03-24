@@ -1,9 +1,9 @@
 from src.core.database.kv_database import KeyAlreadyExistsException, KeyDoesNotExistException
-from src.core.manager.kvdb_backed_manager import KVDBBackedManager
+from src.core.manager.kvdb_backed_manager import KVDBBacked
 from src.core.sensor.sensor_manager import SensorManager, SensorAlreadyExistsException, UnknownSensorException
 
 
-class KVDBSensorManager(SensorManager, KVDBBackedManager):
+class KVDBSensor(SensorManager, KVDBBacked):
     """Sensor manager that stores information in a key-value database"""
 
     __SENSORS_POSITION_KEY = "sensors"
@@ -13,7 +13,7 @@ class KVDBSensorManager(SensorManager, KVDBBackedManager):
         Constructor for Manager.
         :param kv_database: key-value database to store information about sensors
         """
-        super(KVDBSensorManager, self).__init__(kv_database)
+        super(KVDBSensor, self).__init__(kv_database)
 
     def add_sensor(self, sensor):
         try:
