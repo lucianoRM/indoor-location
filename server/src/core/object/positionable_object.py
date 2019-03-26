@@ -1,4 +1,4 @@
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 
 from src.core.object.object import Object
 
@@ -10,6 +10,7 @@ class PositionableObject(Object):
 
     __metaclass__ = ABCMeta
 
+    @abstractmethod
     def __init__(self, id, position, **kwargs):
         super(PositionableObject, self).__init__(id, **kwargs)
         self._position = position

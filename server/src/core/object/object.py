@@ -1,4 +1,4 @@
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 
 NAME_KEY = "name"
 
@@ -9,6 +9,7 @@ class Object(object):
 
     __metaclass__ = ABCMeta
 
+    @abstractmethod
     def __init__(self, id, **kwargs):
         self._id = id
         self.name = kwargs.get(NAME_KEY, None)
