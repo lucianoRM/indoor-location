@@ -8,9 +8,10 @@ class SensorManager(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def add_sensor(self, sensor):
+    def add_sensor(self, sensor_id, sensor):
         """
         Add a new sensor
+        :param sensor_id: the sensor_id
         :param sensor: the sensor to add
         :raise SensorAlreadyExistsException: if the sensor was already added
         :return: the sensor added
@@ -18,30 +19,30 @@ class SensorManager(object):
         raise NotImplementedError
 
     @abstractmethod
-    def get_sensor(self, sensorId):
+    def get_sensor(self, sensor_id):
         """
         Get a sensor by id
-        :param sensorId: the unique id of the sensor to get
+        :param sensor_id: the unique id of the sensor to get
         :raise UnknownSensorException: if a sensor with that id does not exist
         :return: the sensor retrieved
         """
         raise NotImplementedError
 
     @abstractmethod
-    def remove_sensor(self, sensorId):
+    def remove_sensor(self, sensor_id):
         """
         Remove an sensor by id
-        :param sensorId: The id to uniquely locate the sensor to remove
+        :param sensor_id: The id to uniquely locate the sensor to remove
         :raise: UnkownSensorException: If the sensor is not found
         :return: The sensor with the given id
         """
         raise NotImplementedError
 
     @abstractmethod
-    def update_sensor(self, sensorId, sensor):
+    def update_sensor(self, sensor_id, sensor):
         """
         Update an already existent sensor.
-        :param sensorId: The id of the sensor to be updated
+        :param sensor_id: The id of the sensor to be updated
         :param sensor: The new sensor that will replace the old one with new information
         :raise: UnknownSensorException if no sensor is found with the given id.
         :return: The new sensor updated

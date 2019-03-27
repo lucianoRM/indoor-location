@@ -1,25 +1,32 @@
-from unittest import TestCase
+from abc import ABCMeta, abstractmethod
 
 from measurement.measures import Distance
 
 from src.core.data.sensing_data import SensingData
 from src.core.data.sensed_object import SensedObject
-from src.core.sensor.sensor import Sensor
 
 
-class SensorUnitTest(TestCase):
+class SensorUnitTest(object):
+
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def _create_sensor(self, id, position, name=None):
+        pass
+
 
     def test_create_sensor_and_get_values(self):
         name = 'sensor1'
         id = 'sensorId'
         position = (5,5)
-        sensor = Sensor(id=id, position=position, name=name)
+        sensor = self._create_sensor(id=id, position=position, name=name)
         self.assertEquals(sensor.name, name)
         self.assertEquals(sensor.id, id)
         self.assertEquals(sensor.position, position)
 
+
     def test_sensor_update_no_merge(self):
-        sensor = Sensor(id=1, position=1)
+        sensor = self._create_sensor(id=1, position=1)
 
         sensed_object_id1 = "id1"
         sensed_distance1 = Distance(m=1)
@@ -43,8 +50,9 @@ class SensorUnitTest(TestCase):
         self.assertFalse(sensed_objects.has_key(sensed_object_id1))
         self.assertEquals(sensed_objects.get(sensed_object_id2).data.distance.m, sensed_distance2.m)
 
+
     def test_sensor_update_merge(self):
-        sensor = Sensor(id=1, position=1)
+        sensor = self._create_sensor(id=1, position=1)
 
         sensed_object_id1 = "id1"
         sensed_distance1 = Distance(m=1)
@@ -68,8 +76,9 @@ class SensorUnitTest(TestCase):
         self.assertEquals(sensed_objects.get(sensed_object_id1).data.distance.m, sensed_distance1.m)
         self.assertEquals(sensed_objects.get(sensed_object_id2).data.distance.m, sensed_distance2.m)
 
+
     def test_sensor_update_merge_new_value(self):
-        sensor = Sensor(id=1, position=1)
+        sensor = self._create_sensor(id=1, position=1)
 
         sensed_object_id1 = "id1"
         sensed_distance1a= Distance(m=1)

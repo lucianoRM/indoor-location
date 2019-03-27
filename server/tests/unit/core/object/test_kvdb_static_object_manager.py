@@ -2,8 +2,8 @@ from unittest import TestCase
 
 from src.core.database.memory_kv_database import MemoryKVDatabase
 from src.core.object.kvdb_static_object_manager import KVDBStaticObject
-from src.core.object.static_object import StaticObject
 from src.core.object.static_object_manager import StaticObjectAlreadyExistsException, UnknownStaticObjectException
+from tests.unit.test_implementations.implementations import TestStaticObject
 
 
 class KVDBStaticObjectManagerTestCase(TestCase):
@@ -11,7 +11,7 @@ class KVDBStaticObjectManagerTestCase(TestCase):
     __STATIC_OBJECT_ID = "objectId"
 
     def setUp(self):
-        self.__test_static_object = StaticObject(
+        self.__test_static_object = TestStaticObject(
                                         id=self.__STATIC_OBJECT_ID,
                                         position=(0,0),
                                         name="static_objectName")
@@ -23,13 +23,13 @@ class KVDBStaticObjectManagerTestCase(TestCase):
 
     def test_add_static_object_with_same_id(self):
         self.__static_object_manager.add_static_object(self.__test_static_object)
-        sameIdStaticObject = StaticObject(id=self.__STATIC_OBJECT_ID,
+        sameIdStaticObject = TestStaticObject(id=self.__STATIC_OBJECT_ID,
                                           position=(1,1),
                                           name="otherStaticObject")
         self.assertRaises(StaticObjectAlreadyExistsException,self.__static_object_manager.add_static_object, sameIdStaticObject)
 
     def test_add_multiple_static_objects_and_get_all(self):
-        all_static_objects = [StaticObject(id=str(static_objectId), name="objectName", position= (0,0)) for static_objectId in xrange(100)]
+        all_static_objects = [TestStaticObject(id=str(static_objectId), name="objectName", position= (0,0)) for static_objectId in xrange(100)]
         for static_object in all_static_objects:
             self.__static_object_manager.add_static_object(static_object)
         retrieved_static_objects = self.__static_object_manager.get_all_static_objects()
@@ -47,7 +47,7 @@ class KVDBStaticObjectManagerTestCase(TestCase):
 
     def test_update_static_object(self):
         self.__static_object_manager.add_static_object(self.__test_static_object)
-        newStaticObject = StaticObject(id=self.__STATIC_OBJECT_ID,
+        newStaticObject = TestStaticObject(id=self.__STATIC_OBJECT_ID,
                                        name= "newStaticObjectName",
                                        position= (1,1))
         self.__static_object_manager.update_static_object(self.__STATIC_OBJECT_ID,newStaticObject)

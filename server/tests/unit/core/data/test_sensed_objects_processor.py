@@ -6,7 +6,7 @@ from mock import Mock, patch
 from src.core.data.kvdb_sensed_objects_processor import KVDBSensedObjectsProcessor
 from src.core.data.sensing_data import SensingData
 from src.core.database.memory_kv_database import MemoryKVDatabase
-from src.core.sensor.sensor import Sensor
+from tests.unit.test_implementations.implementations import TestSensor
 
 
 class SensedObjectsProcessorUnitTest(TestCase):
@@ -20,20 +20,13 @@ class SensedObjectsProcessorUnitTest(TestCase):
 
         self.__processor = KVDBSensedObjectsProcessor(database=__database, user_manager=self.__user_manager , sensor_manager=self.__sensor_manager, location_service=self.__location_service)
 
-    def __get_mocked_sensor(self):
-        mocked_sensor = Mock()
-        mocked_sensor.get_sensed_objects.side_effect(
-            lambda s: {} if
-            len(mocked_sensor.update_sensed_objects.mock_calls) == 0
-            else mocked_sensor.update_sensed_objects.mock_calls[-1][0])
-        return mocked_sensor
 
     def test_sensor_information_is_added(self):
         sensed_object_id = 1
         sensed_object_information = SensingData(distance=Distance(m=10), timestamp=1)
 
         sensor_id = 1
-        sensor = self.__get_mocked_sensor()
+        sensor = TestSensor()
         self.__sensor_manager.get_sensor.side_effect = (lambda id : sensor)
 
         self.__processor.process_new_data(sensor_id,{sensed_object_id: sensed_object_information})
@@ -46,7 +39,7 @@ class SensedObjectsProcessorUnitTest(TestCase):
         sensed_object_information = SensingData(distance=Distance(m=10), timestamp=1)
 
         sensor_id = 1
-        sensor = self.__get_mocked_sensor()
+        sensor = TestSensor()
         self.__sensor_manager.get_sensor.side_effect = (lambda id: sensor)
 
         self.__processor.process_new_data(sensor_id, {sensed_object_id: sensed_object_information})
@@ -66,7 +59,7 @@ class SensedObjectsProcessorUnitTest(TestCase):
         sensed_object_information = SensingData(distance=Distance(m=10), timestamp=1)
 
         sensor_id = 1
-        sensor = self.__get_mocked_sensor()
+        sensor = TestSensor()
         self.__sensor_manager.get_sensor.side_effect = (lambda id: sensor)
 
         self.__processor.process_new_data(sensor_id, {sensed_object_id: sensed_object_information})

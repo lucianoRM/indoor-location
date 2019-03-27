@@ -15,39 +15,39 @@ class KVDBSensor(SensorManager, KVDBBacked):
         """
         super(KVDBSensor, self).__init__(kv_database)
 
-    def add_sensor(self, sensor):
+    def add_sensor(self, sensor_id, sensor):
         try:
             return self._database.insert(
-                self._build_complex_key(self.__SENSORS_POSITION_KEY, sensor.id),
+                self._build_complex_key(self.__SENSORS_POSITION_KEY, sensor_id),
                 sensor
             )
         except KeyAlreadyExistsException:
             raise SensorAlreadyExistsException("Sensor with id: " + sensor.id + " was already registered")
 
-    def get_sensor(self, sensorId):
+    def get_sensor(self, sensor_id):
         try:
             return self._database.retrieve(
-                self._build_complex_key(self.__SENSORS_POSITION_KEY, sensorId)
+                self._build_complex_key(self.__SENSORS_POSITION_KEY, sensor_id)
             )
         except KeyDoesNotExistException:
-            raise UnknownSensorException("A sensor with id: " + sensorId + " does not exist")
+            raise UnknownSensorException("A sensor with id: " + sensor_id + " does not exist")
 
-    def update_sensor(self, sensorId, sensor):
+    def update_sensor(self, sensor_id, sensor):
         try:
             return self._database.update(
-                self._build_complex_key(self.__SENSORS_POSITION_KEY, sensorId),
+                self._build_complex_key(self.__SENSORS_POSITION_KEY, sensor_id),
                 sensor
             )
         except KeyDoesNotExistException:
-            raise UnknownSensorException("A sensor with id: " + sensorId + " does not exist")
+            raise UnknownSensorException("A sensor with id: " + sensor_id + " does not exist")
 
-    def remove_sensor(self, sensorId):
+    def remove_sensor(self, sensor_id):
         try:
             return self._database.remove(
-                self._build_complex_key(self.__SENSORS_POSITION_KEY, sensorId)
+                self._build_complex_key(self.__SENSORS_POSITION_KEY, sensor_id)
             )
         except KeyDoesNotExistException:
-            raise UnknownSensorException("Attempting to remove a sensor that does not exist. With ID: " + sensorId)
+            raise UnknownSensorException("Attempting to remove a sensor that does not exist. With ID: " + sensor_id)
 
     def get_all_sensors(self):
         try:
