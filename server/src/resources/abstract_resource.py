@@ -35,9 +35,9 @@ class AbstractResource(Resource):
     def __handle_exception(self, e):
         error_class_name = e.__class__.__name__
         error = self.__default_error
-        if(self.__common_error_mappings.has_key(error_class_name)):
+        if error_class_name in self.__common_error_mappings:
             error = self.__common_error_mappings.get(error_class_name)
-        if self.__custom_error_mappings.has_key(error_class_name):
+        if error_class_name in self.__custom_error_mappings:
             error = self.__custom_error_mappings.get(error_class_name)
         code = error.get('code', 500)
         message = error.get('message', e.message)

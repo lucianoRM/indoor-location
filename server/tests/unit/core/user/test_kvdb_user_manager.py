@@ -28,7 +28,7 @@ class KVDBUserManagerTestCase(TestCase):
         self.assertRaises(UserAlreadyExistsException,self.__user_manager.add_user, sameIdUser)
 
     def test_add_multiple_users_and_get_all(self):
-        all_users = [TestUser(id=str(userId), name="userName", position=(0,0)) for userId in xrange(100)]
+        all_users = [TestUser(id=str(userId), name="userName", position=(0,0)) for userId in range(100)]
         for user in all_users:
             self.__user_manager.add_user(user)
         retrieved_users = self.__user_manager.get_all_users()

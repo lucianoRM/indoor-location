@@ -47,7 +47,7 @@ class SensorUnitTest(object):
         sensed_objects = sensor.get_sensed_objects()
 
         self.assertEquals(len(sensed_objects), 1)
-        self.assertFalse(sensed_objects.has_key(sensed_object_id1))
+        self.assertFalse(sensed_object_id1 in sensed_objects)
         self.assertEquals(sensed_objects.get(sensed_object_id2).data.distance.m, sensed_distance2.m)
 
 

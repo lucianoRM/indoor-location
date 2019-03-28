@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from measurement.measures import Distance
-from mock import Mock, patch
+from mock import Mock
 
 from src.core.data.kvdb_sensed_objects_processor import KVDBSensedObjectsProcessor
 from src.core.data.sensing_data import SensingData

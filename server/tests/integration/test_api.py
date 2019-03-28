@@ -25,8 +25,8 @@ class ApiTestCase(TestCase):
 
     def __assert_values(self, real_object, expected_object, sort_lists=True):
         if isinstance(expected_object, dict):
-            for key,value in expected_object.items():
-                self.assertTrue(real_object.has_key(key))
+            for key,value in list(expected_object.items()):
+                self.assertTrue(key in real_object)
                 self.__assert_values(real_object[key], value)
                 #remove value so we know is checked
                 real_object.pop(key)
@@ -42,13 +42,17 @@ class ApiTestCase(TestCase):
             if len(real_object) != len(expected_object):
                 self.fail("List are not of same size: \n" + str(real_object) + "\n" + str(expected_object))
             if(sort_lists):
-                real_object.sort()
-                expected_object.sort()
+                real_object.sort(key=self.__get_object_key_for_sorting)
+                expected_object.sort(key=self.__get_object_key_for_sorting)
             for i in range(len(real_object)):
                 self.__assert_values(real_object[i], expected_object[i])
         else:
             self.assertEquals(real_object, expected_object)
 
+    def __get_object_key_for_sorting(self, object):
+        if isinstance(object, dict):
+            return "".join(object.keys())
+        return object
 
     def test_check_value_simple_object(self):
         object = {

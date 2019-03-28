@@ -28,7 +28,7 @@ class KVDBSensorManagerTestCase(TestCase):
         self.assertRaises(SensorAlreadyExistsException,self.__sensor_manager.add_sensor, sameIdSensor)
 
     def test_add_multiple_sensors_and_get_all(self):
-        all_sensors = [TestSensor(id=str(sensorId), name="sensorName", position= (0,0)) for sensorId in xrange(100)]
+        all_sensors = [TestSensor(id=str(sensorId), name="sensorName", position= (0,0)) for sensorId in range(100)]
         for sensor in all_sensors:
             self.__sensor_manager.add_sensor(sensor)
         retrieved_sensors = self.__sensor_manager.get_all_sensors()

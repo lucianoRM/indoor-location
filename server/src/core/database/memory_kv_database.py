@@ -15,7 +15,7 @@ class MemoryKVDatabase(KVDatabase):
         self.__database = {}
 
     def __get_keys(self, key):
-        if (not isinstance(key, str) and not isinstance(key, unicode)):
+        if not isinstance(key, str):
             raise TypeError("Keys must be strings")
         return key.split(self.get_keys_delimiter())
 
@@ -53,7 +53,7 @@ class MemoryKVDatabase(KVDatabase):
         keys = self.__get_keys(key)
         last_key = keys[-1]
         last_dicc = self.__retrieve(keys[:-1:], createMissingKeys)
-        if (last_dicc.has_key(last_key) and failIfPresent):
+        if last_key in last_dicc and failIfPresent:
             raise KeyAlreadyExistsException("There is a value already associated with the key " + key)
         last_dicc[last_key] = deepcopy(value)
         return value

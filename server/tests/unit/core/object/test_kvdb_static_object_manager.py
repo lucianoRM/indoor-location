@@ -29,7 +29,7 @@ class KVDBStaticObjectManagerTestCase(TestCase):
         self.assertRaises(StaticObjectAlreadyExistsException,self.__static_object_manager.add_static_object, sameIdStaticObject)
 
     def test_add_multiple_static_objects_and_get_all(self):
-        all_static_objects = [TestStaticObject(id=str(static_objectId), name="objectName", position= (0,0)) for static_objectId in xrange(100)]
+        all_static_objects = [TestStaticObject(id=str(static_objectId), name="objectName", position= (0,0)) for static_objectId in range(100)]
         for static_object in all_static_objects:
             self.__static_object_manager.add_static_object(static_object)
         retrieved_static_objects = self.__static_object_manager.get_all_static_objects()
