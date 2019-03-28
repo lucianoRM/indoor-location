@@ -1,7 +1,7 @@
-from unittest import TestCase
+from unittest.mock import Mock
 
+import pytest
 from measurement.measures import Distance
-from mock import Mock
 
 from src.core.data.kvdb_sensed_objects_processor import KVDBSensedObjectsProcessor
 from src.core.data.sensing_data import SensingData
@@ -9,8 +9,9 @@ from src.core.database.memory_kv_database import MemoryKVDatabase
 from tests.unit.test_implementations.implementations import TestSensor
 
 
-class SensedObjectsProcessorUnitTest(TestCase):
+class TestSensedObjectsProcessor:
 
+    @pytest.fixture(autouse=True)
     def setUp(self):
         __database = MemoryKVDatabase()
 
@@ -31,8 +32,8 @@ class SensedObjectsProcessorUnitTest(TestCase):
 
         self.__processor.process_new_data(sensor_id,{sensed_object_id: sensed_object_information})
 
-        self.assertTrue(len(sensor.get_sensed_objects()) == 1)
-        self.assertEquals(sensor.get_sensed_objects().get(sensed_object_id).distance, sensed_object_information.distance)
+        assert len(sensor.get_sensed_objects()) == 1
+        assert sensor.get_sensed_objects().get(sensed_object_id).distance == sensed_object_information.distance
 
     def test_sensor_information_is_removed(self):
         sensed_object_id = 1
@@ -44,15 +45,15 @@ class SensedObjectsProcessorUnitTest(TestCase):
 
         self.__processor.process_new_data(sensor_id, {sensed_object_id: sensed_object_information})
 
-        self.assertTrue(len(sensor.get_sensed_objects()) == 1)
-        self.assertEquals(sensor.get_sensed_objects().get(sensed_object_id).distance,sensed_object_information.distance)
+        assert len(sensor.get_sensed_objects()) == 1
+        assert sensor.get_sensed_objects().get(sensed_object_id).distance == sensed_object_information.distance
 
         sensed_object_id2 = 2
         sensed_object_information2 = SensingData(distance=Distance(m=20), timestamp=1)
         self.__processor.process_new_data(sensor_id, {sensed_object_id2: sensed_object_information2})
 
-        self.assertTrue(len(sensor.get_sensed_objects()) == 1)
-        self.assertEquals(sensor.get_sensed_objects().get(sensed_object_id2).distance,sensed_object_information2.distance)
+        assert len(sensor.get_sensed_objects()) == 1
+        assert sensor.get_sensed_objects().get(sensed_object_id2).distance ==sensed_object_information2.distance
 
     def test_sensor_information_is_updated(self):
         sensed_object_id = 1
@@ -64,15 +65,14 @@ class SensedObjectsProcessorUnitTest(TestCase):
 
         self.__processor.process_new_data(sensor_id, {sensed_object_id: sensed_object_information})
 
-        self.assertTrue(len(sensor.get_sensed_objects()) == 1)
-        self.assertEquals(sensor.get_sensed_objects().get(sensed_object_id).distance,
-                          sensed_object_information.distance)
+        assert len(sensor.get_sensed_objects()) == 1
+        assert sensor.get_sensed_objects().get(sensed_object_id).distance == sensed_object_information.distance
 
         sensed_object_information2 = SensingData(distance=Distance(m=20), timestamp=1)
         self.__processor.process_new_data(sensor_id, {sensed_object_id : sensed_object_information2})
 
-        self.assertTrue(len(sensor.get_sensed_objects()) == 1)
-        self.assertEquals(sensor.get_sensed_objects().get(sensed_object_id).distance,sensed_object_information2.distance)
+        assert len(sensor.get_sensed_objects()) == 1
+        assert sensor.get_sensed_objects().get(sensed_object_id).distance == sensed_object_information2.distance
 
 
 

@@ -1,21 +1,24 @@
-from unittest import TestCase
+from pytest import fixture, raises
+
 from src.core.location.location_service import LocationServiceException
 from src.core.location.simple_location_service import SimpleLocationService, AnchorObject
 
 
-class LocationServiceUnitTest(TestCase):
+class TestLocationService:
 
+    @fixture(autouse=True)
     def setUp(self):
         self.__location_service = SimpleLocationService()
 
     def __check_point(self, point, expected_coordinates, allowed_error = 0.01):
-        self.assertTrue(abs(point.x - expected_coordinates[0]) < allowed_error)
-        self.assertTrue(abs(point.y - expected_coordinates[1]) < allowed_error)
+        assert abs(point.x - expected_coordinates[0]) < allowed_error
+        assert abs(point.y - expected_coordinates[1]) < allowed_error
 
 
 
     def test_with_no_data_raises_exception(self):
-        self.assertRaises(LocationServiceException, self.__location_service.locate_object, anchor_objects=[])
+        with raises(LocationServiceException):
+            self.__location_service.locate_object(anchor_objects=[])
 
     def test_single_data_point_raises_exception(self):
         anchor_objects = [
@@ -25,7 +28,8 @@ class LocationServiceUnitTest(TestCase):
                 timestamp=1
             )
         ]
-        self.assertRaises(LocationServiceException, self.__location_service.locate_object, anchor_objects=anchor_objects)
+        with raises(LocationServiceException):
+            self.__location_service.locate_object(anchor_objects=anchor_objects)
 
     def test_not_intersecting_areas_raises_exception(self):
         anchor_objects = [
@@ -40,7 +44,8 @@ class LocationServiceUnitTest(TestCase):
                 timestamp=1
             )
         ]
-        self.assertRaises(LocationServiceException, self.__location_service.locate_object, anchor_objects=anchor_objects)
+        with raises(LocationServiceException):
+            self.__location_service.locate_object(anchor_objects=anchor_objects)
 
     def test_simple_intersection(self):
         anchor_objects = [

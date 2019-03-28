@@ -1,17 +1,19 @@
 import json
 from abc import ABCMeta
 from copy import deepcopy
-from unittest import TestCase
+
+from pytest import fixture, raises
 
 from api import create_app
 from src.dependency_container import DependencyContainer
 
 
-class ApiTestCase(TestCase):
+class TestApi:
     """Abstract class for testing Server endpoints"""
 
     __metaclass__ = ABCMeta
 
+    @fixture(autouse=True)
     def setUp(self):
         DependencyContainer.database.reset()
         DependencyContainer.user_manager.reset()
@@ -26,7 +28,7 @@ class ApiTestCase(TestCase):
     def __assert_values(self, real_object, expected_object, sort_lists=True):
         if isinstance(expected_object, dict):
             for key,value in list(expected_object.items()):
-                self.assertTrue(key in real_object)
+                assert key in real_object
                 self.__assert_values(real_object[key], value)
                 #remove value so we know is checked
                 real_object.pop(key)
@@ -34,20 +36,20 @@ class ApiTestCase(TestCase):
             for key,value in real_object.items():
                 if not value:
                     continue
-                self.fail( key + " was not expected in response")
+                raise AssertionError( key + " was not expected in response")
 
         elif isinstance(expected_object, list):
             if not isinstance(real_object, list):
-                self.fail("Expected a List of values")
+                raise AssertionError("Expected a List of values")
             if len(real_object) != len(expected_object):
-                self.fail("List are not of same size: \n" + str(real_object) + "\n" + str(expected_object))
+                raise AssertionError("List are not of same size: \n" + str(real_object) + "\n" + str(expected_object))
             if(sort_lists):
                 real_object.sort(key=self.__get_object_key_for_sorting)
                 expected_object.sort(key=self.__get_object_key_for_sorting)
             for i in range(len(real_object)):
                 self.__assert_values(real_object[i], expected_object[i])
         else:
-            self.assertEquals(real_object, expected_object)
+            assert real_object == expected_object
 
     def __get_object_key_for_sorting(self, object):
         if isinstance(object, dict):
@@ -67,7 +69,8 @@ class ApiTestCase(TestCase):
         real_object = deepcopy(expected_object)
         real_object['key2'] = None
         self.__assert_values(real_object=real_object, expected_object=expected_object)
-        self.assertRaises(AssertionError, self.__assert_values, expected_object, real_object)
+        with raises(AssertionError):
+            self.__assert_values(expected_object, real_object)
 
     def test_check_value_list(self):
         object = [
@@ -106,8 +109,10 @@ class ApiTestCase(TestCase):
         expected_object.append({
             "key2" : "value2"
         })
-        self.assertRaises(AssertionError, self.__assert_values, real_object=real_object, expected_object=expected_object)
-        self.assertRaises(AssertionError, self.__assert_values, real_object=expected_object, expected_object=real_object)
+        with raises(AssertionError):
+            self.__assert_values(real_object=real_object, expected_object=expected_object)
+        with raises(AssertionError):
+            self.__assert_values(real_object=expected_object, expected_object=real_object)
 
     def test_assert_values_complex_object(self):
         real_object = {
@@ -144,4 +149,5 @@ class ApiTestCase(TestCase):
             },
         }
         self.__assert_values(real_object=real_object, expected_object=expected_object)
-        self.assertRaises(AssertionError, self.__assert_values, real_object=real_object, expected_object=expected_object, sort_lists=False)
+        with raises(AssertionError):
+            self.__assert_values(real_object=real_object, expected_object=expected_object, sort_lists=False)

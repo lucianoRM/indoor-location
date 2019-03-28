@@ -1,9 +1,10 @@
 import json
 
 from api import USERS_ENDPOINT
-from tests.integration.test_api import ApiTestCase
+from tests.integration.test_api import TestApi
 
-class UsersEndpointTestCase(ApiTestCase):
+
+class TestUsersEndpoint(TestApi):
 
     def test_get_empty_user_list(self):
         res = self._client().get(USERS_ENDPOINT)
@@ -15,7 +16,7 @@ class UsersEndpointTestCase(ApiTestCase):
             "position": "position1"
         }
         res = self._client().post(USERS_ENDPOINT, json=json.dumps(user))
-        self.assertEquals(res.status_code, 200)
+        assert res.status_code == 200
         res = self._client().get(USERS_ENDPOINT + "/" + user['id'])
         self.assert_response(res, user)
 
@@ -25,10 +26,10 @@ class UsersEndpointTestCase(ApiTestCase):
             "position": "position1"
         }
         res = self._client().post(USERS_ENDPOINT, json=json.dumps(user))
-        self.assertEquals(res.status_code, 200)
+        assert res.status_code == 200
         res = self._client().post(USERS_ENDPOINT, json=json.dumps(user))
-        self.assertEquals(res.status_code, 500)
-        self.assertTrue("was already registered" in res.get_data())
+        assert res.status_code == 500
+        assert "was already registered" in res.get_data()
 
     def test_add_multiple_users_and_get_list(self):
         users = [
@@ -43,7 +44,7 @@ class UsersEndpointTestCase(ApiTestCase):
         ]
         for user in users:
             res = self._client().post(USERS_ENDPOINT, json=json.dumps(user))
-            self.assertEquals(res.status_code, 200)
+            assert res.status_code == 200
         res = self._client().get(USERS_ENDPOINT)
-        self.assertEquals(res.status_code, 200)
+        assert res.status_code == 200
         self.assert_response(res, users)

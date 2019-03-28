@@ -1,9 +1,11 @@
-import unittest
+from pytest import fixture, raises
+
 from src.core.database.memory_kv_database import MemoryKVDatabase, KeyDoesNotExistException, KeyAlreadyExistsException
 
 
-class MemoryDatabaseTestCase(unittest.TestCase):
+class TestMemoryDatabase:
 
+    @fixture(autouse=True)
     def setUp(self):
         self.__database = MemoryKVDatabase()
 
@@ -11,53 +13,57 @@ class MemoryDatabaseTestCase(unittest.TestCase):
         key = ''
         value = 1
         self.__database.insert(key, value)
-        self.assertEquals(self.__database.retrieve(key), value)
+        assert self.__database.retrieve(key) == value
 
     def test_insert_none_key(self):
         key = None
         value = 1
-        self.assertRaises(TypeError, self.__database.insert, key, value, createMissingKeys=True)
+        with raises(TypeError):
+            self.__database.insert(key=key, value=value, createMissingKeys=True)
 
     def test_insert_value_simple_key(self):
         key = 'key'
         value = 1
         self.__database.insert(key, value)
-        self.assertEquals(self.__database.retrieve(key), value)
+        assert self.__database.retrieve(key) == value
 
     def test_insert_value_complex_key(self):
         key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
         value = 1
         self.__database.insert(key, value, createMissingKeys=True)
-        self.assertEquals(self.__database.retrieve(key), value)
+        assert self.__database.retrieve(key) == value
 
     def test_insert_complex_key_missing_flag(self):
         key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
         value = 1
-        self.assertRaises(KeyDoesNotExistException, self.__database.insert,key, value, createMissingKeys=False)
+        with raises(KeyDoesNotExistException):
+            self.__database.insert(key=key, value=value, createMissingKeys=False)
 
     def test_insert_already_existing_simple_key(self):
         key = 'key'
         value = 1
         self.__database.insert(key, value)
-        self.assertRaises(KeyAlreadyExistsException, self.__database.insert, key, value)
+        with raises(KeyAlreadyExistsException):
+            self.__database.insert(key=key, value=value)
 
     def test_insert_already_existing_complex_key(self):
         key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
         value = 1
         self.__database.insert(key, value, createMissingKeys=True)
-        self.assertRaises(KeyAlreadyExistsException, self.__database.insert, key, value)
+        with raises(KeyAlreadyExistsException):
+            self.__database.insert(key=key, value=value)
 
     def test_upsert_missing_simple_key(self):
         key = 'key'
         value = 1
         self.__database.upsert(key, value)
-        self.assertEquals(self.__database.retrieve(key), value)
+        assert self.__database.retrieve(key) == value
 
     def test_upsert_missing_complex_key(self):
         key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
         value = 1
         self.__database.upsert(key, value, createMissingKeys=True)
-        self.assertEquals(self.__database.retrieve(key), value)
+        assert self.__database.retrieve(key) == value
 
     def test_upsert_existing_simple_key(self):
         key = 'key'
@@ -65,7 +71,7 @@ class MemoryDatabaseTestCase(unittest.TestCase):
         value2 = 2
         self.__database.insert(key, value)
         self.__database.upsert(key, value2)
-        self.assertEquals(self.__database.retrieve(key), value2)
+        assert self.__database.retrieve(key) == value2
 
     def test_upsert_existing_complex_key(self):
         key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
@@ -73,7 +79,7 @@ class MemoryDatabaseTestCase(unittest.TestCase):
         value2 = 2
         self.__database.insert(key, value, createMissingKeys=True)
         self.__database.upsert(key, value2, createMissingKeys=True)
-        self.assertEquals(self.__database.retrieve(key), value2)
+        assert self.__database.retrieve(key) == value2
 
     def test_insert_complex_update_simple(self):
         keylist = ['this', 'is', 'the', 'key']
@@ -85,65 +91,72 @@ class MemoryDatabaseTestCase(unittest.TestCase):
         value2 = 2
         self.__database.insert(key, value, createMissingKeys=True)
         self.__database.upsert(key3, value2, createMissingKeys=True)
-        self.assertRaises(KeyDoesNotExistException, self.__database.retrieve, key)
-        self.assertRaises(KeyDoesNotExistException, self.__database.retrieve, key1)
-        self.assertRaises(KeyDoesNotExistException, self.__database.retrieve, key2)
-        self.assertEquals(self.__database.retrieve(key3), value2)
+        with raises(KeyDoesNotExistException):
+            self.__database.retrieve(key=key)
+        with raises(KeyDoesNotExistException):
+            self.__database.retrieve(key=key1)
+        with raises(KeyDoesNotExistException):
+            self.__database.retrieve(key=key2)
+        assert self.__database.retrieve(key3) == value2
 
     def test_update_missing_simple_key(self):
-        self.assertRaises(KeyDoesNotExistException, self.__database.update, "somekey", "somevalue", createMissingKeys=False)
+        with raises(KeyDoesNotExistException):
+            self.__database.update(key="somekey",value="somevalue", createMissingKeys=False)
 
     def test_update_missing_complex_key(self):
         key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
-        self.assertRaises(KeyDoesNotExistException, self.__database.update, key, "somevalue",createMissingKeys=False)
+        with raises(KeyDoesNotExistException):
+            self.__database.update(key=key,value="somevalue",createMissingKeys=False)
 
     def test_update_with_simple_key(self):
         key = "thekey"
         value = "initialValue"
         self.__database.insert(key, value)
-        self.assertTrue(self.__database.retrieve(key), value)
+        assert self.__database.retrieve(key) == value
         newValue = "newValue"
         self.__database.update(key, newValue)
-        self.assertTrue(self.__database.retrieve(key), newValue)
+        assert self.__database.retrieve(key) == newValue
 
     def test_update_with_complex_key(self):
         key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
         value = "initialValue"
         self.__database.insert(key, value)
-        self.assertTrue(self.__database.retrieve(key), value)
+        assert self.__database.retrieve(key) == value
         newValue = "newValue"
         self.__database.update(key, newValue)
-        self.assertTrue(self.__database.retrieve(key), newValue)
+        assert self.__database.retrieve(key) == newValue
 
     def test_upsert_complex_missing_flag(self):
         key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
         value = 1
-        self.assertRaises(KeyDoesNotExistException, self.__database.upsert, key, value, createMissingKeys=False)
+        with raises(KeyDoesNotExistException):
+            self.__database.upsert(key=key,value=value, createMissingKeys=False)
 
     def test_value_is_immutable_simple_key(self):
         key = 'key'
         value = 1
         self.__database.insert(key, value, createMissingKeys=True)
         value = 2
-        self.assertNotEquals(self.__database.retrieve(key), value)
+        assert self.__database.retrieve(key) != value
 
     def test_value_is_immutable_complex_key(self):
         key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
         value = 1
         self.__database.insert(key, value, createMissingKeys=True)
         value = 2
-        self.assertNotEquals(self.__database.retrieve(key), value)
+        assert self.__database.retrieve(key) != value
 
     def test_insert_key_not_string(self):
         key = ['key']
         value = 1
-        self.assertRaises(TypeError, self.__database.insert ,key, value, createMissingKeys=True)
+        with raises(TypeError):
+            self.__database.insert(key=key,value=value, createMissingKeys=True)
 
     def test_insert_non_dicc_value_as_leaf(self):
         key = self.__database.get_keys_delimiter().join(['this', 'is', 'the', 'key'])
         value = ['this','is','the','value']
         self.__database.insert(key, value, createMissingKeys=True)
-        self.assertEquals(self.__database.retrieve(key), value)
+        assert self.__database.retrieve(key=key) == value
 
     def test_insert_non_dicc_value_retrieve_deeper_value(self):
         keylist = ['this', 'is', 'the', 'key']
@@ -152,14 +165,16 @@ class MemoryDatabaseTestCase(unittest.TestCase):
         retrieve_key = self.__database.get_keys_delimiter().join(keylist)
         value = ['this','is','the','value']
         self.__database.insert(insert_key, value, createMissingKeys=True)
-        self.assertRaises(KeyDoesNotExistException, self.__database.retrieve, retrieve_key)
+        with raises(KeyDoesNotExistException):
+            self.__database.retrieve(key=retrieve_key)
 
     def test_remove_simple_key(self):
         key = 'key'
         value = 1
         self.__database.insert(key, value)
         self.__database.remove(key)
-        self.assertRaises(KeyDoesNotExistException, self.__database.retrieve,key)
+        with raises(KeyDoesNotExistException):
+            self.__database.retrieve(key=key)
 
     def test_insert_complex_key_remove_simple(self):
         keylist = ['this', 'is', 'the', 'key']
@@ -170,9 +185,12 @@ class MemoryDatabaseTestCase(unittest.TestCase):
         value = 1
         self.__database.insert(insert_key, value, createMissingKeys=True)
         self.__database.remove(remove_key)
-        self.assertRaises(KeyDoesNotExistException, self.__database.retrieve, retrieve_key3)
-        self.assertRaises(KeyDoesNotExistException, self.__database.retrieve, retrieve_key2)
-        self.assertRaises(KeyDoesNotExistException, self.__database.retrieve, insert_key)
+        with raises(KeyDoesNotExistException):
+            self.__database.retrieve(key=retrieve_key3)
+        with raises(KeyDoesNotExistException):
+            self.__database.retrieve(key=retrieve_key2)
+        with raises(KeyDoesNotExistException):
+            self.__database.retrieve(key=insert_key)
 
 
     def test_insert_remove_complex_key(self):
@@ -184,9 +202,11 @@ class MemoryDatabaseTestCase(unittest.TestCase):
         value = 1
         self.__database.insert(insert_key, value, createMissingKeys=True)
         self.__database.remove(insert_key)
-        self.assertIsNotNone(self.__database.retrieve(retrieve_key1))
-        self.assertIsNotNone(self.__database.retrieve(retrieve_key2))
-        self.assertTrue(len(self.__database.retrieve(retrieve_key3)) == 0)
-        self.assertRaises(KeyDoesNotExistException, self.__database.retrieve, insert_key)
+        assert self.__database.retrieve(key=retrieve_key1) is not None
+        assert self.__database.retrieve(key=retrieve_key2) is not None
+
+        assert len(self.__database.retrieve(retrieve_key3)) == 0
+        with raises(KeyDoesNotExistException):
+            self.__database.retrieve(key=insert_key)
 
 

@@ -1,10 +1,10 @@
 import json
 
 from api import SENSORS_ENDPOINT
-from tests.integration.test_api import ApiTestCase
+from tests.integration.test_api import TestApi
 
 
-class SensorsEndpointTestCase(ApiTestCase):
+class TestSensorsEndpoint(TestApi):
 
     def test_get_empty_sensor_list(self):
         res = self._client().get(SENSORS_ENDPOINT)
@@ -16,7 +16,7 @@ class SensorsEndpointTestCase(ApiTestCase):
             "position": "position1"
         }
         res = self._client().post(SENSORS_ENDPOINT, json=json.dumps(sensor))
-        self.assertEquals(res.status_code, 200)
+        assert res.status_code == 200
         res = self._client().get(SENSORS_ENDPOINT + "/" + sensor['id'])
         self.assert_response(res, sensor)
 
@@ -26,10 +26,10 @@ class SensorsEndpointTestCase(ApiTestCase):
             "position": "position1"
         }
         res = self._client().post(SENSORS_ENDPOINT, json=json.dumps(sensor))
-        self.assertEquals(res.status_code, 200)
+        assert res.status_code == 200
         res = self._client().post(SENSORS_ENDPOINT, json=json.dumps(sensor))
-        self.assertEquals(res.status_code, 500)
-        self.assertTrue("was already registered" in res.get_data())
+        assert res.status_code == 500
+        assert "was already registered" in res.get_data()
 
     def test_add_multiple_sensors_and_get_list(self):
         sensors = [
@@ -44,7 +44,7 @@ class SensorsEndpointTestCase(ApiTestCase):
         ]
         for sensor in sensors:
             res = self._client().post(SENSORS_ENDPOINT, json=json.dumps(sensor))
-            self.assertEquals(res.status_code, 200)
+            assert res.status_code == 200
         res = self._client().get(SENSORS_ENDPOINT)
-        self.assertEquals(res.status_code, 200)
+        assert res.status_cod == 200
         self.assert_response(res, sensors)
