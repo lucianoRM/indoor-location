@@ -1,16 +1,17 @@
 from abc import ABCMeta, abstractmethod
 
 
-class UserManager:
+class UsersManager:
     """
     API for handling Users
     """
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def add_user(self, user):
+    def add_user(self, user_id, user):
         """
         Add a new user
+        :param user_id: the id to store the user
         :param user: the user to add
         :raise UserAlreadyExistsException: if the user was already added
         :return: the user added
@@ -18,20 +19,20 @@ class UserManager:
         raise NotImplementedError
 
     @abstractmethod
-    def remove_user(self, userId):
+    def remove_user(self, user_id):
         """
         Remove an user by id
-        :param userId: The id to uniquely locate the user to remove
+        :param user_id: The id to uniquely locate the user to remove
         :raise: UnkownUserException: If the user is not found
         :return: The user with the given id
         """
         raise NotImplementedError
 
     @abstractmethod
-    def update_user(self, userId, user):
+    def update_user(self, user_id, user):
         """
         Update an already existent user.
-        :param userId: The id of the user to be updated
+        :param user_id: The id of the user to be updated
         :param user: The new user that will replace the old one with new information
         :raise: UnknownUserException if no user is found with the given id.
         :return: The new user updated
@@ -48,20 +49,20 @@ class UserManager:
 
 
 
-class UserManagerException(Exception):
+class UsersManagerException(Exception):
     """
-    Root exception related to an UserManager
+    Root exception related to an UsersManager
     """
 
 
-class UserAlreadyExistsException(UserManagerException):
+class UserAlreadyExistsException(UsersManagerException):
     """
     Throw this exception when wanting to add an user that already exists
     """
     pass
 
 
-class UnknownUserException(UserManagerException):
+class UnknownUserException(UsersManagerException):
     """
     Throw this exception when the requested user is not found
     """

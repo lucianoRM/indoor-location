@@ -1,8 +1,8 @@
 from pytest import fixture, raises
 
 from src.core.database.memory_kv_database import MemoryKVDatabase
-from src.core.sensor.kvdb_sensor_manager import KVDBSensor
-from src.core.sensor.sensor_manager import SensorAlreadyExistsException, UnknownSensorException
+from src.core.sensor.kvdb_sensors_manager import KVDBSensorsManager
+from src.core.sensor.sensors_manager import SensorAlreadyExistsException, UnknownSensorException
 from tests.unit.test_implementations.implementations import TestSensor
 
 
@@ -14,7 +14,7 @@ class TestKVDBSensorManager:
     @fixture(autouse=True)
     def setUp(self):
         self.__test_sensor = TestSensor(name=self.__SENSOR_NAME)
-        self.__sensor_manager = KVDBSensor(MemoryKVDatabase())
+        self.__sensor_manager = KVDBSensorsManager(MemoryKVDatabase())
 
     def test_add_sensor(self):
         self.__sensor_manager.add_sensor(sensor_id=self.__SENSOR_ID, sensor=self.__test_sensor)

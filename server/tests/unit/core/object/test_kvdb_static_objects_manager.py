@@ -1,7 +1,7 @@
 from pytest import fixture, raises
 
 from src.core.database.memory_kv_database import MemoryKVDatabase
-from src.core.object.kvdb_static_object_manager import KVDBStaticObjects
+from src.core.object.kvdb_static_objects_manager import KVDBStaticObjectsManager
 from src.core.object.static_objects_manager import StaticObjectAlreadyExistsException, UnknownStaticObjectException
 from tests.unit.test_implementations.implementations import TestStaticObject
 
@@ -16,7 +16,7 @@ class TestKVDBStaticObjectsManager:
                                         id=self.__STATIC_OBJECT_ID,
                                         position=(0,0),
                                         name="static_objectName")
-        self.__static_object_manager = KVDBStaticObjects(MemoryKVDatabase())
+        self.__static_object_manager = KVDBStaticObjectsManager(MemoryKVDatabase())
 
     def test_add_static_object(self):
         self.__static_object_manager.add_static_object(object_id=self.__STATIC_OBJECT_ID, object=self.__test_static_object)

@@ -1,9 +1,9 @@
 from src.core.data.sensed_objects_processor import SensedObjectsProcessor
 from src.core.database.kv_database import KeyDoesNotExistException
-from src.core.manager.kvdb_backed_manager import KVDBBacked
+from src.core.manager.kvdb_backed_manager import KVDBBackedManager
 
 
-class KVDBSensedObjectsProcessor(KVDBBacked, SensedObjectsProcessor):
+class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
     """
     A data processor that backs all information needed in a Key-Value database
     """

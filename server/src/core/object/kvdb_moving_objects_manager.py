@@ -1,9 +1,9 @@
 from src.core.database.kv_database import KeyAlreadyExistsException, KeyDoesNotExistException
-from src.core.manager.kvdb_backed_manager import KVDBBacked
+from src.core.manager.kvdb_backed_manager import KVDBBackedManager
 from src.core.object.moving_objects_manager import MovingObjectsManager, MovingObjectAlreadyExistsException, UnknownMovingObjectException
 
 
-class KVDBMovingObjectsManager(MovingObjectsManager, KVDBBacked):
+class KVDBMovingObjectsManager(MovingObjectsManager, KVDBBackedManager):
     """MovingObjects manager that stores information in a key-value database"""
 
     __MOVING_OBJECTS_POSITION_KEY = "moving_objects"
