@@ -6,7 +6,7 @@ from src.core.data.sensing_data import SensingData
 from src.core.data.sensed_object import SensedObject
 
 #Do not name this starting with Test so that the runner does not execute it
-class SensorUnitTest:
+class AbstractSensorTest:
 
     __metaclass__ = ABCMeta
 

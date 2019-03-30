@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 
 NAME_KEY = "name"
 
-class Object(object):
+class Object:
     """
     Abstract class to simulate an object part of the system.
     """

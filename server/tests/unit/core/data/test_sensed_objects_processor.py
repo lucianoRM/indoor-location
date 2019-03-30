@@ -2,6 +2,7 @@ from unittest.mock import Mock
 
 import pytest
 from measurement.measures import Distance
+from pytest import fixture
 
 from src.core.data.kvdb_sensed_objects_processor import KVDBSensedObjectsProcessor
 from src.core.data.sensing_data import SensingData
@@ -11,7 +12,7 @@ from tests.unit.test_implementations.implementations import TestSensor
 
 class TestSensedObjectsProcessor:
 
-    @pytest.fixture(autouse=True)
+    @fixture(autouse=True)
     def setUp(self):
         __database = MemoryKVDatabase()
 
@@ -27,7 +28,7 @@ class TestSensedObjectsProcessor:
         sensed_object_information = SensingData(distance=Distance(m=10), timestamp=1)
 
         sensor_id = 1
-        sensor = TestSensor()
+        sensor = TestSensor(name="sensor")
         self.__sensor_manager.get_sensor.side_effect = (lambda id : sensor)
 
         self.__processor.process_new_data(sensor_id,{sensed_object_id: sensed_object_information})
@@ -40,7 +41,7 @@ class TestSensedObjectsProcessor:
         sensed_object_information = SensingData(distance=Distance(m=10), timestamp=1)
 
         sensor_id = 1
-        sensor = TestSensor()
+        sensor = TestSensor(name="sensor")
         self.__sensor_manager.get_sensor.side_effect = (lambda id: sensor)
 
         self.__processor.process_new_data(sensor_id, {sensed_object_id: sensed_object_information})
@@ -60,7 +61,7 @@ class TestSensedObjectsProcessor:
         sensed_object_information = SensingData(distance=Distance(m=10), timestamp=1)
 
         sensor_id = 1
-        sensor = TestSensor()
+        sensor = TestSensor(name="sensor")
         self.__sensor_manager.get_sensor.side_effect = (lambda id: sensor)
 
         self.__processor.process_new_data(sensor_id, {sensed_object_id: sensed_object_information})

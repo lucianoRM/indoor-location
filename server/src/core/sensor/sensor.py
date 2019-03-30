@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from copy import deepcopy
 
-class Sensor(object):
+class Sensor:
     """
     Abstract class to simulate a signal sensor
     Stores all information related to a sensor that is part of the system.

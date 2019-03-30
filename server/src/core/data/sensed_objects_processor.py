@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class SensedObjectsProcessor(object):
+class SensedObjectsProcessor:
     """
     Handles all new sensed data entering the system and process it so that it can later be correctly queried.
     """

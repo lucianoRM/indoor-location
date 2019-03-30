@@ -1,6 +1,6 @@
 from abc import ABCMeta
 
-class LocationService(object):
+class LocationService:
     """
     Abstract class to define a location service API.
     A location service should be responsible for computing an object's location given sensing information.

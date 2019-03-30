@@ -4,7 +4,7 @@ from dependency_injector.providers import Singleton
 from src.core.data.kvdb_sensed_objects_processor import KVDBSensedObjectsProcessor
 from src.core.database.memory_kv_database import MemoryKVDatabase
 from src.core.location.simple_location_service import SimpleLocationService
-from src.core.object.kvdb_static_object_manager import KVDBStaticObject
+from src.core.object.kvdb_static_object_manager import KVDBStaticObjects
 from src.core.sensor.kvdb_sensor_manager import KVDBSensor
 from src.core.user.kvdb_user_manager import KVDBUser
 
@@ -20,7 +20,7 @@ class DependencyContainer(DeclarativeContainer):
 
     user_manager = Singleton(KVDBUser, kv_database=database)
     sensor_manager = Singleton(KVDBSensor, kv_database=database)
-    static_object_manager = Singleton(KVDBStaticObject, kv_database=database)
+    static_object_manager = Singleton(KVDBStaticObjects, kv_database=database)
 
     location_service = Singleton(SimpleLocationService)
 

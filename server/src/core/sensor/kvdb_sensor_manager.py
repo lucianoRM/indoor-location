@@ -22,7 +22,7 @@ class KVDBSensor(SensorManager, KVDBBacked):
                 sensor
             )
         except KeyAlreadyExistsException:
-            raise SensorAlreadyExistsException("Sensor with id: " + sensor.id + " was already registered")
+            raise SensorAlreadyExistsException("Sensor with id: " + sensor_id + " was already registered")
 
     def get_sensor(self, sensor_id):
         try:

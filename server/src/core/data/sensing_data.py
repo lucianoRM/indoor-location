@@ -1,5 +1,5 @@
 
-class SensingData(object):
+class SensingData:
     """
     Class to model information being sensed from one sensor regarding one object
     """

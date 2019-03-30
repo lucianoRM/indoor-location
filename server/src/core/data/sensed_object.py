@@ -1,7 +1,7 @@
 
 
 
-class SensedObject(object):
+class SensedObject:
     """
     Class to model an object being sensed by a sensor.
     Instances of this class should be immutable

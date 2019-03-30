@@ -8,8 +8,15 @@ from src.core.user.user import User
 
 
 class TestSensor(Sensor):
-    def __init__(self):
+    def __init__(self, name):
         super(TestSensor, self).__init__()
+        self.name = name
+
+    def __eq__(self, other):
+        return self.name == other.name
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 class TestStaticObject(StaticObject):
     def __init__(self, id, position, **kwargs):

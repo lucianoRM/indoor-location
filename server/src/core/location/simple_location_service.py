@@ -41,7 +41,7 @@ class SimpleLocationService(LocationService):
         return circle1.intersection(circle2)
 
 
-class AnchorObject(object):
+class AnchorObject:
     """
     Simple class facilitate computing another object's location.
     This class should store only required information in order for the SimpleLocationService to work

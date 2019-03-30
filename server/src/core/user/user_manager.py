@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 
 
-class UserManager(object):
+class UserManager:
     """
     API for handling Users
     """
