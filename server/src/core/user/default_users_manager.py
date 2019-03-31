@@ -1,10 +1,10 @@
 from src.core.database.kv_database import KeyAlreadyExistsException, KeyDoesNotExistException
 from src.core.manager.kvdb_backed_manager import KVDBBackedManager
 from src.core.object.moving_objects_manager import MovingObjectAlreadyExistsException, UnknownMovingObjectException
-from src.core.user.user_manager import UsersManager, UserAlreadyExistsException, UnknownUserException
+from src.core.user.users_manager import UsersManager, UserAlreadyExistsException, UnknownUserException
 
 
-class SimpleUsersManager(UsersManager):
+class DefaultUsersManager(UsersManager):
     """User manager that stores information in a key-value database"""
 
     def __init__(self, moving_objects_manager):
@@ -39,8 +39,6 @@ class SimpleUsersManager(UsersManager):
             raise UnknownUserException("Attempting to remove an user that does not exist. With ID: " + user_id)
 
     def get_all_users(self):
-        try:
-            return self.__moving_objects_manager.get_all_moving_objects()
-        except KeyDoesNotExistException:
-            return []
+        return self.__moving_objects_manager.get_all_moving_objects()
+
 

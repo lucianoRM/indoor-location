@@ -1,6 +1,7 @@
 """
 Implementations of abstract classes used for testing
 """
+from src.core.anchor.anchor import Anchor
 from src.core.object.moving_object import MovingObject
 from src.core.object.static_object import StaticObject
 from src.core.sensor.sensor import Sensor
@@ -17,6 +18,10 @@ class TestSensor(Sensor):
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+class TestAnchor(Anchor):
+    def __init__(self, id, position, **kwargs):
+        super().__init__(id, position, **kwargs)
 
 class TestStaticObject(StaticObject):
     def __init__(self, id, position, **kwargs):

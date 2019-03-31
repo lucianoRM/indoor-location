@@ -2,12 +2,12 @@ from pytest import fixture, raises
 
 from src.core.database.memory_kv_database import MemoryKVDatabase
 from src.core.object.kvdb_moving_objects_manager import KVDBMovingObjectsManager
-from src.core.user.simple_users_manager import SimpleUsersManager
-from src.core.user.user_manager import UserAlreadyExistsException, UnknownUserException
+from src.core.user.default_users_manager import DefaultUsersManager
+from src.core.user.users_manager import UserAlreadyExistsException, UnknownUserException
 from tests.unit.test_implementations.implementations import TestUser
 
 
-class TestKVDBUsersManager:
+class TestDefaultUsersManager:
 
     __USER_ID = "user_id"
 
@@ -16,7 +16,7 @@ class TestKVDBUsersManager:
         self.__test_user = TestUser(id=self.__USER_ID,
                                 name="userName",
                                 position=(0,0))
-        self.__user_manager = SimpleUsersManager(KVDBMovingObjectsManager(MemoryKVDatabase()))
+        self.__user_manager = DefaultUsersManager(KVDBMovingObjectsManager(MemoryKVDatabase()))
 
     def test_add_user(self):
         self.__user_manager.add_user(user_id=self.__USER_ID, user=self.__test_user)

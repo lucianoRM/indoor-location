@@ -19,6 +19,16 @@ class UsersManager:
         raise NotImplementedError
 
     @abstractmethod
+    def get_user(self, user_id):
+        """
+        Get user by id
+        :param user_id: the id of the user to get
+        :return: The user with id: user_id
+        :raise UnknownUserException: If the user does not exist
+        """
+        raise NotImplementedError
+
+    @abstractmethod
     def remove_user(self, user_id):
         """
         Remove an user by id
