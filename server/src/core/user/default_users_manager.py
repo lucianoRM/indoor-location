@@ -1,20 +1,20 @@
-from src.core.database.kv_database import KeyAlreadyExistsException, KeyDoesNotExistException
-from src.core.manager.kvdb_backed_manager import KVDBBackedManager
-from src.core.object.moving_objects_manager import MovingObjectAlreadyExistsException, UnknownMovingObjectException
+from src.core.database.kv_database import KeyDoesNotExistException
+from src.core.object.moving_objects_manager import MovingObjectAlreadyExistsException, UnknownMovingObjectException, \
+    MovingObjectsManager
+from src.core.user.user import User
 from src.core.user.users_manager import UsersManager, UserAlreadyExistsException, UnknownUserException
 
 
 class DefaultUsersManager(UsersManager):
     """User manager that stores information in a key-value database"""
-
-    def __init__(self, moving_objects_manager):
+    def __init__(self, moving_objects_manager: MovingObjectsManager):
         """
         Constructor for Manager.
-        :param moving_objects_manager: manager for moving objects where users will be stored
+        :param moving_objects_manager: Manager that handles storage of moving objects
         """
         self.__moving_objects_manager = moving_objects_manager
 
-    def add_user(self, user_id, user):
+    def add_user(self, user_id: str, user: User) -> User:
         try:
             return self.__moving_objects_manager.add_moving_object(object_id=user_id, object=user)
         except MovingObjectAlreadyExistsException:

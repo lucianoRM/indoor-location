@@ -1,11 +1,11 @@
 from typing import List
 
 from src.core.object.moving_object import MovingObject
-from src.core.object.moving_objects_manager import MovingObjectsManager, MovingObjectAlreadyExistsException, \
-    UnknownMovingObjectException
+from src.core.object.moving_objects_manager import  MovingObjectAlreadyExistsException, UnknownMovingObjectException
+from src.core.object.observable_moving_objects_manager import ObservableMovingObjectsManager
+from src.core.object.observable_static_objects_manager import ObservableStaticObjectsManager
 from src.core.object.static_object import StaticObject
-from src.core.object.static_objects_manager import StaticObjectsManager, StaticObjectAlreadyExistsException, \
-    UnknownStaticObjectException
+from src.core.object.static_objects_manager import  StaticObjectAlreadyExistsException, UnknownStaticObjectException
 from src.core.sensor.sensor import Sensor
 from src.core.sensor.sensors_manager import SensorsManager, SensorAlreadyExistsException, UnknownSensorException
 
@@ -14,8 +14,8 @@ class DefaultSensorsManager(SensorsManager):
     """Sensor manager"""
 
     def __init__(self,
-                 moving_objects_manager: MovingObjectsManager,
-                 static_objects_manager: StaticObjectsManager):
+                 moving_objects_manager: ObservableMovingObjectsManager,
+                 static_objects_manager: ObservableStaticObjectsManager):
         """
         Constructor for Manager.
         :param moving_objects_manager: manager that handles moving sensors
@@ -25,7 +25,24 @@ class DefaultSensorsManager(SensorsManager):
         self.__static_sensors = set()
 
         self.__moving_objects_manager = moving_objects_manager
+        self.__moving_objects_manager.call_on_add(self.__on_new_moving_sensor)
+        self.__moving_objects_manager.call_on_remove(self.__on_moving_sensor_removed)
+
         self.__static_objects_manager = static_objects_manager
+        self.__static_objects_manager.call_on_add(self.__on_new_static_sensor)
+        self.__static_objects_manager.call_on_remove(self.__on_static_sensor_removed)
+
+    def __on_new_static_sensor(self, sensor_id: str):
+        self.__static_sensors.add(sensor_id)
+
+    def __on_new_moving_sensor(self, sensor_id: str):
+        self.__moving_sensors.add(sensor_id)
+
+    def __on_static_sensor_removed(self, sensor_id: str):
+        self.__static_sensors.remove(sensor_id)
+
+    def __on_moving_sensor_removed(self, sensor_id: str):
+        self.__moving_sensors.remove(sensor_id)
 
     def add_sensor(self, sensor_id: str, sensor: Sensor) -> Sensor:
         return_value = None

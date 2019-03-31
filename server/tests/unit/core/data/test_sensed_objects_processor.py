@@ -1,13 +1,11 @@
 from unittest.mock import Mock
 
-import pytest
 from measurement.measures import Distance
 from pytest import fixture
 
 from src.core.data.kvdb_sensed_objects_processor import KVDBSensedObjectsProcessor
 from src.core.data.sensing_data import SensingData
 from src.core.database.memory_kv_database import MemoryKVDatabase
-from tests.unit.test_implementations.implementations import TestSensor
 
 
 class TestSensedObjectsProcessor:

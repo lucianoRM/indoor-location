@@ -1,9 +1,10 @@
 from src.core.database.kv_database import KeyAlreadyExistsException, KeyDoesNotExistException
 from src.core.manager.kvdb_backed_manager import KVDBBackedManager
-from src.core.object.moving_objects_manager import MovingObjectsManager, MovingObjectAlreadyExistsException, UnknownMovingObjectException
+from src.core.object.moving_objects_manager import MovingObjectAlreadyExistsException, UnknownMovingObjectException
+from src.core.object.observable_moving_objects_manager import ObservableMovingObjectsManager
 
 
-class KVDBMovingObjectsManager(MovingObjectsManager, KVDBBackedManager):
+class KVDBMovingObjectsManager(KVDBBackedManager, ObservableMovingObjectsManager):
     """MovingObjects manager that stores information in a key-value database"""
 
     __MOVING_OBJECTS_POSITION_KEY = "moving_objects"
@@ -13,7 +14,8 @@ class KVDBMovingObjectsManager(MovingObjectsManager, KVDBBackedManager):
         Constructor for Manager.
         :param kv_database: key-value database to store information about moving objects
         """
-        super(KVDBMovingObjectsManager, self).__init__(kv_database)
+        KVDBBackedManager.__init__(self, kv_database=kv_database)
+        ObservableMovingObjectsManager.__init__(self)
 
     def add_moving_object(self,object_id, object):
         try:

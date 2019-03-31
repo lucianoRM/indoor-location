@@ -1,9 +1,10 @@
 from src.core.database.kv_database import KeyAlreadyExistsException, KeyDoesNotExistException
 from src.core.manager.kvdb_backed_manager import KVDBBackedManager
-from src.core.object.static_objects_manager import StaticObjectsManager, StaticObjectAlreadyExistsException, UnknownStaticObjectException
+from src.core.object.observable_static_objects_manager import ObservableStaticObjectsManager
+from src.core.object.static_objects_manager import StaticObjectAlreadyExistsException, UnknownStaticObjectException
 
 
-class KVDBStaticObjectsManager(StaticObjectsManager, KVDBBackedManager):
+class KVDBStaticObjectsManager(KVDBBackedManager, ObservableStaticObjectsManager):
     """StaticObject manager that stores information in a key-value database"""
 
     __STATIC_OBJECTS_POSITION_KEY = "static_objects"
@@ -13,7 +14,8 @@ class KVDBStaticObjectsManager(StaticObjectsManager, KVDBBackedManager):
         Constructor for Manager.
         :param kv_database: key-value database to store information about static objects
         """
-        super(KVDBStaticObjectsManager, self).__init__(kv_database)
+        KVDBBackedManager.__init__(self, kv_database=kv_database)
+        ObservableStaticObjectsManager.__init__(self)
 
     def add_static_object(self,object_id, object):
         try:
