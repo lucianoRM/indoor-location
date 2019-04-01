@@ -11,7 +11,7 @@ from src.core.user.user import User
 
 class TestStaticSensor(StaticObject, Sensor):
     def __init__(self, id, position, **kwargs):
-        super().__init__(id, position, **kwargs)
+        super().__init__(id=id, position=position, **kwargs)
 
     def __eq__(self, other):
         return self.name == other.name
@@ -21,7 +21,7 @@ class TestStaticSensor(StaticObject, Sensor):
 
 class TestMovingSensor(MovingObject, Sensor):
     def __init__(self, id, position, **kwargs):
-        super().__init__(id, position, **kwargs)
+        super().__init__(id=id, position=position, **kwargs)
 
     def __eq__(self, other):
         return self.name == other.name
@@ -31,7 +31,7 @@ class TestMovingSensor(MovingObject, Sensor):
 
 class TestStaticSignalEmitter(StaticObject, SignalEmitter):
     def __init__(self, id, position, **kwargs):
-        super().__init__(id, position, **kwargs)
+        super().__init__(id=id, position=position, **kwargs)
 
     def __eq__(self, other):
         return self.name == other.name
@@ -41,7 +41,7 @@ class TestStaticSignalEmitter(StaticObject, SignalEmitter):
 
 class TestMovingSignalEmitter(MovingObject, SignalEmitter):
     def __init__(self, id, position, **kwargs):
-        super().__init__(id, position, **kwargs)
+        super().__init__(id=id, position=position, **kwargs)
 
     def __eq__(self, other):
         return self.name == other.name
@@ -51,16 +51,16 @@ class TestMovingSignalEmitter(MovingObject, SignalEmitter):
 
 class TestAnchor(Anchor):
     def __init__(self, id, position, **kwargs):
-        super().__init__(id, position, **kwargs)
+        super().__init__(id=id, position=position, **kwargs)
 
 class TestStaticObject(StaticObject):
     def __init__(self, id, position, **kwargs):
-        super(TestStaticObject, self).__init__(id, position, **kwargs)
+        super().__init__(id=id, position=position, **kwargs)
 
 class TestMovingObject(MovingObject):
     def __init__(self, id, position, **kwargs):
-        super(TestMovingObject, self).__init__(id, position, **kwargs)
+        super().__init__(id=id, position=position, **kwargs)
 
 class TestUser(User):
     def __init__(self, id, position, **kwargs):
-        super(TestUser, self).__init__(id, position, **kwargs)
+        super().__init__(id=id, position=position, **kwargs)

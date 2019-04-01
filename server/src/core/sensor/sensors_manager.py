@@ -8,6 +8,10 @@ class SensorsManager:
     __metaclass__ = ABCMeta
 
     @abstractmethod
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @abstractmethod
     def add_sensor(self, sensor_id, sensor):
         """
         Add a new sensor

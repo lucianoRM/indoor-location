@@ -9,9 +9,10 @@ class ObservableObjectsManager:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.__add_object_callbacks = []
         self.__remove_object_callbacks = []
+        super().__init__(**kwargs)
 
     def call_on_add(self, callback):
         self.__add_object_callbacks.append(callback)

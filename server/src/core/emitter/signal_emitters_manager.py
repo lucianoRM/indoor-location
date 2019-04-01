@@ -11,6 +11,10 @@ class SignalEmittersManager:
     __metaclass__ = ABCMeta
 
     @abstractmethod
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @abstractmethod
     def add_signal_emitter(self, signal_emitter_id: str, signal_emitter: SignalEmitter) -> SignalEmitter:
         """
         Add a new signal_emitter

@@ -12,7 +12,8 @@ class Object:
     @abstractmethod
     def __init__(self, id, **kwargs):
         self._id = id
-        self.name = kwargs.get(NAME_KEY, None)
+        self.name = kwargs.pop(NAME_KEY, None)
+        super().__init__(**kwargs)
 
     @property
     def id(self):

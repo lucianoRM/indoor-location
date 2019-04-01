@@ -11,5 +11,5 @@ class ObservableMovingObjectsManager(MovingObjectsManager, ObservableObjectsMana
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)

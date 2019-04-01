@@ -10,6 +10,10 @@ class StaticObjectsManager:
     __metaclass__ = ABCMeta
 
     @abstractmethod
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @abstractmethod
     def add_static_object(self,object_id, object):
         """
         Add a new static object

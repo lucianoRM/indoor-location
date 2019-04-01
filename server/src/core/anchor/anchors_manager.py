@@ -11,6 +11,10 @@ class AnchorsManager:
     __metaclass__ = ABCMeta
 
     @abstractmethod
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @abstractmethod
     def add_anchor(self, anchor_id: str, anchor: Anchor) -> Anchor:
         """
         Add a new anchor

@@ -22,6 +22,7 @@ class AbstractResource(Resource):
         }
 
         self.__custom_error_mappings = custom_error_mappings if custom_error_mappings is not None else {}
+        super().__init__(**kwargs)
 
     def __execute_handling(self, method, **kwargs):
         try:

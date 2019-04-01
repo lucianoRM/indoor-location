@@ -10,6 +10,10 @@ class MovingObjectsManager:
     __metaclass__ = ABCMeta
 
     @abstractmethod
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @abstractmethod
     def add_moving_object(self, object_id, object):
         """
         Add a new moving object

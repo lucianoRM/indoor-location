@@ -8,7 +8,7 @@ class SensingUser(User, Sensor):
     """
 
     def __init__(self, id, position, **kwargs):
-        super(SensingUser, self).__init__(id=id, position=position, **kwargs)
+        super().__init__(id=id, position=position, **kwargs)
 
 
 

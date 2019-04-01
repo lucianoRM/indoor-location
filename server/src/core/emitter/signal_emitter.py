@@ -1,4 +1,4 @@
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 
 
 class SignalEmitter:
@@ -7,3 +7,7 @@ class SignalEmitter:
     """
 
     __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)

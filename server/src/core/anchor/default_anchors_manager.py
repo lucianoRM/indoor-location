@@ -8,6 +8,7 @@ class DefaultAnchorsManager(AnchorsManager):
 
     def __init__(self, static_objects_manager: StaticObjectsManager):
         self.__static_objects_manager = static_objects_manager
+        super().__init__()
 
     def add_anchor(self, anchor_id: str, anchor: Anchor) -> Anchor:
         try:

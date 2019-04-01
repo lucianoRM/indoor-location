@@ -12,8 +12,8 @@ class PositionableObject(Object):
 
     @abstractmethod
     def __init__(self, id, position, **kwargs):
-        super(PositionableObject, self).__init__(id, **kwargs)
         self._position = position
+        super().__init__(id=id, **kwargs)
 
     @property
     def position(self):

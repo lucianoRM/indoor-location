@@ -16,6 +16,10 @@ class KVDatabase:
     __KEYS_DELIMITER = "."
 
     @abstractmethod
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @abstractmethod
     def insert(self, key, value, **kwargs):
         """
         Insert a new value reached by the provided key.

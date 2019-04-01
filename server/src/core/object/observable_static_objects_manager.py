@@ -10,7 +10,7 @@ class ObservableStaticObjectsManager(StaticObjectsManager, ObservableObjectsMana
     """
 
     @abstractmethod
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     __metaclass__ = ABCMeta

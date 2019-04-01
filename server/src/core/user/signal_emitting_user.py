@@ -8,4 +8,4 @@ class SignalEmittingUser(User, SignalEmitter):
     """
 
     def __init__(self, id, position, **kwargs):
-        super(SignalEmittingUser, self).__init__(id=id, position=position, **kwargs)
+        super().__init__(id=id, position=position, **kwargs)
