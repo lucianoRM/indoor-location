@@ -19,10 +19,12 @@ class KVDBMovingObjectsManager(KVDBBackedManager, ObservableMovingObjectsManager
 
     def add_moving_object(self,object_id, object):
         try:
-            return self._database.insert(
+            object_added = self._database.insert(
                 key=self._build_complex_key(self.__MOVING_OBJECTS_POSITION_KEY, object_id),
                 value=object
             )
+            self._on_add(object_id=object_id)
+            return object_added
         except KeyAlreadyExistsException:
             raise MovingObjectAlreadyExistsException("Moving object with id: " + object_id + " was already registered")
 
@@ -45,9 +47,11 @@ class KVDBMovingObjectsManager(KVDBBackedManager, ObservableMovingObjectsManager
 
     def remove_moving_object(self, object_id):
         try:
-            return self._database.remove(
+            removed_object = self._database.remove(
                 key=self._build_complex_key(self.__MOVING_OBJECTS_POSITION_KEY, object_id)
             )
+            self._on_remove(object_id=object_id)
+            return removed_object
         except KeyDoesNotExistException:
             raise UnknownMovingObjectException("Attempting to remove a moving object that does not exist. With ID: " + object_id)
 
