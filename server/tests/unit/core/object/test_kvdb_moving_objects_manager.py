@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from pytest import fixture, raises
 
 from src.core.database.memory_kv_database import MemoryKVDatabase
@@ -60,3 +62,43 @@ class TestKVDBMovingObjectsManager:
     def test_update_not_existent_moving_object(self):
         with raises(UnknownMovingObjectException):
             self.__moving_object_manager.update_moving_object(object_id="missingMovingObjectId", object={})
+
+    def test_add_object_triggers_listener(self):
+        expected_value = "SUCCESS"
+        container = []
+        self.__moving_object_manager.call_on_add(lambda v: container.append(expected_value))
+        self.__moving_object_manager.add_moving_object(object_id=self.__MOVING_OBJECT_ID, object=self.__test_moving_object)
+        assert len(container) > 0
+        assert container[0] is expected_value
+
+    def test_remove_object_triggers_listener(self):
+        expected_value = "SUCCESS"
+        container = []
+        self.__moving_object_manager.call_on_remove(lambda v: container.append(expected_value))
+        self.__moving_object_manager.add_moving_object(object_id=self.__MOVING_OBJECT_ID, object=self.__test_moving_object)
+        self.__moving_object_manager.remove_moving_object(object_id=self.__MOVING_OBJECT_ID)
+        assert len(container) > 0
+        assert container[0] is expected_value
+
+    def test_register_multiple_triggers_on_add(self):
+        expected_value = "SUCCESS"
+        total = 100
+        container = []
+        for i in range(total):
+            self.__moving_object_manager.call_on_add(lambda x : container.append(expected_value))
+        self.__moving_object_manager.add_moving_object(object_id=self.__MOVING_OBJECT_ID, object=self.__test_moving_object)
+        assert len(container) == total
+        for i in range(total):
+            assert container[i] == expected_value
+
+    def test_register_multiple_triggers_on_remove(self):
+        expected_value = "SUCCESS"
+        total = 100
+        container = []
+        for i in range(total):
+            self.__moving_object_manager.call_on_remove(lambda x : container.append(expected_value))
+        self.__moving_object_manager.add_moving_object(object_id=self.__MOVING_OBJECT_ID, object=self.__test_moving_object)
+        self.__moving_object_manager.remove_moving_object(object_id=self.__MOVING_OBJECT_ID)
+        assert len(container) == total
+        for i in range(total):
+            assert container[i] == expected_value
