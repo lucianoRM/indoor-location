@@ -14,7 +14,7 @@ class SensorListResource(AbstractResource):
 
     def __init__(self, **kwargs):
         super(SensorListResource, self).__init__(**kwargs)
-        self.__sensor_manager = DependencyContainer.sensor_manager()
+        self.__sensor_manager = DependencyContainer.sensors_manager()
         self.__sensors_schema = SensorSchema(many=True)
         self.__sensor_schema = SensorSchema()
         self.__sensed_objects_schema = SensedObjectSchema(many=True)
@@ -31,7 +31,7 @@ class SensorResource(AbstractResource):
 
     def __init__(self, **kwargs):
         super(SensorResource, self).__init__(**kwargs)
-        self.__sensor_manager = DependencyContainer.sensor_manager()
+        self.__sensor_manager = DependencyContainer.sensors_manager()
         self.__sensor_schema = SensorSchema()
 
     def _do_get(self, sensor_id):
