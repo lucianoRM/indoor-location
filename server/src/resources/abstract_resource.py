@@ -41,7 +41,7 @@ class AbstractResource(Resource):
         if error_class_name in self.__custom_error_mappings:
             error = self.__custom_error_mappings.get(error_class_name)
         code = error.get('code', 500)
-        message = error.get('message', e.message)
+        message = error.get('message', str(e))
         flask_restful.abort(code, message=message)
 
     def _get_post_data_as_json(self):

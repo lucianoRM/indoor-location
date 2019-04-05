@@ -15,7 +15,7 @@ class Sensor:
     def __init__(self, **kwargs):
         #Dict to store the objects that where located by this sensor. It should have the objects id as key and the sensed data as value
         self.__sensed_objects = {}
-        super(Sensor, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def update_sensed_objects(self, sensed_objects, merge=False):
         """

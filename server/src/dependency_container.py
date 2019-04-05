@@ -20,20 +20,20 @@ Each dependency needs to have a key for the resource to be able to find them
 
 class DependencyContainer(DeclarativeContainer):
 
-    database = Singleton(MemoryKVDatabase)
+    __database = Singleton(MemoryKVDatabase)
 
-    static_objects_manager = Singleton(KVDBStaticObjectsManager, kv_database=database)
-    moving_objects_manager = Singleton(KVDBMovingObjectsManager, kv_database=database)
+    __static_objects_manager = Singleton(KVDBStaticObjectsManager, kv_database=__database)
+    __moving_objects_manager = Singleton(KVDBMovingObjectsManager, kv_database=__database)
 
-    objects_manager = Singleton(ObserverComposedObjectsManager,
-                                observable_static_objects_manager=static_objects_manager,
-                                observable_moving_objects_manager=moving_objects_manager)
+    __objects_manager = Singleton(ObserverComposedObjectsManager,
+                                observable_static_objects_manager=__static_objects_manager,
+                                observable_moving_objects_manager=__moving_objects_manager)
 
-    users_manager = Singleton(DefaultUsersManager, moving_objects_manager=moving_objects_manager)
-    anchors_manager = Singleton(DefaultAnchorsManager, static_objects_manager=static_objects_manager)
+    users_manager = Singleton(DefaultUsersManager, moving_objects_manager=__moving_objects_manager)
+    anchors_manager = Singleton(DefaultAnchorsManager, static_objects_manager=__static_objects_manager)
 
-    sensors_manager = Singleton(DefaultSensorsManager, objects_manager=objects_manager)
-    signal_emitters_manager = Singleton(DefaultSignalEmittersManager, objects_manager=objects_manager)
+    sensors_manager = Singleton(DefaultSensorsManager, objects_manager=__objects_manager)
+    signal_emitters_manager = Singleton(DefaultSignalEmittersManager, objects_manager=__objects_manager)
 
     location_service = Singleton(SimpleLocationService)
 
@@ -41,5 +41,9 @@ class DependencyContainer(DeclarativeContainer):
                                          location_service=location_service,
                                          user_manager=users_manager,
                                          sensor_manager=sensors_manager,
-                                         database=database)
+                                         database=__database)
 
+    @classmethod
+    def reset_singletons(cls):
+        for provider in cls.providers.values():
+            provider.reset()

@@ -18,4 +18,4 @@ class Circle(Polygon):
 
 
     def __init__(self, center, radius):
-        super(Circle, self).__init__(shell=self.__get_polygon_points(center, radius))
+        super().__init__(shell=self.__get_polygon_points(center, radius))

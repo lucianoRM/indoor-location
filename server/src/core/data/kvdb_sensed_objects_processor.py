@@ -12,7 +12,7 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
     __SENSED_BY_KEY = "objects_sensed_by"
 
     def __init__(self, database, sensor_manager, user_manager, location_service):
-        super(KVDBSensedObjectsProcessor, self).__init__(database)
+        super().__init__(database)
         self.__sensor_manager = sensor_manager
         self.__user_manager = user_manager
         self.__location_service = location_service

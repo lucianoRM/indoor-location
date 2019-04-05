@@ -14,7 +14,7 @@ class KVDBStaticObjectsManager(KVDBBackedManager, ObservableStaticObjectsManager
         Constructor for Manager.
         :param kv_database: key-value database to store information about static objects
         """
-        super(KVDBStaticObjectsManager, self).__init__(kv_database=kv_database)
+        super().__init__(kv_database=kv_database)
 
     def add_static_object(self,object_id, object):
         try:

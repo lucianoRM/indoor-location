@@ -29,7 +29,7 @@ class TestUsersEndpoint(TestApi):
         assert res.status_code == 200
         res = self._client().post(USERS_ENDPOINT, json=json.dumps(user))
         assert res.status_code == 500
-        assert "was already registered" in res.get_data()
+        assert "was already registered" in str(res.get_data())
 
     def test_add_multiple_users_and_get_list(self):
         users = [

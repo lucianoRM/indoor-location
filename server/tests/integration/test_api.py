@@ -15,9 +15,9 @@ class TestApi:
 
     @fixture(autouse=True)
     def setUp(self):
-        DependencyContainer.database.reset()
-        DependencyContainer.users_manager.reset()
-        DependencyContainer.sensors_manager.reset()
+
+        DependencyContainer.reset_singletons()
+
         self._app = create_app()
         self._client = self._app.test_client
 

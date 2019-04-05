@@ -11,8 +11,8 @@ from src.resources.abstract_resource import AbstractResource
 class UserListResource(AbstractResource):
 
     def __init__(self, **kwargs):
-        super(UserListResource, self).__init__(**kwargs)
-        self.__user_manager = DependencyContainer.user_manager()
+        super().__init__(**kwargs)
+        self.__user_manager = DependencyContainer.users_manager()
         self.__users_schema = UserSchema(many=True)
         self.__user_schema = UserSchema()
 
@@ -21,18 +21,18 @@ class UserListResource(AbstractResource):
 
     def _do_post(self):
         user = self.__user_schema.loads(self._get_post_data_as_json()).data
-        return self.__user_schema.dumps(self.__user_manager.add_user(user))
+        return self.__user_schema.dumps(self.__user_manager.add_user(user_id=user.id, user=user))
 
 
 class UserResource(AbstractResource):
 
     def __init__(self, **kwargs):
-        super(UserResource, self).__init__(**kwargs)
-        self.__user_manager = DependencyContainer.user_manager()
+        super().__init__(**kwargs)
+        self.__user_manager = DependencyContainer.users_manager()
         self.__user_schema = UserSchema()
 
     def _do_get(self, user_id):
-        return self.__user_schema.dumps(self.__user_manager.get_user(user_id))
+        return self.__user_schema.dumps(self.__user_manager.get_user(user_id=user_id))
 
 
 class UserSchema(Schema):
