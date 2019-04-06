@@ -8,4 +8,4 @@ class SignalEmittingAnchor(Anchor, SignalEmitter):
     """
 
     def __init__(self, id, position, **kwargs):
-        super().__init__(id, position, **kwargs)
+        super().__init__(id=id, position=position, **kwargs)

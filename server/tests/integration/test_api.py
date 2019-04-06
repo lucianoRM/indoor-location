@@ -14,12 +14,17 @@ class TestApi:
     __metaclass__ = ABCMeta
 
     @fixture(autouse=True)
-    def setUp(self):
+    def set_up(self):
 
         DependencyContainer.reset_singletons()
 
         self._app = create_app()
         self._client = self._app.test_client
+
+        self._do_set_up()
+
+    def _do_set_up(self):
+        pass
 
     def assert_response(self, response, expected_value):
         loaded_value = json.loads(response.get_json())

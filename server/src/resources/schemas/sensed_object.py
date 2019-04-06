@@ -1,7 +1,7 @@
 from marshmallow import fields, Schema, post_load
 
 from src.core.data.sensed_object import SensedObject
-from src.resources.sensed_object_information import SensedObjectInformationSchema
+from src.resources.schemas.sensed_object_information import SensedObjectInformationSchema
 
 
 class SensedObjectSchema(Schema):

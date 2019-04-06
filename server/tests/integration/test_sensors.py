@@ -6,27 +6,27 @@ from tests.integration.test_api import TestApi
 
 class TestSensorsEndpoint(TestApi):
 
+    def _do_set_up(self):
+        self.__base_sensor = {
+            "id": "sensorId",
+            "position": "position1",
+            "type": "USER"
+        }
+
+
     def test_get_empty_sensor_list(self):
         res = self._client().get(SENSORS_ENDPOINT)
         self.assert_response(res, [])
 
     def test_add_sensor_and_get_it(self):
-        sensor = {
-            "id": "sensorId",
-            "position": "position1",
-            "type": "USER"
-        }
+        sensor = self.__base_sensor
         res = self._client().post(SENSORS_ENDPOINT, json=json.dumps(sensor))
         assert res.status_code == 200
         res = self._client().get(SENSORS_ENDPOINT + "/" + sensor['id'])
         self.assert_response(res, sensor)
 
     def test_add_sensor_twice_should_fail(self):
-        sensor = {
-            "id": "sensorId",
-            "position": "position1",
-            "type": "USER"
-        }
+        sensor = self.__base_sensor
         res = self._client().post(SENSORS_ENDPOINT, json=json.dumps(sensor))
         assert res.status_code == 200
         res = self._client().post(SENSORS_ENDPOINT, json=json.dumps(sensor))
