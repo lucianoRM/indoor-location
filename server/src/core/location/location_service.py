@@ -1,4 +1,6 @@
 from abc import ABCMeta
+from typing import List, Tuple
+
 
 class LocationService:
     """
@@ -8,12 +10,8 @@ class LocationService:
 
     __metaclass__ = ABCMeta
 
-    def locate_object(self, sensed_objects):
+    def locate_object(self, sensed_objects: List['AnchorObject']) -> Tuple[float]:
         raise NotImplementedError
-
-
-
-
 
 
 class LocationServiceException(Exception):

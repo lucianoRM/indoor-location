@@ -21,7 +21,7 @@ class TestSensedObjectsProcessor:
 
         self.__test_sensor = TestStaticSensor(id="some_id", position="pos")
 
-        self.__processor = KVDBSensedObjectsProcessor(database=__database, user_manager=self.__user_manager , sensor_manager=self.__sensor_manager, location_service=self.__location_service)
+        self.__processor = KVDBSensedObjectsProcessor(database=__database, users_manager=self.__user_manager, sensors_manager=self.__sensor_manager, location_service=self.__location_service)
 
 
     def test_sensor_information_is_added(self):

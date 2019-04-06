@@ -1,4 +1,5 @@
 import json
+from typing import Callable
 
 import flask_restful
 from flask import request
@@ -30,7 +31,7 @@ class AbstractResource(Resource):
         self.__custom_error_mappings = custom_error_mappings if custom_error_mappings is not None else {}
         super().__init__(**kwargs)
 
-    def __execute_handling(self, method, **kwargs):
+    def __execute_handling(self, method: Callable, **kwargs):
         try:
             if not kwargs:
                 return method()

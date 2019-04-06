@@ -1,4 +1,7 @@
 from abc import ABCMeta, abstractmethod
+from typing import List
+
+from src.core.data.sensed_object import SensedObject
 
 
 class SensedObjectsProcessor:
@@ -9,6 +12,6 @@ class SensedObjectsProcessor:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def process_new_data(self, sensor_id, objects):
+    def process_new_data(self, sensor_id: str, objects: List[SensedObject]):
         """Processes new sensed objects from sensor with sensor_id"""
         raise NotImplementedError

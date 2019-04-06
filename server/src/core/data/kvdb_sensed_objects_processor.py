@@ -1,6 +1,12 @@
+from typing import List
+
+from src.core.data.sensed_object import SensedObject
 from src.core.data.sensed_objects_processor import SensedObjectsProcessor
-from src.core.database.kv_database import KeyDoesNotExistException
+from src.core.database.kv_database import KeyDoesNotExistException, KVDatabase
+from src.core.location.location_service import LocationService
 from src.core.manager.kvdb_backed_manager import KVDBBackedManager
+from src.core.sensor.sensors_manager import SensorsManager
+from src.core.user.users_manager import UsersManager
 
 
 class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
@@ -11,14 +17,14 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
     #Key to store which sensors have sensed which objects to be able to compute their location properly. The keys are the objects ids and the values are the sensors that are in range of those objects
     __SENSED_BY_KEY = "objects_sensed_by"
 
-    def __init__(self, database, sensor_manager, user_manager, location_service):
+    def __init__(self, database: KVDatabase, sensors_manager: SensorsManager, users_manager: UsersManager, location_service: LocationService):
         super().__init__(database)
-        self.__sensor_manager = sensor_manager
-        self.__user_manager = user_manager
+        self.__sensor_manager = sensors_manager
+        self.__user_manager = users_manager
         self.__location_service = location_service
 
 
-    def process_new_data(self, sensor_id, objects):
+    def process_new_data(self, sensor_id: str, objects: List[SensedObject]):
         """
         Process all new data sensed by the sensor and updates moving objects location.
 
@@ -58,7 +64,7 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
                 sensors_in_range.remove(sensor_id)
 
         sensor.update_sensed_objects(objects)
-        self.__sensor_manager.update_sensor(sensorId=sensor_id, sensor=sensor)
+        self.__sensor_manager.update_sensor(sensor_id=sensor_id, sensor=sensor)
 
         self._database.upsert(self.__SENSED_BY_KEY, objects_sensed_by)
 

@@ -7,5 +7,5 @@ class SignalEmittingAnchor(Anchor, SignalEmitter):
     An anchor that is also a signal emitter
     """
 
-    def __init__(self, id, position, **kwargs):
+    def __init__(self, id: str, position: str, **kwargs):
         super().__init__(id=id, position=position, **kwargs)

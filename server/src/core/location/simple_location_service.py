@@ -1,3 +1,5 @@
+from typing import Tuple, List
+
 from src.core.location.location_service import LocationService, LocationServiceException
 from src.core.location.shape.circle import Circle
 
@@ -7,7 +9,7 @@ class SimpleLocationService(LocationService):
     Simple implementation of a location service.
     """
 
-    def locate_object(self, anchor_objects):
+    def locate_object(self, anchor_objects: List['AnchorObject']) -> Tuple[float]:
         """
         Computes the position of an object based on other static objects and sensed distances.
         For locating the object, all sensing data will first be sorted by timestamp in descending order.

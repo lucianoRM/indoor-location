@@ -1,7 +1,11 @@
 
 
 from abc import ABCMeta, abstractmethod
+from typing import TypeVar, Generic, List
 
+from src.core.object.moving_object import MovingObject
+
+T = TypeVar("T", bound=MovingObject)
 
 class MovingObjectsManager:
     """
@@ -14,7 +18,7 @@ class MovingObjectsManager:
         super().__init__(**kwargs)
 
     @abstractmethod
-    def add_moving_object(self, object_id, object):
+    def add_moving_object(self, object_id: str, object: Generic[T]) -> T:
         """
         Add a new moving object
         :param object_id: the unque id to identify the object
@@ -25,7 +29,7 @@ class MovingObjectsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def get_moving_object(self, object_id):
+    def get_moving_object(self, object_id: str) -> T:
         """
         Get an object by id
         :param object_id: the unique id of the moving object to get
@@ -35,7 +39,7 @@ class MovingObjectsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def remove_moving_object(self, object_id):
+    def remove_moving_object(self, object_id: str) -> T:
         """
         Remove an moving object by id
         :param object_id: The id to uniquely locate the moving object to remove
@@ -45,7 +49,7 @@ class MovingObjectsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def update_moving_object(self, object_id, object):
+    def update_moving_object(self, object_id: str, object: Generic[T]) -> T:
         """
         Update an already existent moving object.
         :param object_id: The id of the moving object to be updated
@@ -56,7 +60,7 @@ class MovingObjectsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def get_all_moving_objects(self):
+    def get_all_moving_objects(self) -> List[T]:
         """
         Return all registered moving objects
         :return: all moving objects

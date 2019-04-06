@@ -48,7 +48,7 @@ class UserSchema(TypedObjectSchema):
     def _get_valid_types(self):
         return [self.__SENSOR_TYPE, self.__SIGNAL_EMITTER_TYPE]
 
-    def _do_make_object(self, type, kwargs):
+    def _do_make_object(self, type, kwargs) -> SensingUser:
         if type == self.__SENSOR_TYPE:
             return SensingUser(**kwargs)
         else:

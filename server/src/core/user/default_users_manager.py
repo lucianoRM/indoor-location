@@ -12,6 +12,7 @@ class DefaultUsersManager(UsersManager):
         Constructor for Manager.
         :param moving_objects_manager: Manager that handles storage of moving objects
         """
+        super().__init__()
         self.__moving_objects_manager = moving_objects_manager
 
     def add_user(self, user_id: str, user: User) -> User:

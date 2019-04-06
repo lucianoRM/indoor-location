@@ -1,7 +1,11 @@
 
 
 from abc import ABCMeta, abstractmethod
+from typing import TypeVar, Generic, List
 
+from src.core.object.static_object import StaticObject
+
+T = TypeVar('T', bound=StaticObject)
 
 class StaticObjectsManager:
     """
@@ -14,7 +18,7 @@ class StaticObjectsManager:
         super().__init__(**kwargs)
 
     @abstractmethod
-    def add_static_object(self,object_id, object):
+    def add_static_object(self,object_id: str, object: Generic[T]) -> T:
         """
         Add a new static object
         :param object_id: unique id to identify the object
@@ -25,7 +29,7 @@ class StaticObjectsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def get_static_object(self, object_id):
+    def get_static_object(self, object_id: str) -> T:
         """
         Get an object by id
         :param object_id: the unique id of the static object to get
@@ -35,7 +39,7 @@ class StaticObjectsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def remove_static_object(self, object_id):
+    def remove_static_object(self, object_id: str) -> T:
         """
         Remove an static object by id
         :param object_id: The id to uniquely locate the static object to remove
@@ -45,7 +49,7 @@ class StaticObjectsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def update_static_object(self, object_id, object):
+    def update_static_object(self, object_id: str, object: Generic[T]) -> T:
         """
         Update an already existent static object.
         :param object_id: The id of the static object to be updated
@@ -56,7 +60,7 @@ class StaticObjectsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def get_all_static_objects(self):
+    def get_all_static_objects(self) -> List[T]:
         """
         Return all registered static objects
         :return: all static objects

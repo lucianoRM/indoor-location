@@ -1,5 +1,7 @@
 from abc import ABCMeta, abstractmethod
+from typing import Any, TypeVar, Generic
 
+T = TypeVar("T")
 
 class KVDatabase:
     """
@@ -20,7 +22,7 @@ class KVDatabase:
         super().__init__(**kwargs)
 
     @abstractmethod
-    def insert(self, key, value, **kwargs):
+    def insert(self, key: str, value: Generic[T], **kwargs) -> T:
         """
         Insert a new value reached by the provided key.
         :param key: key that defines where to add the new value.
@@ -32,7 +34,7 @@ class KVDatabase:
         raise NotImplementedError
 
     @abstractmethod
-    def update(self, key, value, **kwargs):
+    def update(self, key: str, value: Generic[T], **kwargs) -> T:
         """
         Update a value from the DB. If the value does not exist, fail with KeyDoesNotExistsException.
         :param key: The key of the value to update
@@ -43,7 +45,7 @@ class KVDatabase:
         raise NotImplementedError
 
     @abstractmethod
-    def upsert(self, key, value, **kwargs):
+    def upsert(self, key: str, value: Generic[T], **kwargs) -> T:
         """
         Insert a new value reached by the provided key. If the value with that key already exists, replace it.
         :param key: key that defines where to add the new value.
@@ -53,7 +55,7 @@ class KVDatabase:
         raise NotImplementedError
 
     @abstractmethod
-    def retrieve(self, key, **kwargs):
+    def retrieve(self, key: str, **kwargs) -> T:
         """
         Get the value that relates to the key
         :param key: the key to find the value
@@ -63,7 +65,7 @@ class KVDatabase:
         raise NotImplementedError
 
     @abstractmethod
-    def remove(self, key, **kwargs):
+    def remove(self, key: str, **kwargs) -> T:
         """
         Remove value and key from DB.
         :param key: key for value to be removed
@@ -72,7 +74,7 @@ class KVDatabase:
         """
         raise NotImplementedError
 
-    def get_keys_delimiter(self):
+    def get_keys_delimiter(self) -> str:
         """
         :return: Keys delimiter used to build complex keys
         """

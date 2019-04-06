@@ -7,5 +7,5 @@ class SensingAnchor(Anchor, Sensor):
     An anchor that is also a sensor
     """
 
-    def __init__(self, id, position, **kwargs):
+    def __init__(self, id: str, position: str, **kwargs):
         super().__init__(id=id, position=position, **kwargs)

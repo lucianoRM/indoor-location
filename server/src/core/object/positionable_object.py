@@ -11,7 +11,7 @@ class PositionableObject(Object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def __init__(self, id, position, **kwargs):
+    def __init__(self, id: str, position: str, **kwargs):
         self._position = position
         super().__init__(id=id, **kwargs)
 

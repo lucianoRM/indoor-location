@@ -1,5 +1,9 @@
 from abc import ABCMeta, abstractmethod
+from typing import TypeVar, Generic, List
 
+from src.core.sensor.sensor import Sensor
+
+T = TypeVar('T', bound=Sensor)
 
 class SensorsManager:
     """
@@ -12,7 +16,7 @@ class SensorsManager:
         super().__init__(**kwargs)
 
     @abstractmethod
-    def add_sensor(self, sensor_id, sensor):
+    def add_sensor(self, sensor_id: str, sensor: Generic[T]) -> T:
         """
         Add a new sensor
         :param sensor_id: the sensor_id
@@ -23,7 +27,7 @@ class SensorsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def get_sensor(self, sensor_id):
+    def get_sensor(self, sensor_id: str) -> T:
         """
         Get a sensor by id
         :param sensor_id: the unique id of the sensor to get
@@ -33,7 +37,7 @@ class SensorsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def remove_sensor(self, sensor_id):
+    def remove_sensor(self, sensor_id: str) -> T:
         """
         Remove an sensor by id
         :param sensor_id: The id to uniquely locate the sensor to remove
@@ -43,7 +47,7 @@ class SensorsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def update_sensor(self, sensor_id, sensor):
+    def update_sensor(self, sensor_id:str, sensor: Generic[T]) -> T:
         """
         Update an already existent sensor.
         :param sensor_id: The id of the sensor to be updated
@@ -54,7 +58,7 @@ class SensorsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def get_all_sensors(self):
+    def get_all_sensors(self) -> List[T]:
         """
         Return all registered sensors
         :return: all sensors

@@ -1,5 +1,4 @@
-
-
+from src.core.data.sensing_data import SensingData
 
 class SensedObject:
     """
@@ -7,7 +6,7 @@ class SensedObject:
     Instances of this class should be immutable
     """
 
-    def __init__(self, sensor, id, data):
+    def __init__(self, sensor: 'Sensor', id: str, data: SensingData):
         """
         Constructor for sensed object
         :param sensor: The sensor that sensed the object

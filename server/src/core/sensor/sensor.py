@@ -1,5 +1,9 @@
 from abc import ABCMeta, abstractmethod
 from copy import deepcopy
+from typing import Dict
+
+from src.core.data.sensed_object import SensedObject
+
 
 class Sensor:
     """
@@ -17,7 +21,7 @@ class Sensor:
         self.__sensed_objects = {}
         super().__init__(**kwargs)
 
-    def update_sensed_objects(self, sensed_objects, merge=False):
+    def update_sensed_objects(self, sensed_objects: Dict[str, SensedObject], merge=False):
         """
         Updates stored sensed data with the new one
         :param sensed_objects: The new sensed data corresponding to this sensor
@@ -28,5 +32,5 @@ class Sensor:
         else:
             self.__sensed_objects = sensed_objects
 
-    def get_sensed_objects(self):
+    def get_sensed_objects(self) -> Dict[str, SensedObject]:
         return deepcopy(self.__sensed_objects)
