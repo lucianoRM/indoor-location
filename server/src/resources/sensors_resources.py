@@ -16,8 +16,8 @@ class SensorListResource(AbstractResource):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.__sensor_manager = DependencyContainer.sensors_manager()
-        self.__sensors_schema = SensorSchema(many=True)
-        self.__sensor_schema = SensorSchema()
+        self.__sensors_schema = SensorSchema(many=True, strict=True)
+        self.__sensor_schema = SensorSchema(strict = True)
         self.__sensed_objects_schema = SensedObjectSchema(many=True)
 
     def _do_get(self):
@@ -53,6 +53,9 @@ class SensorSchema(TypedObjectSchema):
 
     __USER_TYPE = "USER"
     __ANCHOR_TYPE = "ANCHOR"
+
+    def _get_valid_types(self):
+        return [self.__USER_TYPE, self.__ANCHOR_TYPE]
 
     def _do_make_object(self, type, kwargs):
         if type == self.__USER_TYPE:

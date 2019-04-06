@@ -15,8 +15,8 @@ class SignalEmitterListResource(AbstractResource):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.__signal_emitters_manager = DependencyContainer.signal_emitters_manager()
-        self.__signal_emitters_schema = SignalEmitterSchema(many=True)
-        self.__signal_emitter_schema = SignalEmitterSchema()
+        self.__signal_emitters_schema = SignalEmitterSchema(many=True, strict=True)
+        self.__signal_emitter_schema = SignalEmitterSchema(strict=True)
 
     def _do_get(self):
         return self.__signal_emitters_schema.dumps(self.__signal_emitters_manager.get_all_signal_emitters())
@@ -34,7 +34,7 @@ class SignalEmitterResource(AbstractResource):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.__signal_emitters_manager = DependencyContainer.signal_emitters_manager()
-        self.__signal_emitter_schema = SignalEmitterSchema()
+        self.__signal_emitter_schema = SignalEmitterSchema(strict=True)
 
     def _do_get(self, signal_emitter_id):
         return self.__signal_emitter_schema.dumps(self.__signal_emitters_manager.get_signal_emitter(signal_emitter_id=signal_emitter_id))
@@ -44,6 +44,9 @@ class SignalEmitterSchema(TypedObjectSchema):
 
     __USER_TYPE = "USER"
     __ANCHOR_TYPE = "ANCHOR"
+
+    def _get_valid_types(self):
+        return [self.__USER_TYPE, self.__ANCHOR_TYPE]
 
     def _do_make_object(self, type, kwargs):
         if type == self.__USER_TYPE:

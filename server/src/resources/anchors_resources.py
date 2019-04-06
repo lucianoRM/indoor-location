@@ -16,8 +16,8 @@ class AnchorListResource(AbstractResource):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.__anchors_manager = DependencyContainer.anchors_manager()
-        self.__anchors_schema = AnchorSchema(many=True)
-        self.__anchor_schema = AnchorSchema()
+        self.__anchors_schema = AnchorSchema(many=True, strict=True)
+        self.__anchor_schema = AnchorSchema(strict=True)
 
     def _do_get(self):
         return self.__anchors_schema.dumps(self.__anchors_manager.get_all_anchors())
@@ -35,7 +35,7 @@ class AnchorResource(AbstractResource):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.__anchors_manager = DependencyContainer.anchors_manager()
-        self.__anchor_schema = AnchorSchema()
+        self.__anchor_schema = AnchorSchema(strict=True)
 
     def _do_get(self, anchor_id):
         return self.__anchor_schema.dumps(self.__anchors_manager.get_anchor(anchor_id=anchor_id))
@@ -45,6 +45,9 @@ class AnchorSchema(TypedObjectSchema):
 
     __SENSOR_TYPE = "SENSOR"
     __SIGNAL_EMITTER_TYPE = "SIGNAL_EMITTER"
+
+    def _get_valid_types(self):
+        return [self.__SENSOR_TYPE, self.__SIGNAL_EMITTER_TYPE]
 
     def _do_make_object(self, type, kwargs):
         if type == self.__SENSOR_TYPE:

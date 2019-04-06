@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from marshmallow import Schema, fields, post_dump, post_load
+from marshmallow import fields, post_dump, post_load, ValidationError, validates_schema
 
 from src.resources.schemas.positionable_object_schema import PositionableObjectSchema
 
@@ -14,7 +14,20 @@ class TypedObjectSchema(PositionableObjectSchema):
 
     __TYPE_ATTRIBUTE_KEY = 'type'
 
-    type = fields.String(required=True)
+    type = fields.String()
+
+    @validates_schema
+    def validate_input(self, serialized_data):
+        super().validate_input(serialized_data=serialized_data)
+        if self.__TYPE_ATTRIBUTE_KEY not in serialized_data:
+            raise ValidationError("Missing " + self.__TYPE_ATTRIBUTE_KEY)
+        type = serialized_data[self.__TYPE_ATTRIBUTE_KEY]
+        if type not in self._get_valid_types():
+            raise ValidationError("Got wrong type: " + type + ", expecting one of: " + ", ".join(self._get_valid_types()))
+
+    @abstractmethod
+    def _get_valid_types(self):
+        return []
 
     @post_load
     def make_object(self, kwargs):

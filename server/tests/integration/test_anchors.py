@@ -51,3 +51,31 @@ class TestAnchorsEndpoint(TestApi):
         res = self._client().get(ANCHORS_ENDPOINT)
         assert res.status_code == 200
         self.assert_response(res, anchors)
+
+    def test_add_anchor_with_missing_id(self):
+        anchor = self.__base_anchor
+        anchor.pop("id")
+        res = self._client().post(ANCHORS_ENDPOINT, json=json.dumps(anchor))
+        assert res.status_code == 400
+        assert "Missing id" in str(res.get_data())
+
+    def test_add_anchor_with_missing_position(self):
+        anchor = self.__base_anchor
+        anchor.pop("position")
+        res = self._client().post(ANCHORS_ENDPOINT, json=json.dumps(anchor))
+        assert res.status_code == 400
+        assert "Missing position" in str(res.get_data())
+
+    def test_add_anchor_with_missing_type(self):
+        anchor = self.__base_anchor
+        anchor.pop("type")
+        res = self._client().post(ANCHORS_ENDPOINT, json=json.dumps(anchor))
+        assert res.status_code == 400
+        assert "Missing type" in str(res.get_data())
+
+    def test_add_anchor_with_wrong_type(self):
+        anchor = self.__base_anchor
+        anchor['type'] = "INVALID_TYPE"
+        res = self._client().post(ANCHORS_ENDPOINT, json=json.dumps(anchor))
+        assert res.status_code == 400
+        assert "Got wrong type: INVALID_TYPE, expecting one of: SENSOR, SIGNAL_EMITTER" in str(res.get_data())

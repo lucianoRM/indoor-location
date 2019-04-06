@@ -1,3 +1,5 @@
+import json
+
 import flask_restful
 from flask import request
 from flask_restful import Resource
@@ -17,7 +19,11 @@ class AbstractResource(Resource):
         self.__common_error_mappings = {
             'NotFound' : {
                 'code' : 404,
-                'message' : 'Not Found'
+                'message' : lambda e : 'Not Found'
+            },
+            'ValidationError' : {
+                'code' : 400,
+                'message' : lambda e : ",".join(e.messages['_schema'])
             }
         }
 
@@ -41,8 +47,8 @@ class AbstractResource(Resource):
         if error_class_name in self.__custom_error_mappings:
             error = self.__custom_error_mappings.get(error_class_name)
         code = error.get('code', 500)
-        message = error.get('message', str(e))
-        flask_restful.abort(code, message=message)
+        message_getter = error.get('message', lambda e : str(e))
+        flask_restful.abort(code, message=message_getter(e))
 
     def _get_post_data_as_json(self):
         """

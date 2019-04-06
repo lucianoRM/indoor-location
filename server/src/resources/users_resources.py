@@ -15,8 +15,8 @@ class UserListResource(AbstractResource):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.__user_manager = DependencyContainer.users_manager()
-        self.__users_schema = UserSchema(many=True)
-        self.__user_schema = UserSchema()
+        self.__users_schema = UserSchema(many=True, strict=True)
+        self.__user_schema = UserSchema(strict=True)
 
     def _do_get(self):
         return self.__users_schema.dumps(self.__user_manager.get_all_users())
@@ -34,7 +34,7 @@ class UserResource(AbstractResource):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.__user_manager = DependencyContainer.users_manager()
-        self.__user_schema = UserSchema()
+        self.__user_schema = UserSchema(strict=True)
 
     def _do_get(self, user_id):
         return self.__user_schema.dumps(self.__user_manager.get_user(user_id=user_id))
@@ -44,6 +44,9 @@ class UserSchema(TypedObjectSchema):
 
     __SENSOR_TYPE = "SENSOR"
     __SIGNAL_EMITTER_TYPE = "SIGNAL_EMITTER"
+
+    def _get_valid_types(self):
+        return [self.__SENSOR_TYPE, self.__SIGNAL_EMITTER_TYPE]
 
     def _do_make_object(self, type, kwargs):
         if type == self.__SENSOR_TYPE:
