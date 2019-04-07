@@ -1,6 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from typing import Callable
 
+from src.core.object.object import Object
+
 
 class ObservableObjectsManager:
     """
@@ -21,10 +23,10 @@ class ObservableObjectsManager:
     def call_on_remove(self, callback: Callable):
         self.__remove_object_callbacks.append(callback)
 
-    def _on_add(self, object_id: str):
+    def _on_add(self, object_id: str, object: Object):
         for callback in self.__add_object_callbacks:
-            callback(object_id)
+            callback(object_id, object)
 
-    def _on_remove(self, object_id: str):
+    def _on_remove(self, object_id: str, object: Object):
         for callback in self.__remove_object_callbacks:
-            callback(object_id)
+            callback(object_id, object)

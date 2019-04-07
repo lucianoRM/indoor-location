@@ -5,7 +5,7 @@ from pytest import fixture, raises
 from src.core.database.memory_kv_database import MemoryKVDatabase
 from src.core.emitter.default_signal_emitters_manager import DefaultSignalEmittersManager
 from src.core.emitter.signal_emitters_manager import SignalEmitterAlreadyExistsException, UnknownSignalEmitterException
-from src.core.manager.observer_composed_objects_manager import ObserverComposedObjectsManager
+from src.core.manager.default_positionable_objects_manager import PositionableObjectsManagerObserver
 from src.core.object.kvdb_moving_objects_manager import KVDBMovingObjectsManager
 from src.core.object.kvdb_static_objects_manager import KVDBStaticObjectsManager
 from tests.unit.test_implementations.implementations import TestStaticSignalEmitter, TestMovingSignalEmitter
@@ -22,7 +22,7 @@ class TestDefaultSignalEmittersManager:
         self.__test_moving_signal_emitter = TestMovingSignalEmitter(id=self.__MOVING_SIGNAL_EMITTER_ID, position=None)
         db = MemoryKVDatabase()
         self.__signal_emitters_manager = DefaultSignalEmittersManager(
-            ObserverComposedObjectsManager(
+            PositionableObjectsManagerObserver(
                 observable_static_objects_manager=KVDBStaticObjectsManager(kv_database=db),
                 observable_moving_objects_manager=KVDBMovingObjectsManager(kv_database=db)
             )

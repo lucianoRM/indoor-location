@@ -7,7 +7,7 @@ from src.core.anchor.signal_emitting_anchor import SignalEmittingAnchor
 from src.core.database.memory_kv_database import MemoryKVDatabase
 from src.core.emitter.default_signal_emitters_manager import DefaultSignalEmittersManager
 from src.core.emitter.signal_emitters_manager import UnknownSignalEmitterException, SignalEmitterAlreadyExistsException
-from src.core.manager.observer_composed_objects_manager import ObserverComposedObjectsManager
+from src.core.manager.default_positionable_objects_manager import PositionableObjectsManagerObserver
 from src.core.object.kvdb_moving_objects_manager import KVDBMovingObjectsManager
 from src.core.object.kvdb_static_objects_manager import KVDBStaticObjectsManager
 from src.core.sensor.default_sensors_manager import DefaultSensorsManager
@@ -26,12 +26,13 @@ class TestManagers:
         static_objects_manager = KVDBStaticObjectsManager(kv_database=database)
         moving_objects_manager = KVDBMovingObjectsManager(kv_database=database)
 
-        objects_manager = ObserverComposedObjectsManager(observable_static_objects_manager=static_objects_manager, observable_moving_objects_manager=moving_objects_manager)
+        objects_manager_for_sensors = PositionableObjectsManagerObserver(observable_static_objects_manager=static_objects_manager, observable_moving_objects_manager=moving_objects_manager)
+        objects_manager_for_signal_emitters = PositionableObjectsManagerObserver(observable_static_objects_manager=static_objects_manager, observable_moving_objects_manager=moving_objects_manager)
 
         self.__users_manager = DefaultUsersManager(moving_objects_manager=moving_objects_manager)
-        self.__sensors_manager = DefaultSensorsManager(objects_manager=objects_manager)
+        self.__sensors_manager = DefaultSensorsManager(objects_manager=objects_manager_for_sensors)
         self.__anchors_manager = DefaultAnchorsManager(static_objects_manager=static_objects_manager)
-        self.__signal_emitters_manager = DefaultSignalEmittersManager(objects_manager=objects_manager)
+        self.__signal_emitters_manager = DefaultSignalEmittersManager(objects_manager=objects_manager_for_signal_emitters)
 
     def test_add_user_and_get_sensor(self):
         user_id = "id"
@@ -242,3 +243,9 @@ class TestManagers:
         assert len(self.__signal_emitters_manager.get_all_signal_emitters()) == 2
         assert len(self.__anchors_manager.get_all_anchors()) == 1
         assert len(self.__users_manager.get_all_users()) == 1
+
+    def test_add_sensor_and_update_signal_emitter(self):
+        sensor = SensingUser(id="id", position="position")
+        self.__sensors_manager.add_sensor(sensor_id=sensor.id, sensor=sensor)
+        with raises(UnknownSignalEmitterException):
+            self.__signal_emitters_manager.update_signal_emitter(signal_emitter_id=sensor.id, signal_emitter=SignalEmittingUser(id="otherId", position="none"))

@@ -3,6 +3,7 @@ from typing import List
 from src.core.emitter.signal_emitter import SignalEmitter
 from src.core.emitter.signal_emitters_manager import SignalEmittersManager, SignalEmitterAlreadyExistsException, \
     UnknownSignalEmitterException
+from src.core.manager.default_positionable_objects_manager import PositionableObjectsManagerObserver
 from src.core.manager.positionable_objects_manager import PositionableObjectsManager, ObjectAlreadyExistsException, \
     UnknownObjectException
 
@@ -10,13 +11,14 @@ from src.core.manager.positionable_objects_manager import PositionableObjectsMan
 class DefaultSignalEmittersManager(SignalEmittersManager):
     """Signal emitters manager"""
 
-    def __init__(self, objects_manager: PositionableObjectsManager):
+    def __init__(self, objects_manager: PositionableObjectsManagerObserver):
         """
         Constructor for Manager.
         :param objects_manager: manager that handles signal emitters
         """
         super().__init__()
         self.__objects_manager = objects_manager
+        self.__objects_manager.accepted_types = [SignalEmitter]
 
     def add_signal_emitter(self, signal_emitter_id: str, signal_emitter: SignalEmitter) -> SignalEmitter:
         try:

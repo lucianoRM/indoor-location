@@ -1,16 +1,15 @@
 from dependency_injector.containers import DeclarativeContainer
-from dependency_injector.providers import Singleton
+from dependency_injector.providers import Singleton, Factory
 
 from src.core.anchor.default_anchors_manager import DefaultAnchorsManager
 from src.core.data.kvdb_sensed_objects_processor import KVDBSensedObjectsProcessor
 from src.core.database.memory_kv_database import MemoryKVDatabase
 from src.core.emitter.default_signal_emitters_manager import DefaultSignalEmittersManager
 from src.core.location.simple_location_service import SimpleLocationService
-from src.core.manager.observer_composed_objects_manager import ObserverComposedObjectsManager
+from src.core.manager.default_positionable_objects_manager import PositionableObjectsManagerObserver
 from src.core.object.kvdb_moving_objects_manager import KVDBMovingObjectsManager
 from src.core.object.kvdb_static_objects_manager import KVDBStaticObjectsManager
 from src.core.sensor.default_sensors_manager import DefaultSensorsManager
-from src.core.sensor.sensors_manager import SensorsManager
 from src.core.user.default_users_manager import DefaultUsersManager
 
 """
@@ -26,9 +25,10 @@ class DependencyContainer(DeclarativeContainer):
     __static_objects_manager = Singleton(KVDBStaticObjectsManager, kv_database=__database)
     __moving_objects_manager = Singleton(KVDBMovingObjectsManager, kv_database=__database)
 
-    __objects_manager = Singleton(ObserverComposedObjectsManager,
-                                observable_static_objects_manager=__static_objects_manager,
-                                observable_moving_objects_manager=__moving_objects_manager)
+    #this needs to be a factory because of the way it handles caches. It should have a different cache for every manager
+    __objects_manager = Factory(PositionableObjectsManagerObserver,
+                                  observable_static_objects_manager=__static_objects_manager,
+                                  observable_moving_objects_manager=__moving_objects_manager)
 
     users_manager = Singleton(DefaultUsersManager, moving_objects_manager=__moving_objects_manager)
     anchors_manager = Singleton(DefaultAnchorsManager, static_objects_manager=__static_objects_manager)
@@ -47,4 +47,5 @@ class DependencyContainer(DeclarativeContainer):
     @classmethod
     def reset_singletons(cls):
         for provider in cls.providers.values():
-            provider.reset()
+            if isinstance(provider, Singleton):
+                provider.reset()

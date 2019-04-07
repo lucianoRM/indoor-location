@@ -1,10 +1,11 @@
 from pytest import fixture, raises
 
 from src.core.database.memory_kv_database import MemoryKVDatabase
-from src.core.manager.observer_composed_objects_manager import ObserverComposedObjectsManager
+from src.core.manager.default_positionable_objects_manager import PositionableObjectsManagerObserver
 from src.core.object.kvdb_moving_objects_manager import KVDBMovingObjectsManager
 from src.core.object.kvdb_static_objects_manager import KVDBStaticObjectsManager
 from src.core.sensor.default_sensors_manager import DefaultSensorsManager
+from src.core.sensor.sensor import Sensor
 from src.core.sensor.sensors_manager import SensorAlreadyExistsException, UnknownSensorException
 from tests.unit.test_implementations.implementations import TestStaticSensor, TestMovingSensor
 
@@ -19,12 +20,12 @@ class TestDefaultSensorsManager:
         self.__test_static_sensor = TestStaticSensor(id=self.__STATIC_SENSOR_ID, position=None)
         self.__test_moving_sensor = TestMovingSensor(id=self.__MOVING_SENSOR_ID, position=None)
         db = MemoryKVDatabase()
-        self.__sensors_manager = DefaultSensorsManager(
-            ObserverComposedObjectsManager(
+        observer = PositionableObjectsManagerObserver(
                 observable_static_objects_manager=KVDBStaticObjectsManager(kv_database=db),
                 observable_moving_objects_manager=KVDBMovingObjectsManager(kv_database=db)
             )
-        )
+        observer.accepted_types = [Sensor]
+        self.__sensors_manager = DefaultSensorsManager(objects_manager=observer)
 
     def test_add_sensor(self):
         self.__sensors_manager.add_sensor(sensor_id=self.__MOVING_SENSOR_ID, sensor=self.__test_moving_sensor)
