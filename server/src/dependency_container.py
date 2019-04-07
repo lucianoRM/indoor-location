@@ -10,6 +10,7 @@ from src.core.manager.observer_composed_objects_manager import ObserverComposedO
 from src.core.object.kvdb_moving_objects_manager import KVDBMovingObjectsManager
 from src.core.object.kvdb_static_objects_manager import KVDBStaticObjectsManager
 from src.core.sensor.default_sensors_manager import DefaultSensorsManager
+from src.core.sensor.sensors_manager import SensorsManager
 from src.core.user.default_users_manager import DefaultUsersManager
 
 """
