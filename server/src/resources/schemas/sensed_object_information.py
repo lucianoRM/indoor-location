@@ -11,10 +11,13 @@ class SensedObjectInformationSchema(Schema):
 
     distance = fields.Number(required=True)
     distance_unit = fields.String(required=True)
+    timestamp = fields.Number(required=True)
 
     @post_load
     def make_sensed_data(self, kwargs):
-        distance_value = kwargs.get('distance')
-        distance_unit = kwargs.get('distance_unit')
+        distance_value = kwargs.pop('distance')
+        distance_unit = kwargs.pop('distance_unit')
         distance = Distance(**{distance_unit:distance_value})
-        return SensingData(distance=distance)
+
+        timestamp = kwargs.pop('timestamp')
+        return SensingData(distance=distance,timestamp=timestamp)

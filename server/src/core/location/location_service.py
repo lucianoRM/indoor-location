@@ -10,7 +10,7 @@ class LocationService:
 
     __metaclass__ = ABCMeta
 
-    def locate_object(self, sensed_objects: List['AnchorObject']) -> Tuple[float]:
+    def locate_object(self, anchors: List['AnchorObject']) -> Tuple[float]:
         raise NotImplementedError
 
 

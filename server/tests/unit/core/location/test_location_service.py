@@ -1,7 +1,7 @@
 from pytest import fixture, raises
 
 from src.core.location.location_service import LocationServiceException
-from src.core.location.simple_location_service import SimpleLocationService, AnchorObject
+from src.core.location.simple_location_service import SimpleLocationService, Anchor
 
 
 class TestLocationService:
@@ -22,7 +22,7 @@ class TestLocationService:
 
     def test_single_data_point_raises_exception(self):
         anchor_objects = [
-            AnchorObject(
+            Anchor(
                 position=(1,1),
                 distance= 1,
                 timestamp=1
@@ -33,12 +33,12 @@ class TestLocationService:
 
     def test_not_intersecting_areas_raises_exception(self):
         anchor_objects = [
-            AnchorObject(
+            Anchor(
                 position=(0, 0),
                 distance=1,
                 timestamp=1
             ),
-            AnchorObject(
+            Anchor(
                 position=(2, 2),
                 distance=1,
                 timestamp=1
@@ -49,12 +49,12 @@ class TestLocationService:
 
     def test_simple_intersection(self):
         anchor_objects = [
-            AnchorObject(
+            Anchor(
                 position=(0, 0),
                 distance=3,
                 timestamp=1
             ),
-            AnchorObject(
+            Anchor(
                 position=(4, 0),
                 distance=3,
                 timestamp=1
@@ -65,17 +65,17 @@ class TestLocationService:
 
     def test_extra_information_does_not_count_if_not_intersecting(self):
         anchor_objects = [
-            AnchorObject(
+            Anchor(
                 position=(0, 0),
                 distance=3,
                 timestamp=1
             ),
-            AnchorObject(
+            Anchor(
                 position=(4, 0),
                 distance=3,
                 timestamp=1
             ),
-            AnchorObject(
+            Anchor(
                 position=(10, 10),
                 distance=1,
                 timestamp=1
@@ -87,17 +87,17 @@ class TestLocationService:
 
     def test_uses_last_information(self):
         anchor_objects = [
-            AnchorObject(
+            Anchor(
                 position=(4, 0),
                 distance=3,
                 timestamp=2
             ),
-            AnchorObject(
+            Anchor(
                 position=(10, 10),
                 distance=1,
                 timestamp=1
             ),
-            AnchorObject(
+            Anchor(
                 position=(0, 0),
                 distance=3,
                 timestamp=5

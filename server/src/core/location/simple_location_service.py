@@ -9,7 +9,7 @@ class SimpleLocationService(LocationService):
     Simple implementation of a location service.
     """
 
-    def locate_object(self, anchor_objects: List['AnchorObject']) -> Tuple[float]:
+    def locate_object(self, anchors: List['Anchor']) -> List[float]:
         """
         Computes the position of an object based on other static objects and sensed distances.
         For locating the object, all sensing data will first be sorted by timestamp in descending order.
@@ -21,10 +21,10 @@ class SimpleLocationService(LocationService):
         :param anchor_objects: Other objects in range of the one being located and with an static position
         :return: approximate location of the sensed object
         """
-        if len(anchor_objects) < 2:
+        if len(anchors) < 2:
             raise LocationServiceException("Not enough sensing points to locate object")
 
-        sorted_anchor_objects = sorted(anchor_objects, key=lambda object: object.timestamp, reverse=True)
+        sorted_anchor_objects = sorted(anchors, key=lambda object: object.timestamp, reverse=True)
         final_location_area = self.__get_location_area_intersection(sorted_anchor_objects.pop(0), sorted_anchor_objects.pop(0))
         while(len(sorted_anchor_objects) != 0):
             next_anchor_object = sorted_anchor_objects.pop(0)
@@ -35,15 +35,15 @@ class SimpleLocationService(LocationService):
             final_location_area = location_area
         if final_location_area.area == 0:
             raise LocationServiceException("Could not locate object with given data, areas don't intersect")
-        return final_location_area.centroid
+        return [final_location_area.centroid.x, final_location_area.centroid.y]
 
     def __get_location_area_intersection(self, sensed_object1, sensed_object2):
-        circle1 = Circle(center=sensed_object1.position, radius=sensed_object1.distance)
-        circle2 = Circle(center=sensed_object2.position, radius=sensed_object2.distance)
+        circle1 = Circle(center=sensed_object1.position, radius=sensed_object1.distance.m)
+        circle2 = Circle(center=sensed_object2.position, radius=sensed_object2.distance.m)
         return circle1.intersection(circle2)
 
 
-class AnchorObject:
+class Anchor:
     """
     Simple class facilitate computing another object's location.
     This class should store only required information in order for the SimpleLocationService to work

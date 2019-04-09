@@ -40,8 +40,9 @@ class DependencyContainer(DeclarativeContainer):
 
     sensed_objects_processor = Singleton(KVDBSensedObjectsProcessor,
                                          location_service=location_service,
-                                         user_manager=users_manager,
-                                         sensor_manager=sensors_manager,
+                                         static_objects_manager=__static_objects_manager,
+                                         moving_objects_manager=__moving_objects_manager,
+                                         sensors_manager=sensors_manager,
                                          database=__database)
 
     @classmethod

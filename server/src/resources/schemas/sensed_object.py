@@ -1,6 +1,7 @@
 from marshmallow import fields, Schema, post_load
 
 from src.core.data.sensed_object import SensedObject
+from src.resources.schemas.dict_field import DictField
 from src.resources.schemas.sensed_object_information import SensedObjectInformationSchema
 
 
@@ -9,15 +10,30 @@ class SensedObjectSchema(Schema):
     Schema for serializing and deserialising the information related to one object being sensed by one sensor
     """
 
+
     #The id of the sensed object
-    object_id = fields.String(required=True)
+    id = fields.String(required=True)
 
     #The data that was sensed by that object
-    sensed_data = fields.Nested(SensedObjectInformationSchema)
+    sensed_data = fields.Nested(SensedObjectInformationSchema, required=True)
 
     @post_load
-    def make_sensed_object(self, **kwargs):
-        return SensedObject(id=kwargs.get('object_id'),
-                            data=kwargs.get('sensed_data'))
+    def make_sensed_object(self, kwargs):
+        return SensedObject(id=kwargs.pop('id'),
+                            data=kwargs.pop('sensed_data'),
+                            sensor=None)
+
+
+
+class SensedObjectsSchema(Schema):
+
+    sensed_objects = DictField(
+        key_field=fields.String(),
+        nested_field=fields.Nested(SensedObjectSchema)
+    )
+
+    @post_load
+    def make_dict(self, kwargs):
+        return kwargs['sensed_objects']
 
 

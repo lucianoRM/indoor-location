@@ -1,12 +1,17 @@
-from typing import List
+from typing import List, Dict
 
 from src.core.data.sensed_object import SensedObject
 from src.core.data.sensed_objects_processor import SensedObjectsProcessor
 from src.core.database.kv_database import KeyDoesNotExistException, KVDatabase
-from src.core.location.location_service import LocationService
+from src.core.location.location_service import LocationService, LocationServiceException
+from src.core.location.simple_location_service import Anchor
 from src.core.manager.kvdb_backed_manager import KVDBBackedManager
+from src.core.object.moving_object import MovingObject
+from src.core.object.moving_objects_manager import MovingObjectsManager
+from src.core.object.static_object import StaticObject
+from src.core.object.static_objects_manager import StaticObjectsManager
+from src.core.sensor.sensor import Sensor
 from src.core.sensor.sensors_manager import SensorsManager
-from src.core.user.users_manager import UsersManager
 
 
 class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
@@ -17,14 +22,20 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
     #Key to store which sensors have sensed which objects to be able to compute their location properly. The keys are the objects ids and the values are the sensors that are in range of those objects
     __SENSED_BY_KEY = "objects_sensed_by"
 
-    def __init__(self, database: KVDatabase, sensors_manager: SensorsManager, users_manager: UsersManager, location_service: LocationService):
+    def __init__(self,
+                 database: KVDatabase,
+                 sensors_manager: SensorsManager,
+                 static_objects_manager: StaticObjectsManager,
+                 moving_objects_manager: MovingObjectsManager,
+                 location_service: LocationService):
         super().__init__(database)
         self.__sensor_manager = sensors_manager
-        self.__user_manager = users_manager
+        self.__static_objects_manager = static_objects_manager
+        self.__moving_objects_manager = moving_objects_manager
         self.__location_service = location_service
 
 
-    def process_new_data(self, sensor_id: str, objects: List[SensedObject]):
+    def process_new_data(self, sensor_id: str, objects: Dict[str, SensedObject]):
         """
         Process all new data sensed by the sensor and updates moving objects location.
 
@@ -58,15 +69,47 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
         for object_id in objects_to_add:
             sensors_in_range = objects_sensed_by.get(object_id, set([]))
             sensors_in_range.add(sensor_id)
+            objects_sensed_by[object_id] = sensors_in_range
         for object_id in objects_to_clean:
             sensors_in_range = objects_sensed_by.get(object_id)
             if sensors_in_range:
                 sensors_in_range.remove(sensor_id)
+            objects_sensed_by[object_id] = sensors_in_range
 
         sensor.update_sensed_objects(objects)
         self.__sensor_manager.update_sensor(sensor_id=sensor_id, sensor=sensor)
 
+        if isinstance(sensor, MovingObject):
+            self.__update_sensor_position(sensor, objects)
+        elif isinstance(sensor, StaticObject):
+            self.__update_sensed_objects_positions(objects, objects_sensed_by)
+
         self._database.upsert(self.__SENSED_BY_KEY, objects_sensed_by)
 
+
+    def __update_sensor_position(self, sensor: MovingObject, sensed_objects: Dict[str, SensedObject]):
+        anchor_objects = [Anchor(position=object.data.position, distance=object.data.distance, timestamp=object.data.timestamp) for object in sensed_objects.values()]
+        new_position = self.__location_service.locate_object(anchor_objects)
+        sensor.position = new_position
+
+    def __update_sensed_objects_positions(self, sensed_objects : Dict[str, SensedObject], sensed_by : Dict[str, Sensor]):
+        #for every sensed objects, get all static sensors and compute it's location.
+        for sensed_object_id in sensed_objects:
+            sensors_in_range = sensed_by.get(sensed_object_id, {})
+            anchors = []
+            for sensor_id in sensors_in_range:
+                sensor = self.__sensor_manager.get_sensor(sensor_id=sensor_id)
+                sensed_moving_object = sensor.get_sensed_objects().get(sensed_object_id)
+                anchors.append(Anchor(
+                    position=sensor.position,
+                    distance=sensed_moving_object.data.distance,
+                    timestamp=sensed_moving_object.data.timestamp
+                ))
+            try:
+                moving_object = self.__moving_objects_manager.get_moving_object(object_id=sensed_object_id)
+                moving_object.position = self.__location_service.locate_object(anchors=anchors)
+                self.__moving_objects_manager.update_moving_object(object_id=sensed_object_id, object=moving_object)
+            except LocationServiceException:
+                pass
 
 

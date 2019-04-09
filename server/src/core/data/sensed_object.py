@@ -6,13 +6,14 @@ class SensedObject:
     Instances of this class should be immutable
     """
 
-    def __init__(self, sensor: 'Sensor', id: str, data: SensingData):
+    def __init__(self, sensor, id: str, data: SensingData):
         """
         Constructor for sensed object
         :param sensor: The sensor that sensed the object
         :param id: The id of the object sensed
         :param data: Data being sensed regarding that object
         """
+        super().__init__()
         self.__sensor = sensor
         self.__id = id
         self.__data = data

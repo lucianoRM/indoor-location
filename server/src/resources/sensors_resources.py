@@ -4,7 +4,7 @@ from src.core.user.sensing_user import SensingUser
 from src.core.user.user import User
 from src.dependency_container import DependencyContainer
 from src.resources.abstract_resource import AbstractResource
-from src.resources.schemas.sensed_object import SensedObjectSchema
+from src.resources.schemas.sensed_object import SensedObjectSchema, SensedObjectsSchema
 from src.resources.schemas.typed_object_schema import TypedObjectSchema
 
 
@@ -18,7 +18,6 @@ class SensorListResource(AbstractResource):
         self.__sensor_manager = DependencyContainer.sensors_manager()
         self.__sensors_schema = SensorSchema(many=True, strict=True)
         self.__sensor_schema = SensorSchema(strict = True)
-        self.__sensed_objects_schema = SensedObjectSchema(many=True)
 
     def _do_get(self):
         return self.__sensors_schema.dumps(self.__sensor_manager.get_all_sensors())
@@ -38,15 +37,15 @@ class SensorResource(AbstractResource):
         self.__sensor_manager = DependencyContainer.sensors_manager()
         self.__sensor_schema = SensorSchema()
 
+        self.__sensed_objects_processor = DependencyContainer.sensed_objects_processor()
+        self.__sensed_objects_schema = SensedObjectsSchema(strict=True)
+
     def _do_get(self, sensor_id):
         return self.__sensor_schema.dumps(self.__sensor_manager.get_sensor(sensor_id=sensor_id))
 
     def _do_put(self, sensor_id):
-        sensor = self.__sensor_manager.get_sensor(sensor_id=sensor_id)
-        # If sensor does not exist, request should fail
-        sensed_objects = self.__sensed_objects_schema.loads(self._get_post_data_as_json()).data
-        sensor.update_sensed_objects(sensed_objects=sensed_objects)
-        return self.__sensor_schema.dumps(self.__sensor_manager.update_sensor(sensor_id=sensor_id, sensor=sensor))
+        objects = self.__sensed_objects_schema.loads(self._get_post_data_as_json()).data
+        self.__sensed_objects_processor.process_new_data(sensor_id=sensor_id, objects=objects)
 
 
 class SensorSchema(TypedObjectSchema):

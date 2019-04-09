@@ -16,7 +16,7 @@ class PositionableObjectSchema(Schema):
     __POSITION_KEY = 'position'
 
     id = fields.String()
-    position = fields.String()
+    position = fields.List(fields.Number())
 
     name = fields.String()
 
