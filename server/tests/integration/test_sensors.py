@@ -9,7 +9,10 @@ class TestSensorsEndpoint(TestApi):
     def _do_set_up(self):
         self.__base_sensor = {
             "id": "sensorId",
-            "position": "position1",
+            "position": {
+                    'x':0,
+                    'y':0
+                },
             "type": "USER"
         }
 
@@ -37,12 +40,18 @@ class TestSensorsEndpoint(TestApi):
         sensors = [
             {
                 "id": "sensorId",
-                "position": "position",
+                "position": {
+                    'x':0,
+                    'y':0
+                },
                 "type": "USER"
             },
             {
                 "id": "sensorId2",
-                "position": "position",
+                "position": {
+                    'x':0,
+                    'y':0
+                },
                 "type": "ANCHOR"
             }
         ]

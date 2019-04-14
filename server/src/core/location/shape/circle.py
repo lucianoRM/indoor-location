@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from shapely import affinity
 from shapely.geometry import Point, Polygon
 
@@ -6,7 +8,7 @@ class Circle(Polygon):
 
     __NUMBER_OF_POINTS = 50
 
-    def __get_polygon_points(self, center: float, radius: float) -> Polygon:
+    def __get_polygon_points(self, center: Tuple[float], radius: float) -> Polygon:
         step_rotation_angle = 360/self.__NUMBER_OF_POINTS
         starting_point = Point(center[0] + radius, center[1])
         polygon_points = [(starting_point.x, starting_point.y)]
@@ -17,5 +19,5 @@ class Circle(Polygon):
         return Polygon(polygon_points)
 
 
-    def __init__(self, center: float, radius: float):
+    def __init__(self, center: Tuple[float], radius: float):
         super().__init__(shell=self.__get_polygon_points(center, radius))

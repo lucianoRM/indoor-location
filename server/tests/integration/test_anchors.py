@@ -9,7 +9,10 @@ class TestAnchorsEndpoint(TestApi):
     def _do_set_up(self):
         self.__base_anchor = {
             "id": "anchor_id",
-            "position": "position1",
+            "position": {
+                "x" : 0,
+                "y" : 0
+            },
             "type": "SENSOR"
         }
 
@@ -36,12 +39,18 @@ class TestAnchorsEndpoint(TestApi):
         anchors = [
             {
                 "id": "anchor_id1",
-                "position": "position",
+                "position": {
+                    'x':0,
+                    'y':0
+                },
                 "type": "SENSOR"
             },
             {
                 "id": "anchor_id2",
-                "position": "position",
+                "position": {
+                    'x':0,
+                    'y':0
+                },
                 "type": "SIGNAL_EMITTER"
             }
         ]

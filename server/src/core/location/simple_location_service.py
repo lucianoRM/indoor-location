@@ -38,8 +38,8 @@ class SimpleLocationService(LocationService):
         return [final_location_area.centroid.x, final_location_area.centroid.y]
 
     def __get_location_area_intersection(self, sensed_object1, sensed_object2):
-        circle1 = Circle(center=sensed_object1.position, radius=sensed_object1.distance.m)
-        circle2 = Circle(center=sensed_object2.position, radius=sensed_object2.distance.m)
+        circle1 = Circle(center=sensed_object1.position, radius=sensed_object1.distance)
+        circle2 = Circle(center=sensed_object2.position, radius=sensed_object2.distance)
         return circle1.intersection(circle2)
 
 

@@ -4,7 +4,7 @@ from src.core.user.sensing_user import SensingUser
 from src.core.user.user import User
 from src.dependency_container import DependencyContainer
 from src.resources.abstract_resource import AbstractResource
-from src.resources.schemas.sensed_object import SensedObjectSchema, SensedObjectsSchema
+from src.resources.schemas.sensed_object_schema import SensedObjectSchema, SensedObjectsSchema
 from src.resources.schemas.typed_object_schema import TypedObjectSchema
 
 

@@ -2,7 +2,7 @@ from marshmallow import fields, Schema, post_load
 
 from src.core.data.sensed_object import SensedObject
 from src.resources.schemas.dict_field import DictField
-from src.resources.schemas.sensed_object_information import SensedObjectInformationSchema
+from src.resources.schemas.sensing_data_schema import SensingDataSchema
 
 
 class SensedObjectSchema(Schema):
@@ -10,12 +10,11 @@ class SensedObjectSchema(Schema):
     Schema for serializing and deserialising the information related to one object being sensed by one sensor
     """
 
-
     #The id of the sensed object
     id = fields.String(required=True)
 
     #The data that was sensed by that object
-    sensed_data = fields.Nested(SensedObjectInformationSchema, required=True)
+    sensed_data = fields.Nested(SensingDataSchema, required=True)
 
     @post_load
     def make_sensed_object(self, kwargs):

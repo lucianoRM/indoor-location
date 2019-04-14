@@ -9,7 +9,10 @@ class TestUsersEndpoint(TestApi):
     def _do_set_up(self):
         self.__base_user = {
             "id": "userId",
-            "position": "position1",
+            "position": {
+                    'x':0,
+                    'y':0
+                },
             "type": "SENSOR"
         }
 
@@ -36,12 +39,18 @@ class TestUsersEndpoint(TestApi):
         users = [
             {
                 "id": "userId",
-                "position": "position",
+                "position": {
+                    'x':0,
+                    'y':0
+                },
                 "type": "SENSOR"
             },
             {
                 "id": "userId2",
-                "position": "position",
+                "position": {
+                    'x':0,
+                    'y':0
+                },
                 "type": "SIGNAL_EMITTER"
             }
         ]

@@ -9,7 +9,10 @@ class TestSignalEmittersEndpoint(TestApi):
     def _do_set_up(self):
         self.__base_signal_emitter = {
             "id": "signal_emitter_id",
-            "position": "position1",
+            "position": {
+                    'x':0,
+                    'y':0
+                },
             "type": "USER"
         }
 
@@ -36,12 +39,18 @@ class TestSignalEmittersEndpoint(TestApi):
         signal_emitters = [
             {
                 "id": "signal_emitterId",
-                "position": "position",
+                "position": {
+                    'x':0,
+                    'y':0
+                },
                 "type": "USER"
             },
             {
                 "id": "signal_emitterId2",
-                "position": "position",
+                "position": {
+                    'x':0,
+                    'y':0
+                },
                 "type": "ANCHOR"
             }
         ]

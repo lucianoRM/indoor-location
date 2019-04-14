@@ -15,8 +15,8 @@ class TestLocation(TestApi):
         assert res.status_code == 200
 
     def __assert_location(self, actual_location, expected_location, allowed_error=0.001):
-        assert abs(actual_location[0] - expected_location[0]) < allowed_error
-        assert abs(actual_location[1] - expected_location[1]) < allowed_error
+        assert abs(actual_location['x'] - expected_location[0]) < allowed_error
+        assert abs(actual_location['y'] - expected_location[1]) < allowed_error
 
 
     def test_sensing_information_changes_location_on_emitter_user(self):
@@ -25,14 +25,20 @@ class TestLocation(TestApi):
         sensor_id1 = "sensor1"
         self.__add_sensor({
             "id": sensor_id1,
-            "position": [0,0],
+            "position": {
+                'x':0,
+                'y':0
+            },
             "type": "ANCHOR"
         })
 
         sensor_id2 = "sensor2"
         self.__add_sensor({
             "id": sensor_id2,
-            "position": [10, 0],
+            "position": {
+                    'x':10,
+                    'y':0
+                },
             "type": "ANCHOR"
         })
 
@@ -40,7 +46,10 @@ class TestLocation(TestApi):
         user_id = "user"
         self.__add_user({
             "id": user_id,
-            "position": [0, 0],
+            "position": {
+                    'x':0,
+                    'y':0
+                },
             "type": "SIGNAL_EMITTER"
         })
 
@@ -51,8 +60,10 @@ class TestLocation(TestApi):
                     "user" : {
                         "id": "user",
                         "sensed_data": {
-                            "distance": 5,
-                            "distance_unit": "m",
+                            "distance": {
+                                "value" : 5,
+                                "unit" : 'm'
+                            },
                             "timestamp": 1
                         }
                     }
@@ -65,8 +76,10 @@ class TestLocation(TestApi):
                     "user": {
                         "id": "user",
                         "sensed_data": {
-                            "distance": 5,
-                            "distance_unit": "m",
+                            "distance": {
+                                "value" : 5,
+                                "unit" : 'm'
+                            },
                             "timestamp": 2
                         }
                     }

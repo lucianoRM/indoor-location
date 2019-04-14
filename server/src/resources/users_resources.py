@@ -2,6 +2,7 @@
 from src.core.sensor.sensor import Sensor
 from src.core.user.sensing_user import SensingUser
 from src.core.user.signal_emitting_user import SignalEmittingUser
+from src.core.user.user import User
 from src.dependency_container import DependencyContainer
 from src.resources.abstract_resource import AbstractResource
 from src.resources.schemas.typed_object_schema import TypedObjectSchema
@@ -48,7 +49,7 @@ class UserSchema(TypedObjectSchema):
     def _get_valid_types(self):
         return [self.__SENSOR_TYPE, self.__SIGNAL_EMITTER_TYPE]
 
-    def _do_make_object(self, type, kwargs) -> SensingUser:
+    def _do_make_object(self, type, kwargs) -> User:
         if type == self.__SENSOR_TYPE:
             return SensingUser(**kwargs)
         else:
