@@ -6,8 +6,6 @@ from src.resources.schemas.position_schema import PositionSchema
 
 
 class PositionableObjectSchema(Schema):
-
-
     """
     Base schema for a positionable object in the system
     """

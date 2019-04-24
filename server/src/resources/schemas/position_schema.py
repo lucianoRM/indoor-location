@@ -4,6 +4,9 @@ from src.core.data.normalization_service import normalize_length
 
 
 class PositionSchema(Schema):
+    """
+    Schema that represents a position in the system.
+    """
 
     x = fields.Number(required=True)
     y = fields.Number(required=True)

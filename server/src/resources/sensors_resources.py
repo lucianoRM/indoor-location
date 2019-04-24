@@ -4,7 +4,7 @@ from src.core.user.sensing_user import SensingUser
 from src.core.user.user import User
 from src.dependency_container import DependencyContainer
 from src.resources.abstract_resource import AbstractResource
-from src.resources.schemas.sensed_object_schema import SensedObjectSchema, SensedObjectsSchema
+from src.resources.schemas.sensed_object_schema import SensedObjectSchema
 from src.resources.schemas.typed_object_schema import TypedObjectSchema
 
 
@@ -38,14 +38,14 @@ class SensorResource(AbstractResource):
         self.__sensor_schema = SensorSchema()
 
         self.__sensed_objects_processor = DependencyContainer.sensed_objects_processor()
-        self.__sensed_objects_schema = SensedObjectsSchema(strict=True)
+        self.__sensed_objects_schema = SensedObjectSchema(strict=True, many=True)
 
     def _do_get(self, sensor_id):
         return self.__sensor_schema.dumps(self.__sensor_manager.get_sensor(sensor_id=sensor_id))
 
     def _do_put(self, sensor_id):
         objects = self.__sensed_objects_schema.loads(self._get_post_data_as_json()).data
-        self.__sensed_objects_processor.process_new_data(sensor_id=sensor_id, objects=objects)
+        self.__sensed_objects_processor.process_sensed_objects(sensor_id=sensor_id, sensed_objects=objects)
 
 
 class SensorSchema(TypedObjectSchema):

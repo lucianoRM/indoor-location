@@ -1,6 +1,4 @@
 from unittest.mock import Mock
-
-from measurement.measures import Distance
 from pytest import fixture
 
 from src.core.data.kvdb_sensed_objects_processor import KVDBSensedObjectsProcessor
@@ -38,7 +36,7 @@ class TestSensedObjectsProcessor:
         sensor = TestStaticSensor(id="some_id", position="pos")
         self.__sensor_manager.get_sensor.side_effect = (lambda sensor_id : sensor)
 
-        self.__processor.process_new_data(sensor_id,{sensed_object_id: SensedObject(sensor=sensor, id=sensed_object_id, data=sensed_object_information)})
+        self.__processor.process_sensed_objects(sensor_id,[SensedObject(id=sensed_object_id, data=sensed_object_information)])
 
         assert len(sensor.get_sensed_objects()) == 1
         assert sensor.get_sensed_objects().get(sensed_object_id).data.distance == sensed_object_information.distance
@@ -50,14 +48,14 @@ class TestSensedObjectsProcessor:
         sensor_id = "id"
         self.__sensor_manager.get_sensor.side_effect = (lambda sensor_id: self.__test_sensor)
 
-        self.__processor.process_new_data(sensor_id, {sensed_object_id: SensedObject(sensor=self.__test_sensor, id=sensed_object_id, data=sensed_object_information)})
+        self.__processor.process_sensed_objects(sensor_id, [SensedObject(id=sensed_object_id, data=sensed_object_information)])
 
         assert len(self.__test_sensor.get_sensed_objects()) == 1
         assert self.__test_sensor.get_sensed_objects().get(sensed_object_id).data.distance == sensed_object_information.distance
 
         sensed_object_id2 = "id2"
         sensed_object_information2 = SensingData(distance=20, timestamp=1)
-        self.__processor.process_new_data(sensor_id, {sensed_object_id2: SensedObject(sensor=self.__test_sensor, id=sensed_object_id2, data=sensed_object_information2)})
+        self.__processor.process_sensed_objects(sensor_id, [SensedObject(id=sensed_object_id2, data=sensed_object_information2)])
 
         assert len(self.__test_sensor.get_sensed_objects()) == 1
         assert self.__test_sensor.get_sensed_objects().get(sensed_object_id2).data.distance ==sensed_object_information2.distance
@@ -69,13 +67,13 @@ class TestSensedObjectsProcessor:
         sensor_id = "id"
         self.__sensor_manager.get_sensor.side_effect = (lambda sensor_id: self.__test_sensor)
 
-        self.__processor.process_new_data(sensor_id, {sensed_object_id: SensedObject(sensor=self.__test_sensor, id=sensed_object_id, data=sensed_object_information)})
+        self.__processor.process_sensed_objects(sensor_id, [SensedObject(id=sensed_object_id, data=sensed_object_information)])
 
         assert len(self.__test_sensor.get_sensed_objects()) == 1
         assert self.__test_sensor.get_sensed_objects().get(sensed_object_id).data.distance == sensed_object_information.distance
 
         sensed_object_information2 = SensingData(distance=20, timestamp=1)
-        self.__processor.process_new_data(sensor_id, {sensed_object_id : SensedObject(sensor=self.__test_sensor, id=sensed_object_id, data=sensed_object_information2)})
+        self.__processor.process_sensed_objects(sensor_id, [SensedObject(id=sensed_object_id, data=sensed_object_information2)])
 
         assert len(self.__test_sensor.get_sensed_objects()) == 1
         assert self.__test_sensor.get_sensed_objects().get(sensed_object_id).data.distance == sensed_object_information2.distance

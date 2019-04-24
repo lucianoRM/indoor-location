@@ -45,7 +45,7 @@ class SimpleLocationService(LocationService):
 
 class Anchor:
     """
-    Simple class facilitate computing another object's location.
+    Simple class to facilitate computing another object's location.
     This class should store only required information in order for the SimpleLocationService to work
     """
 

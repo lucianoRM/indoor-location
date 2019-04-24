@@ -55,36 +55,32 @@ class TestLocation(TestApi):
 
         #update sensor information and check that user position changed
         self._client().put(SENSORS_ENDPOINT + "/" + sensor_id1, json=json.dumps(
-            {
-                "sensed_objects" : {
-                    "user" : {
-                        "id": "user",
-                        "sensed_data": {
-                            "distance": {
-                                "value" : 5,
-                                "unit" : 'm'
-                            },
-                            "timestamp": 1
-                        }
+            [
+                {
+                    'id': 'user',
+                    'data' : {
+                        'distance' : {
+                            'value' : 5,
+                            'unit' : 'm'
+                        },
+                        'timestamp' : 1
                     }
                 }
-            }
+            ]
         ))
         self._client().put(SENSORS_ENDPOINT + "/" + sensor_id2, json=json.dumps(
-            {
-                "sensed_objects": {
-                    "user": {
-                        "id": "user",
-                        "sensed_data": {
-                            "distance": {
-                                "value" : 5,
-                                "unit" : 'm'
-                            },
-                            "timestamp": 2
-                        }
+            [
+                {
+                    'id': 'user',
+                    'data': {
+                        'distance': {
+                            'value': 5,
+                            'unit': 'm'
+                        },
+                        'timestamp': 2
                     }
                 }
-            }
+            ]
         ))
 
         #get user and check position

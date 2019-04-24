@@ -35,7 +35,7 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
         self.__location_service = location_service
 
 
-    def process_new_data(self, sensor_id: str, objects: Dict[str, SensedObject]):
+    def process_sensed_objects(self, sensor_id: str, sensed_objects : List[SensedObject]):
         """
         Process all new data sensed by the sensor and updates moving objects location.
 
@@ -49,7 +49,7 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
         :param sensor_id: The id of the sensor that has the new information
         :param objects: The objects being sensed by the sensor
         """
-        objects_ids = set(objects.keys())
+        objects_ids = set([object.id for object in sensed_objects])
 
         sensor = self.__sensor_manager.get_sensor(sensor_id)
         last_sensed_objects_ids = set(sensor.get_sensed_objects().keys())
@@ -76,25 +76,26 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
                 sensors_in_range.remove(sensor_id)
             objects_sensed_by[object_id] = sensors_in_range
 
-        sensor.update_sensed_objects(objects)
+        sensor.update_sensed_objects(sensed_objects)
         self.__sensor_manager.update_sensor(sensor_id=sensor_id, sensor=sensor)
 
         if isinstance(sensor, MovingObject):
-            self.__update_sensor_position(sensor, objects)
+            self.__update_sensor_position(sensor, sensed_objects)
         elif isinstance(sensor, StaticObject):
-            self.__update_sensed_objects_positions(objects, objects_sensed_by)
+            self.__update_sensed_objects_positions(sensed_objects, objects_sensed_by)
 
         self._database.upsert(self.__SENSED_BY_KEY, objects_sensed_by)
 
 
-    def __update_sensor_position(self, sensor: MovingObject, sensed_objects: Dict[str, SensedObject]):
-        anchor_objects = [Anchor(position=object.data.position, distance=object.data.distance, timestamp=object.data.timestamp) for object in sensed_objects.values()]
+    def __update_sensor_position(self, sensor: MovingObject, sensed_objects: List[SensedObject]):
+        anchor_objects = [Anchor(position=object.data.position, distance=object.data.distance, timestamp=object.data.timestamp) for object in sensed_objects]
         new_position = self.__location_service.locate_object(anchor_objects)
         sensor.position = new_position
 
-    def __update_sensed_objects_positions(self, sensed_objects : Dict[str, SensedObject], sensed_by : Dict[str, Sensor]):
+    def __update_sensed_objects_positions(self, sensed_objects : List[SensedObject], sensed_by : Dict[str, Sensor]):
         #for every sensed objects, get all static sensors and compute it's location.
-        for sensed_object_id in sensed_objects:
+        for sensed_object in sensed_objects:
+            sensed_object_id = sensed_object.id
             sensors_in_range = sensed_by.get(sensed_object_id, {})
             anchors = []
             for sensor_id in sensors_in_range:
