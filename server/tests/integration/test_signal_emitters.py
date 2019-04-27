@@ -25,7 +25,7 @@ class TestSignalEmittersEndpoint(TestApi):
         res = self._client().post(SIGNAL_EMITTERS_ENDPOINT, json=json.dumps(signal_emitter))
         assert res.status_code == 200
         res = self._client().get(SIGNAL_EMITTERS_ENDPOINT + "/" + signal_emitter['id'])
-        self.assert_response(res, signal_emitter)
+        self.assert_response(res, signal_emitter, ['unit'])
 
     def test_add_signal_emitter_twice_should_fail(self):
         signal_emitter = self.__base_signal_emitter
@@ -59,7 +59,7 @@ class TestSignalEmittersEndpoint(TestApi):
             assert res.status_code == 200
         res = self._client().get(SIGNAL_EMITTERS_ENDPOINT)
         assert res.status_code == 200
-        self.assert_response(res, signal_emitters)
+        self.assert_response(res, signal_emitters, ['unit'])
         
     def test_add_signal_emitter_with_missing_id(self):
         signal_emitter = self.__base_signal_emitter

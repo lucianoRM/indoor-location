@@ -50,9 +50,9 @@ class Anchor:
     """
 
     def __init__(self,
-                 position,
-                 distance,
-                 timestamp):
+                 position: Tuple[float, ...],
+                 distance : float,
+                 timestamp: int):
         """
         Create a new instance of an Anchor object
         :param position: The position of the object

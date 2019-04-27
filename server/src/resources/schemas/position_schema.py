@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, post_load, post_dump
 
-from src.core.data.normalization_service import normalize_length
+from src.core.data.normalization_service import normalize_length, DEFAULT_LENGTH_UNIT
 
 
 class PositionSchema(Schema):
@@ -25,3 +25,4 @@ class PositionSchema(Schema):
     def post_dump(self, serialized, original):
         serialized['x'] = original[0]
         serialized['y'] = original[1]
+        serialized['unit'] = DEFAULT_LENGTH_UNIT

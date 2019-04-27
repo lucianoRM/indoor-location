@@ -25,7 +25,7 @@ class TestUsersEndpoint(TestApi):
         res = self._client().post(USERS_ENDPOINT, json=json.dumps(user))
         assert res.status_code == 200
         res = self._client().get(USERS_ENDPOINT + "/" + user['id'])
-        self.assert_response(res, user)
+        self.assert_response(res, user, ['unit'])
 
     def test_add_user_twice_should_fail(self):
         user = self.__base_user
@@ -59,7 +59,7 @@ class TestUsersEndpoint(TestApi):
             assert res.status_code == 200
         res = self._client().get(USERS_ENDPOINT)
         assert res.status_code == 200
-        self.assert_response(res, users)
+        self.assert_response(res, users, ['unit'])
 
     def test_add_user_with_missing_id(self):
         user = self.__base_user

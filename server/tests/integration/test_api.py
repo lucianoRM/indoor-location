@@ -26,20 +26,20 @@ class TestApi:
     def _do_set_up(self):
         pass
 
-    def assert_response(self, response, expected_value):
+    def assert_response(self, response, expected_value, ignore_fields=[]):
         loaded_value = json.loads(response.get_json())
-        self.__assert_values(loaded_value, expected_value)
+        self.__assert_values(loaded_value, expected_value, ignore_fields)
 
-    def __assert_values(self, real_object, expected_object, sort_lists=True):
+    def __assert_values(self, real_object, expected_object, ignore_fields=[], sort_lists=True):
         if isinstance(expected_object, dict):
             for key,value in list(expected_object.items()):
                 assert key in real_object
-                self.__assert_values(real_object[key], value)
+                self.__assert_values(real_object[key], value, ignore_fields)
                 #remove value so we know is checked
                 real_object.pop(key)
 
             for key,value in real_object.items():
-                if not value:
+                if not value or key in ignore_fields:
                     continue
                 raise AssertionError( key + " was not expected in response")
 
@@ -52,7 +52,7 @@ class TestApi:
                 real_object.sort(key=self.__get_object_key_for_sorting)
                 expected_object.sort(key=self.__get_object_key_for_sorting)
             for i in range(len(real_object)):
-                self.__assert_values(real_object[i], expected_object[i])
+                self.__assert_values(real_object[i], expected_object[i], ignore_fields)
         else:
             assert real_object == expected_object
 
@@ -156,3 +156,38 @@ class TestApi:
         self.__assert_values(real_object=real_object, expected_object=expected_object)
         with raises(AssertionError):
             self.__assert_values(real_object=real_object, expected_object=expected_object, sort_lists=False)
+
+
+    def test_ignore_fields_simple_key(self):
+        real_object = {
+            "key1" : "value1",
+            "key2" : "value2"
+        }
+
+        expected_object = {
+            "key2" : "value2"
+        }
+        self.__assert_values(real_object=real_object, expected_object=expected_object, ignore_fields=['key1'])
+
+    def test_ignore_fields_complex_key(self):
+        real_object = {
+            "keyA": {
+                "keyB" : {
+                    "keyC" : {
+                        "key1" : "value1",
+                        "key2" : "value2"
+                    }
+                }
+            }
+        }
+
+        expected_object = {
+            "keyA": {
+                "keyB" : {
+                    "keyC" : {
+                        "key2" : "value2"
+                    }
+                }
+            }
+        }
+        self.__assert_values(real_object=real_object, expected_object=expected_object, ignore_fields=['key1'])

@@ -26,7 +26,7 @@ class TestSensorsEndpoint(TestApi):
         res = self._client().post(SENSORS_ENDPOINT, json=json.dumps(sensor))
         assert res.status_code == 200
         res = self._client().get(SENSORS_ENDPOINT + "/" + sensor['id'])
-        self.assert_response(res, sensor)
+        self.assert_response(res, sensor, ['unit'])
 
     def test_add_sensor_twice_should_fail(self):
         sensor = self.__base_sensor
@@ -60,7 +60,7 @@ class TestSensorsEndpoint(TestApi):
             assert res.status_code == 200
         res = self._client().get(SENSORS_ENDPOINT)
         assert res.status_code == 200
-        self.assert_response(res, sensors)
+        self.assert_response(res, sensors, ['unit'])
         
     def test_add_sensor_with_missing_id(self):
         sensor = self.__base_sensor
