@@ -5,7 +5,7 @@ from src.core.data.default_sensed_objects_processor import DefaultSensedObjectsP
 from src.core.data.sensed_object import SensedObject
 from src.core.data.sensing_data import SensingData
 from src.core.database.memory_kv_database import MemoryKVDatabase
-from tests.unit.test_implementations.implementations import TestStaticSensor, TestMovingSensor
+from tests.unit.test_implementations.implementations import TestStaticSensor
 
 
 class TestSensedObjectsProcessor:
