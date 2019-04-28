@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 
+from src.dependency_container import DependencyContainer
 from src.resources.anchors_resources import AnchorListResource, AnchorResource
 from src.resources.sensors_resources import SensorResource, SensorListResource
 from src.resources.signal_emitters_resources import SignalEmitterResource, SignalEmitterListResource
@@ -15,6 +16,9 @@ SIGNAL_EMITTERS_ENDPOINT = "/signal_emitters"
 def create_app():
     app = Flask(__name__)
     api = Api(app)
+
+    #This is needed so that all providers are created before the application is started because resource classes are created lazily.
+    DependencyContainer.init()
 
     api.add_resource(UserListResource,
                      USERS_ENDPOINT)

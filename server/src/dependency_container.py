@@ -2,7 +2,7 @@ from dependency_injector.containers import DeclarativeContainer
 from dependency_injector.providers import Singleton, Factory
 
 from src.core.anchor.default_anchors_manager import DefaultAnchorsManager
-from src.core.data.kvdb_sensed_objects_processor import KVDBSensedObjectsProcessor
+from src.core.data.default_sensed_objects_processor import DefaultSensedObjectsProcessor
 from src.core.database.memory_kv_database import MemoryKVDatabase
 from src.core.emitter.default_signal_emitters_manager import DefaultSignalEmittersManager
 from src.core.location.simple_location_service import SimpleLocationService
@@ -27,8 +27,8 @@ class DependencyContainer(DeclarativeContainer):
 
     #this needs to be a factory because of the way it handles caches. It should have a different cache for every manager
     __objects_manager = Factory(PositionableObjectsManagerObserver,
-                                  observable_static_objects_manager=__static_objects_manager,
-                                  observable_moving_objects_manager=__moving_objects_manager)
+                                observable_static_objects_manager=__static_objects_manager,
+                                observable_moving_objects_manager=__moving_objects_manager)
 
     users_manager = Singleton(DefaultUsersManager, moving_objects_manager=__moving_objects_manager)
     anchors_manager = Singleton(DefaultAnchorsManager, static_objects_manager=__static_objects_manager)
@@ -38,7 +38,7 @@ class DependencyContainer(DeclarativeContainer):
 
     location_service = Singleton(SimpleLocationService)
 
-    sensed_objects_processor = Singleton(KVDBSensedObjectsProcessor,
+    sensed_objects_processor = Singleton(DefaultSensedObjectsProcessor,
                                          location_service=location_service,
                                          static_objects_manager=__static_objects_manager,
                                          moving_objects_manager=__moving_objects_manager,
@@ -50,3 +50,9 @@ class DependencyContainer(DeclarativeContainer):
         for provider in cls.providers.values():
             if isinstance(provider, Singleton):
                 provider.reset()
+
+    @classmethod
+    def init(cls):
+        for provider in cls.providers.values():
+            if isinstance(provider, Singleton):
+                provider()

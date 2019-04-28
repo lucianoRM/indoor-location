@@ -1,11 +1,11 @@
 from unittest.mock import Mock
 from pytest import fixture
 
-from src.core.data.kvdb_sensed_objects_processor import KVDBSensedObjectsProcessor
+from src.core.data.default_sensed_objects_processor import DefaultSensedObjectsProcessor
 from src.core.data.sensed_object import SensedObject
 from src.core.data.sensing_data import SensingData
 from src.core.database.memory_kv_database import MemoryKVDatabase
-from tests.unit.test_implementations.implementations import TestStaticSensor
+from tests.unit.test_implementations.implementations import TestStaticSensor, TestMovingSensor
 
 
 class TestSensedObjectsProcessor:
@@ -21,11 +21,11 @@ class TestSensedObjectsProcessor:
 
         self.__test_sensor = TestStaticSensor(id="some_id", position="pos")
 
-        self.__processor = KVDBSensedObjectsProcessor(database=__database,
-                                                      static_objects_manager=self.__static_objects_manager,
-                                                      moving_objects_manager=self.__moving_objects_manager,
-                                                      sensors_manager=self.__sensor_manager,
-                                                      location_service=self.__location_service)
+        self.__processor = DefaultSensedObjectsProcessor(database=__database,
+                                                         static_objects_manager=self.__static_objects_manager,
+                                                         moving_objects_manager=self.__moving_objects_manager,
+                                                         sensors_manager=self.__sensor_manager,
+                                                         location_service=self.__location_service)
 
 
     def test_sensor_information_is_added(self):
@@ -77,6 +77,7 @@ class TestSensedObjectsProcessor:
 
         assert len(self.__test_sensor.get_sensed_objects()) == 1
         assert self.__test_sensor.get_sensed_objects().get(sensed_object_id).data.distance == sensed_object_information2.distance
+
 
 
 

@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 from typing import List, Dict
 
 from src.core.data.sensed_object import SensedObject
@@ -7,14 +8,14 @@ from src.core.location.location_service import LocationService, LocationServiceE
 from src.core.location.simple_location_service import Anchor
 from src.core.manager.kvdb_backed_manager import KVDBBackedManager
 from src.core.object.moving_object import MovingObject
-from src.core.object.moving_objects_manager import MovingObjectsManager
+from src.core.object.moving_objects_manager import MovingObjectsManager, UnknownMovingObjectException
 from src.core.object.static_object import StaticObject
-from src.core.object.static_objects_manager import StaticObjectsManager
+from src.core.object.static_objects_manager import StaticObjectsManager, UnknownStaticObjectException
 from src.core.sensor.sensor import Sensor
-from src.core.sensor.sensors_manager import SensorsManager
+from src.core.sensor.sensors_manager import SensorsManager, UnknownSensorException
 
 
-class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
+class DefaultSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
     """
     A data processor that backs all information needed in a Key-Value database
     """
@@ -33,7 +34,6 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
         self.__static_objects_manager = static_objects_manager
         self.__moving_objects_manager = moving_objects_manager
         self.__location_service = location_service
-
 
     def process_sensed_objects(self, sensor_id: str, sensed_objects : List[SensedObject]):
         """
@@ -88,9 +88,19 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
 
 
     def __update_sensor_position(self, sensor: MovingObject, sensed_objects: List[SensedObject]):
-        anchor_objects = [Anchor(position=object.data.position, distance=object.data.distance, timestamp=object.data.timestamp) for object in sensed_objects]
+        anchor_objects = []
+        for sensed_object in sensed_objects:
+            id = sensed_object.id
+            try:
+                retrieved_object = self.__static_objects_manager.get_static_object(object_id=id)
+                anchor_objects.append(Anchor(position=retrieved_object.position, distance=sensed_object.data.distance,
+                                             timestamp=sensed_object.data.timestamp))
+            except UnknownStaticObjectException:
+                #TODO: Check what to do in these cases, when id's can't be found
+                continue
         new_position = self.__location_service.locate_object(anchor_objects)
         sensor.position = new_position
+        self.__sensor_manager.update_sensor(sensor_id=sensor.id, sensor=sensor)
 
     def __update_sensed_objects_positions(self, sensed_objects : List[SensedObject], sensed_by : Dict[str, Sensor]):
         #for every sensed objects, get all static sensors and compute it's location.
@@ -110,6 +120,9 @@ class KVDBSensedObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
                 moving_object = self.__moving_objects_manager.get_moving_object(object_id=sensed_object_id)
                 moving_object.position = self.__location_service.locate_object(anchors=anchors)
                 self.__moving_objects_manager.update_moving_object(object_id=sensed_object_id, object=moving_object)
+            except UnknownMovingObjectException:
+                #TODO: Check what to do in these situations
+                continue
             except LocationServiceException:
                 pass
 
