@@ -1,0 +1,32 @@
+[
+  {
+    "id" : "sensing_user_1",
+    "name" : "The Sensing User 1",
+    "type" : "SENSOR",
+    "position" : {
+      "x" : 0,
+      "y" : 0,
+      "unit" : "m"
+    }
+  },
+  {
+    "id" : "anchor_user",
+    "name" : "The Anchor User",
+    "type" : "ANCHOR",
+    "position" : {
+      "x" : 0,
+      "y" : 0,
+      "unit" : "m"
+    }
+  },
+  {
+    "id" : "sensing_user_2",
+    "name" : "The Sensing User 2",
+    "type" : "SENSOR",
+    "position" : {
+      "x" : 0,
+      "y" : 0,
+      "unit" : "m"
+    }
+  }
+]
