@@ -44,4 +44,9 @@ public abstract class SkeletalUser implements User {
         SkeletalUser other = (SkeletalUser) obj;
         return this.id.equals(other.id) && this.name.equals(other.name) && this.position.equals(other.position);
     }
+
+    @Override
+    public String toString() {
+        return "User:" + getId() + "(" + getName() + ")@" + getPosition().getX() + "-" + getPosition().getY();
+    }
 }

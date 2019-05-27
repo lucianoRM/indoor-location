@@ -12,6 +12,14 @@ public class Position {
         this.y = y;
     }
 
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.x, this.y);
