@@ -1,12 +1,12 @@
 package com.example.location.api.serialization;
 
 import com.example.location.api.data.Position;
-import com.example.location.api.entity.DefaultSensingUser;
-import com.example.location.api.entity.DefaultSignalEmittingUser;
-import com.example.location.api.entity.SensingUser;
-import com.example.location.api.entity.Sensor;
-import com.example.location.api.entity.SignalEmitter;
-import com.example.location.api.entity.SignalEmittingUser;
+import com.example.location.api.entity.sensor.DefaultSensingUser;
+import com.example.location.api.entity.emitter.DefaultSignalEmittingUser;
+import com.example.location.api.entity.sensor.SensingUser;
+import com.example.location.api.entity.sensor.Sensor;
+import com.example.location.api.entity.emitter.SignalEmitter;
+import com.example.location.api.entity.emitter.SignalEmittingUser;
 import com.example.location.api.entity.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

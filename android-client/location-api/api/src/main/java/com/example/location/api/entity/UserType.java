@@ -1,5 +1,8 @@
 package com.example.location.api.entity;
 
+import com.example.location.api.entity.emitter.SignalEmitter;
+import com.example.location.api.entity.sensor.Sensor;
+
 public enum UserType {
 
     /**

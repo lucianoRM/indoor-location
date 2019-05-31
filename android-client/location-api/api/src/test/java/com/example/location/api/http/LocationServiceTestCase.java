@@ -83,7 +83,6 @@ public class LocationServiceTestCase {
         userCall.execute();
     }
 
-
     private String getJsonString(String name) throws Exception {
         InputStream user = this.getClass().getClassLoader().getResourceAsStream(name);
         return IOUtils.toString(user, UTF_8);

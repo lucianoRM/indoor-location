@@ -17,7 +17,7 @@ def create_app():
     app = Flask(__name__)
     api = Api(app)
 
-    #This is needed so that all providers are created before the application is started because resource classes are created lazily.
+    #This is needed so thatt all providers are created before the application is started because resource classes are created lazily.
     DependencyContainer.init()
 
     api.add_resource(UserListResource,

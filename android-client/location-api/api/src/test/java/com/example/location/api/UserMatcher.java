@@ -14,7 +14,7 @@ public class UserMatcher extends TypeSafeMatcher<User> {
     }
 
     public static UserMatcher user(User user) {
-        return new UserMatcher(user);
+        return new UserMatcher(user);{
     }
 
     private User expectedUser;

@@ -37,4 +37,7 @@ dependencies {
     testImplementation 'com.squareup.okhttp3:mockwebserver:3.14.1'
     testImplementation 'commons-io:commons-io:2.6'
     testImplementation 'org.hamcrest:hamcrest:2.1'
+
+    implementation 'com.google.dagger:dagger:2.22.1'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.22.1'
 }
