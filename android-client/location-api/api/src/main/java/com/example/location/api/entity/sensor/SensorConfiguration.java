@@ -1,15 +1,23 @@
 package com.example.location.api.entity.sensor;
 
-public class SensorConfiguration {
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.UUID.randomUUID;
+
+public final class SensorConfiguration {
 
     private String sensorId;
     private String sensorName;
     private SensorFeed sensorFeed;
 
-    public SensorConfiguration(String sensorId, String sensorName, SensorFeed sensorFeed) {
+    private SensorConfiguration(String sensorId, String sensorName, SensorFeed sensorFeed) {
         this.sensorId = sensorId;
         this.sensorName = sensorName;
         this.sensorFeed = sensorFeed;
+    }
+
+    public static Builder sensorConfigurationBuilder() {
+        return new Builder();
     }
 
     public String getSensorId() {
@@ -46,6 +54,13 @@ public class SensorConfiguration {
         }
 
         public SensorConfiguration build() {
+            checkArgument(sensorFeed != null, "Can't create a Sensor without a SensorFeed");
+            if(sensorId == null) {
+                sensorId = randomUUID().toString();
+            }
+            if(sensorName == null) {
+                sensorName = sensorId;
+            }
             return new SensorConfiguration(sensorId, sensorName, sensorFeed);
         }
 
