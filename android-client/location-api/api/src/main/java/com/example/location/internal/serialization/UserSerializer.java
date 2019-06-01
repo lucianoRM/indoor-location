@@ -1,11 +1,11 @@
-package com.example.location.api.serialization;
+package com.example.location.internal.serialization;
 
-import com.example.location.api.entity.sensor.DefaultSensingUser;
-import com.example.location.api.entity.emitter.DefaultSignalEmittingUser;
+import com.example.location.internal.entity.emitter.DefaultSignalEmittingUser;
 import com.example.location.api.entity.sensor.SensingUser;
 import com.example.location.api.entity.emitter.SignalEmittingUser;
 import com.example.location.api.entity.User;
 import com.example.location.api.entity.UserType;
+import com.example.location.internal.entity.sensor.DefaultSensingUser;
 
 import java.lang.reflect.Type;
 

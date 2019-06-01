@@ -1,5 +1,7 @@
 package com.example.location.api.entity.sensor;
 
+import com.example.location.api.data.SensedObject;
+
 import java.util.List;
 
 /**

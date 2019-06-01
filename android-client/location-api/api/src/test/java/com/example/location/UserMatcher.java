@@ -1,7 +1,7 @@
-package com.example.location.api;
+package com.example.location;
 
 import com.example.location.api.data.Position;
-import com.example.location.api.entity.SkeletalUser;
+import com.example.location.internal.entity.SkeletalUser;
 import com.example.location.api.entity.User;
 
 import org.hamcrest.Description;
@@ -14,7 +14,7 @@ public class UserMatcher extends TypeSafeMatcher<User> {
     }
 
     public static UserMatcher user(User user) {
-        return new UserMatcher(user);{
+        return new UserMatcher(user);
     }
 
     private User expectedUser;

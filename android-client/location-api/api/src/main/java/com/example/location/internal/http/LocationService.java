@@ -1,4 +1,4 @@
-package com.example.location.api.http;
+package com.example.location.internal.http;
 
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.api.entity.emitter.SignalEmitter;

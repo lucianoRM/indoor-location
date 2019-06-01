@@ -1,6 +1,6 @@
 package com.example.location.api.client;
 
-import com.example.location.api.entity.sensor.SensedObject;
+import com.example.location.api.data.SensedObject;
 import com.example.location.api.entity.sensor.Sensor;
 
 import java.util.List;

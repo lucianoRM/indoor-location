@@ -1,4 +1,4 @@
-package com.example.location.api.entity.sensor;
+package com.example.location.api.data;
 
 public class SensingData {
 

@@ -1,6 +1,7 @@
-package com.example.location.api.entity;
+package com.example.location.internal.entity;
 
 import com.example.location.api.data.Position;
+import com.example.location.api.entity.User;
 
 import java.util.Objects;
 

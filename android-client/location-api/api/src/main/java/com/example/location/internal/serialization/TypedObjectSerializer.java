@@ -1,4 +1,4 @@
-package com.example.location.api.serialization;
+package com.example.location.internal.serialization;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;

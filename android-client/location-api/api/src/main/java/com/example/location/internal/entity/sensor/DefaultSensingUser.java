@@ -1,8 +1,8 @@
-package com.example.location.api.entity.sensor;
+package com.example.location.internal.entity.sensor;
 
 import com.example.location.api.data.Position;
-import com.example.location.api.entity.SkeletalUser;
-
+import com.example.location.api.entity.sensor.SensingUser;
+import com.example.location.internal.entity.SkeletalUser;
 
 public class DefaultSensingUser extends SkeletalUser implements SensingUser {
 
@@ -10,4 +10,8 @@ public class DefaultSensingUser extends SkeletalUser implements SensingUser {
         super(id, name, position);
     }
 
+    @Override
+    public void sense() {
+
+    }
 }
