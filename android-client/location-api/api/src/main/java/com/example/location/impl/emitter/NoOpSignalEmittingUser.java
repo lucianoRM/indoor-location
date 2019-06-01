@@ -2,7 +2,7 @@ package com.example.location.impl.emitter;
 
 import com.example.location.api.data.Position;
 import com.example.location.internal.entity.SkeletalUser;
-import com.example.location.api.entity.emitter.SignalEmittingUser;
+import com.example.location.internal.entity.emitter.SignalEmittingUser;
 
 public class NoOpSignalEmittingUser extends SkeletalUser implements SignalEmittingUser {
 

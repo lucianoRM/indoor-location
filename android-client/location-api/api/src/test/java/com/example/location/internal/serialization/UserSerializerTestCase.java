@@ -2,10 +2,10 @@ package com.example.location.internal.serialization;
 
 import com.example.location.api.data.Position;
 import com.example.location.internal.entity.emitter.DefaultSignalEmittingUser;
-import com.example.location.api.entity.sensor.SensingUser;
+import com.example.location.internal.entity.sensor.SensingUser;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.api.entity.emitter.SignalEmitter;
-import com.example.location.api.entity.emitter.SignalEmittingUser;
+import com.example.location.internal.entity.emitter.SignalEmittingUser;
 import com.example.location.api.entity.User;
 import com.example.location.internal.entity.sensor.DefaultSensingUser;
 import com.google.gson.Gson;

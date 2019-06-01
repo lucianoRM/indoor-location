@@ -25,4 +25,14 @@ public class DefaultSensorImplementation implements Sensor {
         //
 
     }
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
 }

@@ -1,17 +1,17 @@
 package com.example.location.internal.serialization;
 
 import com.example.location.internal.entity.emitter.DefaultSignalEmittingUser;
-import com.example.location.api.entity.sensor.SensingUser;
-import com.example.location.api.entity.emitter.SignalEmittingUser;
+import com.example.location.internal.entity.sensor.SensingUser;
+import com.example.location.internal.entity.emitter.SignalEmittingUser;
 import com.example.location.api.entity.User;
-import com.example.location.api.entity.UserType;
+import com.example.location.internal.entity.UserType;
 import com.example.location.internal.entity.sensor.DefaultSensingUser;
 
 import java.lang.reflect.Type;
 
-import static com.example.location.api.entity.UserType.ANCHOR;
-import static com.example.location.api.entity.UserType.SENSOR;
-import static com.example.location.api.entity.UserType.valueOf;
+import static com.example.location.internal.entity.UserType.ANCHOR;
+import static com.example.location.internal.entity.UserType.SENSOR;
+import static com.example.location.internal.entity.UserType.valueOf;
 
 public class UserSerializer extends TypedObjectSerializer<User> {
 

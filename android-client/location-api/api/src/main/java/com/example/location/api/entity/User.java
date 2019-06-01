@@ -1,4 +1,6 @@
 package com.example.location.api.entity;
 
-public interface User {
+import com.example.location.internal.entity.IdentifiableObject;
+
+public interface User extends IdentifiableObject {
 }

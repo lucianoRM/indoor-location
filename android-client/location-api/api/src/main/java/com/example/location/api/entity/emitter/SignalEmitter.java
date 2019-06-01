@@ -1,6 +1,8 @@
 package com.example.location.api.entity.emitter;
 
-public interface SignalEmitter {
+import com.example.location.internal.entity.IdentifiableObject;
+
+public interface SignalEmitter extends IdentifiableObject {
 
     /**
      * Emits the signal that defines this signal emitter.

@@ -1,6 +1,5 @@
 package com.example.location.internal.client;
 
-import com.example.location.api.client.SensorLocationClient;
 import com.example.location.api.data.SensedObject;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.internal.http.LocationService;

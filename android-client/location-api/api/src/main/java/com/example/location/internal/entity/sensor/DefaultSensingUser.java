@@ -1,7 +1,6 @@
 package com.example.location.internal.entity.sensor;
 
 import com.example.location.api.data.Position;
-import com.example.location.api.entity.sensor.SensingUser;
 import com.example.location.internal.entity.SkeletalUser;
 
 public class DefaultSensingUser extends SkeletalUser implements SensingUser {

@@ -1,4 +1,4 @@
-package com.example.location.api.entity;
+package com.example.location.internal.entity;
 
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.api.entity.sensor.Sensor;
