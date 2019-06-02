@@ -1,6 +1,6 @@
 package com.example.location.internal.serialization;
 
-import com.example.location.internal.entity.emitter.DefaultSignalEmittingUser;
+import com.example.location.internal.entity.emitter.DefaultSignalEmitter;
 import com.example.location.internal.entity.sensor.SensingUser;
 import com.example.location.internal.entity.emitter.SignalEmittingUser;
 import com.example.location.api.entity.User;
@@ -23,7 +23,7 @@ public class UserSerializer extends TypedObjectSerializer<User> {
                 return DefaultSensingUser.class;
             }
             if(ANCHOR.equals(userType)) {
-                return DefaultSignalEmittingUser.class;
+                return DefaultSignalEmitter.class;
             }
         }catch (IllegalArgumentException e) {
             //exception below will be thrown

@@ -1,17 +1,16 @@
 package com.example.location.internal.entity;
 
 import com.example.location.api.data.Position;
-import com.example.location.api.entity.User;
 
 import java.util.Objects;
 
-public abstract class SkeletalUser implements User {
+public abstract class SkeletalIdentifiableObject implements IdentifiableObject {
 
     private String id;
     private String name;
     private Position position;
 
-    public SkeletalUser(String id, String name, Position position) {
+    public SkeletalIdentifiableObject(String id, String name, Position position) {
         this.id = id;
         this.name = name;
         this.position = position;
@@ -36,18 +35,18 @@ public abstract class SkeletalUser implements User {
 
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof SkeletalUser)) {
+        if(!(obj instanceof SkeletalIdentifiableObject)) {
             return false;
         }
         if(obj == this) {
             return true;
         }
-        SkeletalUser other = (SkeletalUser) obj;
+        SkeletalIdentifiableObject other = (SkeletalIdentifiableObject) obj;
         return this.id.equals(other.id) && this.name.equals(other.name) && this.position.equals(other.position);
     }
 
     @Override
     public String toString() {
-        return "User:" + getId() + "(" + getName() + ")@" + getPosition().getX() + "-" + getPosition().getY();
+        return getId() + "(" + getName() + ")@" + getPosition().getX() + "-" + getPosition().getY();
     }
 }

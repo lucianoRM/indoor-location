@@ -1,32 +1,20 @@
 package com.example.location.integration;
 
+import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.internal.container.DaggerLocationSystemComponent;
 import com.example.location.internal.container.LocationServiceModule;
 import com.example.location.internal.container.LocationSystemComponent;
+import com.example.location.internal.container.SensorManagerModule;
 import com.example.location.internal.http.LocationService;
-
-import org.junit.Test;
+import com.example.location.internal.serialization.SignalEmitterSerializer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AbstractIntegrationTestCase {
 
-    private static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://localhost:8082/")
-            .build();
 
-    private LocationSystemComponent container;
 
-    public AbstractIntegrationTestCase() {
-        this.container = DaggerLocationSystemComponent
-                .builder()
-                .locationServiceModule(new LocationServiceModule(retrofit.create(LocationService.class)))
-                .build();
-    }
-
-    @Test
-    public void test() {
-        System.out.println(container.sensorManager());
-        System.out.println(container.locationService());
-    }
 }

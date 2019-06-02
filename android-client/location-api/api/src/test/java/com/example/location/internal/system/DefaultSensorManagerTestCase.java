@@ -3,18 +3,22 @@ package com.example.location.internal.system;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.api.entity.sensor.SensorConfiguration;
 import com.example.location.api.entity.sensor.SensorFeed;
+import com.example.location.internal.http.LocationService;
 
 import org.junit.Test;
 
 import static com.example.location.api.entity.sensor.SensorConfiguration.sensorConfigurationBuilder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class DefaultSensorManagerTestCase {
 
-    private DefaultSensorManager sensorManager = new DefaultSensorManager();
+    private LocationService locationService = mock(LocationService.class);
+    private DefaultSensorManager sensorManager = new DefaultSensorManager(locationService);
 
     @Test
-    public void createNewSensor() {
+    public void createdSensorGetsItemsFromFeedAndCallsListenerOnSense() {
         final String sensorId = "sensorId";
         final String sensorName = "sensorName";
         final SensorFeed mockedFeed = mock(SensorFeed.class);
@@ -24,6 +28,9 @@ public class DefaultSensorManagerTestCase {
                 .withFeed(mockedFeed)
                 .build();
         Sensor sensor = sensorManager.createSensor(sensorConfiguration);
+        sensor.sense();
+        verify(mockedFeed, times(1)).getSensedObjects();
+        verify(locationService, times(1)).getSignalEmitters();
     }
 
 }

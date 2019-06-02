@@ -1,15 +1,20 @@
 package com.example.location.internal.container;
 
-import com.example.location.internal.system.DefaultSensorManager;
 import com.example.location.api.system.SensorManager;
+import com.example.location.internal.system.DefaultSensorManager;
 
-import dagger.Binds;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
+import dagger.Provides;
 
 @Module
-public abstract class SensorManagerModule {
+public class SensorManagerModule {
 
-    @Binds
-    public abstract SensorManager sensorManager(DefaultSensorManager sensorManager);
-
+    @Provides
+    @Singleton
+    public SensorManager sensorManager(DefaultSensorManager sensorManagerImpl) {
+        return sensorManagerImpl;
+    }
 }

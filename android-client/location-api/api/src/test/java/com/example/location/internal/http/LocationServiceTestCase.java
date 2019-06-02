@@ -1,38 +1,49 @@
 package com.example.location.internal.http;
 
 import com.example.location.api.entity.User;
+import com.example.location.api.entity.emitter.SignalEmitter;
+import com.example.location.internal.serialization.SignalEmitterSerializer;
 import com.example.location.internal.serialization.UserSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.util.List;
 
+import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.example.location.UserMatcher.user;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.rules.ExpectedException.none;
 
 public class LocationServiceTestCase {
 
     private static Gson gson = new GsonBuilder()
-            .registerTypeHierarchyAdapter(User.class, new UserSerializer())
+            .registerTypeHierarchyAdapter(SignalEmitter.class, new SignalEmitterSerializer())
             .create();
 
     private static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://localhost:8082/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
+
+    private static Type signalEmitterListType = new TypeToken<List<SignalEmitter>>(){}.getType();
 
     private LocationService locationService;
     private MockWebServer mockWebServer;
@@ -48,36 +59,16 @@ public class LocationServiceTestCase {
         locationService = retrofit.create(LocationService.class);
     }
 
-//    @Test
-//    public void getSensingUser() throws Exception{
-//        String serializedUser = getJsonString("sensing_user.json");
-//        User expectedUser = gson.fromJson(serializedUser, User.class);
-//        mockWebServer.enqueue(new MockResponse().setBody(serializedUser));
-//        Call<User> userCall = locationService.getUser("user");
-//        Response<User> response = userCall.execute();
-//        User receivedUser = response.body();
-//        assertThat(receivedUser, is(user(expectedUser)));
-//    }
-//
-//    @Test
-//    public void getSignalEmittingUser() throws Exception {
-//        String serializedUser = getJsonString("signal_emitting_user.json");
-//        User expectedUser = gson.fromJson(serializedUser, User.class);
-//        mockWebServer.enqueue(new MockResponse().setBody(serializedUser));
-//        Call<User> userCall = locationService.getUser("user");
-//        Response<User> response = userCall.execute();
-//        User receivedUser = response.body();
-//        assertThat(receivedUser, is(user(expectedUser)));
-//    }
-//
-//    @Test
-//    public void getUnknownTypeUser() throws Exception{
-//        String serializedUser = getJsonString("unknown_type_user.json");
-//        mockWebServer.enqueue(new MockResponse().setBody(serializedUser));
-//        Call<User> userCall = locationService.getUser("user");
-//        expectedException.expectMessage("is not a valid user type");
-//        userCall.execute();
-//    }
+    @Test
+    public void getSignalEmitters() throws Exception {
+        String serializedSignalEmitters = getJsonString("signal_emitters.json");
+        List<SignalEmitter> expectedSignalEmitters = gson.fromJson(serializedSignalEmitters, signalEmitterListType);
+        mockWebServer.enqueue(new MockResponse().setBody(serializedSignalEmitters));
+        Call<List<SignalEmitter>> signalEmittersCall = locationService.getSignalEmitters();
+        Response<List<SignalEmitter>> response = signalEmittersCall.execute();
+        List<SignalEmitter> receivedEmitters = response.body();
+        assertThat(receivedEmitters, is(equalTo(expectedSignalEmitters)));
+    }
 
     private String getJsonString(String name) throws Exception {
         InputStream user = this.getClass().getClassLoader().getResourceAsStream(name);
