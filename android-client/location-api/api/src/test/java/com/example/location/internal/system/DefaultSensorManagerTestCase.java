@@ -8,9 +8,9 @@ import com.example.location.internal.http.HttpLocationClient;
 import org.junit.Test;
 
 import static com.example.location.api.entity.sensor.SensorConfiguration.sensorConfigurationBuilder;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 public class DefaultSensorManagerTestCase {
 
@@ -18,7 +18,7 @@ public class DefaultSensorManagerTestCase {
     private DefaultSensorManager sensorManager = new DefaultSensorManager(httpLocationClient);
 
     @Test
-    public void createdSensorGetsItemsFromFeedAndCallsListenerOnSense() {
+    public void createsSensorFromConfigWithExtraArgs() {
         final String sensorId = "sensorId";
         final String sensorName = "sensorName";
         final SensorFeed mockedFeed = mock(SensorFeed.class);
@@ -28,9 +28,8 @@ public class DefaultSensorManagerTestCase {
                 .withFeed(mockedFeed)
                 .build();
         Sensor sensor = sensorManager.createSensor(sensorConfiguration);
-        sensor.sense();
-        verify(mockedFeed, times(1)).getSensedObjects();
-        verify(httpLocationClient, times(1)).getSignalEmitters();
+        assertThat(sensor.getId(), equalTo(sensorId));
+        assertThat(sensor.getName(), equalTo(sensorName));
     }
 
 }
