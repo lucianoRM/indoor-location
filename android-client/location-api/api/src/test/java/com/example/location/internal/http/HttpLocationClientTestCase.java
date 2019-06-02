@@ -1,9 +1,7 @@
 package com.example.location.internal.http;
 
-import com.example.location.api.entity.User;
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.internal.serialization.SignalEmitterSerializer;
-import com.example.location.internal.serialization.UserSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -32,7 +30,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.rules.ExpectedException.none;
 
-public class LocationServiceTestCase {
+public class HttpLocationClientTestCase {
 
     private static Gson gson = new GsonBuilder()
             .registerTypeHierarchyAdapter(SignalEmitter.class, new SignalEmitterSerializer())
@@ -45,7 +43,7 @@ public class LocationServiceTestCase {
 
     private static Type signalEmitterListType = new TypeToken<List<SignalEmitter>>(){}.getType();
 
-    private LocationService locationService;
+    private HttpLocationClient httpLocationClient;
     private MockWebServer mockWebServer;
 
     @Rule
@@ -56,7 +54,7 @@ public class LocationServiceTestCase {
         mockWebServer = new MockWebServer();
         mockWebServer.start(8082);
 
-        locationService = retrofit.create(LocationService.class);
+        httpLocationClient = retrofit.create(HttpLocationClient.class);
     }
 
     @Test
@@ -64,7 +62,7 @@ public class LocationServiceTestCase {
         String serializedSignalEmitters = getJsonString("signal_emitters.json");
         List<SignalEmitter> expectedSignalEmitters = gson.fromJson(serializedSignalEmitters, signalEmitterListType);
         mockWebServer.enqueue(new MockResponse().setBody(serializedSignalEmitters));
-        Call<List<SignalEmitter>> signalEmittersCall = locationService.getSignalEmitters();
+        Call<List<SignalEmitter>> signalEmittersCall = httpLocationClient.getSignalEmitters();
         Response<List<SignalEmitter>> response = signalEmittersCall.execute();
         List<SignalEmitter> receivedEmitters = response.body();
         assertThat(receivedEmitters, is(equalTo(expectedSignalEmitters)));

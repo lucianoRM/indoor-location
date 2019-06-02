@@ -1,10 +1,20 @@
 package com.example.location.api.data;
 
-import com.example.location.api.data.SensingData;
-
 public class SensedObject {
 
     private String id;
-    private SensingData data;
+    private RawSensorData data;
 
+    public SensedObject(String id, RawSensorData sensorData) {
+        this.id = id;
+        this.data = sensorData;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public RawSensorData getRawData() {
+        return data;
+    }
 }

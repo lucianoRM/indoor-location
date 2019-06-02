@@ -6,14 +6,14 @@ import com.example.location.api.entity.sensor.SensorFeed;
 
 import java.util.List;
 
-public class DefaultSensorImplementation implements Sensor {
+public class DefaultSensor implements Sensor {
 
     private String id;
     private String name;
     private SensorFeed feed;
     private SensorListener listener;
 
-    public DefaultSensorImplementation(String id, String name, SensorFeed feed, SensorListener listener) {
+    public DefaultSensor(String id, String name, SensorFeed feed, SensorListener listener) {
         this.id = id;
         this.name = name;
         this.feed = feed;
