@@ -1,5 +1,6 @@
 package com.example.location.internal.system;
 
+import com.example.location.api.data.DataTransformer;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.api.entity.sensor.SensorConfiguration;
 import com.example.location.api.entity.sensor.SensorFeed;
@@ -22,10 +23,12 @@ public class DefaultSensorManagerTestCase {
         final String sensorId = "sensorId";
         final String sensorName = "sensorName";
         final SensorFeed mockedFeed = mock(SensorFeed.class);
+        final DataTransformer mockedTransformer = mock(DataTransformer.class);
         SensorConfiguration sensorConfiguration = sensorConfigurationBuilder()
                 .withId(sensorId)
                 .withName(sensorName)
                 .withFeed(mockedFeed)
+                .withTransformer(mockedTransformer)
                 .build();
         Sensor sensor = sensorManager.createSensor(sensorConfiguration);
         assertThat(sensor.getId(), equalTo(sensorId));

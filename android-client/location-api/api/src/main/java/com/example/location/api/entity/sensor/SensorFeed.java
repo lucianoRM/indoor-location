@@ -1,6 +1,7 @@
 package com.example.location.api.entity.sensor;
 
-import com.example.location.api.data.SensedObject;
+import com.example.location.api.data.RawSensorData;
+import com.example.location.internal.data.SensedObject;
 
 import java.util.List;
 
@@ -10,8 +11,8 @@ import java.util.List;
 public interface SensorFeed {
 
     /**
-     * Collect the last sensed objects
-     * @return a {@link List<SensedObject>} with the objects sensed
+     * Collect the last sensed objects data
+     * @return a {@link List<RawSensorData>} with the data from the objects sensed
      */
-    List<SensedObject> getSensedObjects();
+    List<RawSensorData> getData();
 }

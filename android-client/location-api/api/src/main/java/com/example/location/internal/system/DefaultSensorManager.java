@@ -24,6 +24,7 @@ public class DefaultSensorManager implements SensorManager {
                 config.getSensorId(),
                 config.getSensorName(),
                 config.getSensorFeed(),
+                config.getDataTransformer(),
                 new HttpSensorListener(httpLocationClient)
         );
     }

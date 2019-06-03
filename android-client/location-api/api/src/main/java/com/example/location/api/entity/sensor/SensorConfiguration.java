@@ -1,5 +1,7 @@
 package com.example.location.api.entity.sensor;
 
+import com.example.location.api.data.DataTransformer;
+
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.UUID.randomUUID;
@@ -9,11 +11,16 @@ public final class SensorConfiguration {
     private String sensorId;
     private String sensorName;
     private SensorFeed sensorFeed;
+    private DataTransformer sensedDataTransformer;
 
-    private SensorConfiguration(String sensorId, String sensorName, SensorFeed sensorFeed) {
+    private SensorConfiguration(String sensorId,
+                                String sensorName,
+                                SensorFeed sensorFeed,
+                                DataTransformer sensedDataTransformer) {
         this.sensorId = sensorId;
         this.sensorName = sensorName;
         this.sensorFeed = sensorFeed;
+        this.sensedDataTransformer = sensedDataTransformer;
     }
 
     public static Builder sensorConfigurationBuilder() {
@@ -32,11 +39,16 @@ public final class SensorConfiguration {
         return sensorFeed;
     }
 
+    public DataTransformer getDataTransformer() {
+        return sensedDataTransformer;
+    }
+
     public static class Builder {
 
         private String sensorId;
         private String sensorName;
         private SensorFeed sensorFeed;
+        private DataTransformer sensedDataTransformer;
 
         public Builder withId(String sensorId) {
             this.sensorId = sensorId;
@@ -53,15 +65,21 @@ public final class SensorConfiguration {
             return this;
         }
 
+        public Builder withTransformer(DataTransformer dataTransformer) {
+            this.sensedDataTransformer = dataTransformer;
+            return this;
+        }
+
         public SensorConfiguration build() {
             checkArgument(sensorFeed != null, "Can't create a Sensor without a SensorFeed");
+            checkArgument(sensedDataTransformer != null, "Need to configure a DataTransformer for the Sensor");
             if(sensorId == null) {
                 sensorId = randomUUID().toString();
             }
             if(sensorName == null) {
                 sensorName = sensorId;
             }
-            return new SensorConfiguration(sensorId, sensorName, sensorFeed);
+            return new SensorConfiguration(sensorId, sensorName, sensorFeed, sensedDataTransformer);
         }
 
     }

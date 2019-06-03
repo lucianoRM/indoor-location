@@ -1,23 +1,53 @@
 package com.example.location.api.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Raw data sensed by the sensor corresponding to one {@link com.example.location.api.entity.emitter.SignalEmitter}
+ * Raw data as the sensor received it
  */
 public class RawSensorData {
 
-    private float signalValue;
-    private long timestamp;
+    private String emitterId;
+    private float sensedValue;
+    private Map<String, Object> attributes;
 
-    public RawSensorData(float signalValue, long timestamp) {
-        this.signalValue = signalValue;
-        this.timestamp = timestamp;
+    public RawSensorData(String emitterId, float sensedValue) {
+        this.emitterId = emitterId;
+        this.sensedValue = sensedValue;
+        this.attributes = new HashMap<>();
     }
 
-    public float getSignalValue() {
-        return signalValue;
+    public void setSensedValue(float sensedValue) {
+        this.sensedValue = sensedValue;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public void setEmitterId(String emitterId) {
+        this.emitterId = emitterId;
     }
+
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
+
+    public void addAttributes(Map<String, Object> attributes) {
+        this.attributes.putAll(attributes);
+    }
+
+    public void addAttribute(String key, Object value) {
+        this.attributes.put(key, value);
+    }
+
+    public String getEmitterId() {
+        return this.emitterId;
+    }
+
+    public float getSensedValue() {
+        return this.sensedValue;
+    }
+
+    public Map<String, Object> getAttributes() {
+        return this.attributes;
+    }
+
 }

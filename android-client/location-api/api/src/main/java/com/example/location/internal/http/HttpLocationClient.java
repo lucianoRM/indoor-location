@@ -1,16 +1,14 @@
 package com.example.location.internal.http;
 
-import com.example.location.api.data.SensedObject;
+import com.example.location.internal.data.SensedObject;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.api.entity.emitter.SignalEmitter;
-import com.example.location.api.entity.User;
 
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
