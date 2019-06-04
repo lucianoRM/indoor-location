@@ -10,7 +10,8 @@ import dagger.Component;
 @Singleton
 @Component(modules = {
         LocationServiceModule.class,
-        SensorManagerModule.class
+        SensorManagerModule.class,
+        EmitterManagerModule.class
 })
 public interface LocationSystemComponent {
 

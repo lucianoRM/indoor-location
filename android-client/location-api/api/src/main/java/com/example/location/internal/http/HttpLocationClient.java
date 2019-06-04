@@ -9,6 +9,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
@@ -27,12 +28,20 @@ public interface HttpLocationClient {
     Call<List<SignalEmitter>> getSignalEmitters();
 
     /**
+     * Register a new {@link Sensor} in the server
+     * @param sensor the sensor to be registered in the server
+     * @return the sensor being registered
+     */
+    @POST(SENSORS_ENDPOINT)
+    Call<Sensor> registerSensor(@Body Sensor sensor);
+
+    /**
      * Update last sensed objects for this sensor in the server.
      * @param sensorId the id of this sensor
      * @param sensedObjects all new objects being sensed
      * @return The sensor updated
      */
     @PUT(SENSORS_ENDPOINT + "/{sensorId}")
-    Call<Sensor> udpateSensor(@Path("sensorId") String sensorId, @Body List<SensedObject> sensedObjects);
+    Call<Sensor> updateSensor(@Path("sensorId") String sensorId, @Body List<SensedObject> sensedObjects);
 
 }

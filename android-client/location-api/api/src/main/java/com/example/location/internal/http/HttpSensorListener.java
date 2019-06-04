@@ -20,6 +20,6 @@ public class HttpSensorListener implements SensorListener {
 
     @Override
     public void onSensorUpdate(Sensor sensor, List<SensedObject> sensedObjects) {
-        httpLocationClient.udpateSensor(sensor.getId(), sensedObjects);
+        httpLocationClient.updateSensor(sensor.getId(), sensedObjects);
     }
 }
