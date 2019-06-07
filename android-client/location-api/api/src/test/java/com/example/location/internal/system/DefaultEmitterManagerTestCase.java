@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static retrofit2.Response.success;
 
 public class DefaultEmitterManagerTestCase {
 
@@ -38,13 +39,12 @@ public class DefaultEmitterManagerTestCase {
         List<SignalEmitter> signalEmitters = new ArrayList<>();
         signalEmitters.add(mockedEmitter);
         Call<List<SignalEmitter>> mockedCall = mock(Call.class);
-        Response<List<SignalEmitter>> mockedResponse = mock(Response.class);
-        when(mockedResponse.body()).thenReturn(signalEmitters);
-        when(mockedCall.execute()).thenReturn(mockedResponse);
+        Response<List<SignalEmitter>> response = success(signalEmitters);
+        when(mockedCall.execute()).thenReturn(response);
         when(mockedHttpClient.getSignalEmitters()).thenReturn(mockedCall);
 
         Optional<SignalEmitter> emitter = emitterManager.getSignalEmitter(emitterId);
-        assertThat(emitter, equalTo(mockedEmitter));
+        assertThat(emitter.get(), equalTo(mockedEmitter));
     }
 
 }
