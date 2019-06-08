@@ -5,7 +5,7 @@ import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.api.entity.sensor.SensorConfiguration;
 import com.example.location.api.entity.sensor.SensorFeed;
 import com.example.location.api.system.EmitterManager;
-import com.example.location.internal.http.HttpLocationClient;
+import com.example.location.functional.http.HttpLocationClient;
 
 import org.junit.Before;
 import org.junit.Test;

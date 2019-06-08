@@ -2,7 +2,7 @@ package com.example.location.internal.client;
 
 import com.example.location.internal.data.SensedObject;
 import com.example.location.api.entity.sensor.Sensor;
-import com.example.location.internal.http.HttpLocationClient;
+import com.example.location.functional.http.HttpLocationClient;
 
 import java.util.List;
 

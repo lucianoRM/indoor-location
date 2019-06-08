@@ -1,4 +1,4 @@
-package com.example.location.internal.http;
+package com.example.location.functional.http;
 
 import com.example.location.internal.data.SensedObject;
 import com.example.location.api.entity.sensor.Sensor;

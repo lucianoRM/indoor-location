@@ -2,7 +2,7 @@ package com.example.location.internal.system;
 
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.api.system.EmitterManager;
-import com.example.location.internal.http.HttpLocationClient;
+import com.example.location.functional.http.HttpLocationClient;
 
 import org.junit.Before;
 import org.junit.Test;

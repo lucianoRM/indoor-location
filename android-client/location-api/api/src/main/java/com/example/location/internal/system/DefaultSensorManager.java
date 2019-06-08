@@ -5,8 +5,8 @@ import com.example.location.api.entity.sensor.SensorConfiguration;
 import com.example.location.api.system.EmitterManager;
 import com.example.location.api.system.SensorManager;
 import com.example.location.internal.entity.sensor.DefaultSensor;
-import com.example.location.internal.http.HttpLocationClient;
-import com.example.location.internal.http.HttpSensorListener;
+import com.example.location.functional.http.HttpLocationClient;
+import com.example.location.functional.http.HttpSensorListener;
 
 import java.io.IOException;
 

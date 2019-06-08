@@ -20,7 +20,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class SensingServerSynchronizationTestCase extends AbstractFunctionalTestCase {
+public class SensingServerSynchronizationTestCase extends MockedServerFunctionalTestCase {
 
     private static final String SENSOR_JSON = "sensor.json";
     private static final String EMITTER_JSON = "signal_emitter.json";
