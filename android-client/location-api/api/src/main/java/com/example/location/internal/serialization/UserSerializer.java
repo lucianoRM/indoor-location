@@ -16,7 +16,7 @@ import static com.example.location.internal.entity.UserType.valueOf;
 public class UserSerializer extends TypedObjectSerializer<User> {
 
     @Override
-    protected Type getImplementationTypeFor(String type) {
+    protected Type getImplementationTypeForDeserialization(String type) {
         try {
             UserType userType = valueOf(type);
             if(SENSOR.equals(userType)) {
@@ -32,7 +32,7 @@ public class UserSerializer extends TypedObjectSerializer<User> {
     }
 
     @Override
-    protected String getTypeFor(User object) {
+    protected String getTypeForSerialization(User object) {
         if(object instanceof SensingUser) {
             return SENSOR.toString();
         }

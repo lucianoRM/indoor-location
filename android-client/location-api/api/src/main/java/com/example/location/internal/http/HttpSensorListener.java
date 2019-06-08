@@ -4,7 +4,10 @@ import com.example.location.internal.data.SensedObject;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.internal.entity.sensor.SensorListener;
 
+import java.io.IOException;
 import java.util.List;
+
+import retrofit2.Call;
 
 /**
  * {@link SensorListener} that connects to a remote HttpServer when the
@@ -20,6 +23,12 @@ public class HttpSensorListener implements SensorListener {
 
     @Override
     public void onSensorUpdate(Sensor sensor, List<SensedObject> sensedObjects) {
-        httpLocationClient.updateSensor(sensor.getId(), sensedObjects);
+        Call<String> updateSensorCall = httpLocationClient.updateSensor(sensor.getId(), sensedObjects);
+        try {
+            updateSensorCall.execute();
+        }catch (IOException e) {
+            //TODO: fix this
+            throw new RuntimeException(e);
+        }
     }
 }

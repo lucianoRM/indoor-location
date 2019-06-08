@@ -1,11 +1,13 @@
 package com.example.location.internal.entity.sensor;
 
 import com.example.location.api.data.DataTransformer;
+import com.example.location.api.data.Position;
 import com.example.location.api.data.RawSensorData;
 import com.example.location.api.system.EmitterManager;
 import com.example.location.internal.data.SensedObject;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.api.entity.sensor.SensorFeed;
+import com.example.location.internal.entity.SkeletalIdentifiableObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +16,12 @@ import java.util.List;
  * Default implementation for a {@link Sensor}
  */
 
-public class DefaultSensor implements Sensor {
+public class DefaultSensor extends SkeletalIdentifiableObject implements Sensor {
 
-    private String id;
-    private String name;
-    private SensorFeed feed;
-    private DataTransformer sensedDataTransformer;
-    private SensorListener listener;
-    private EmitterManager emitterManager;
+    private transient SensorFeed feed;
+    private transient DataTransformer sensedDataTransformer;
+    private transient SensorListener listener;
+    private transient EmitterManager emitterManager;
 
     public DefaultSensor(String id,
                          String name,
@@ -29,8 +29,7 @@ public class DefaultSensor implements Sensor {
                          DataTransformer sensedDataTransformer,
                          SensorListener listener,
                          EmitterManager emitterManager) {
-        this.id = id;
-        this.name = name;
+        super(id, name, new Position(0, 0));
         this.feed = feed;
         this.sensedDataTransformer = sensedDataTransformer;
         this.listener = listener;
@@ -53,15 +52,5 @@ public class DefaultSensor implements Sensor {
                         )
         );
         listener.onSensorUpdate(this, transformedObjects);
-    }
-
-    @Override
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
     }
 }

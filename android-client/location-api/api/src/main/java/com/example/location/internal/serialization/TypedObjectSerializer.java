@@ -22,7 +22,7 @@ public abstract class TypedObjectSerializer<T> implements JsonSerializer<T>, Jso
     public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {
         JsonElement serializedElement = DEFAULT_GSON.toJsonTree(src);
         JsonObject serializedObject = serializedElement.getAsJsonObject();
-        serializedObject.addProperty(TYPE_KEY, getTypeFor(src));
+        serializedObject.addProperty(TYPE_KEY, getTypeForSerialization(src));
         return serializedObject;
     }
 
@@ -30,11 +30,11 @@ public abstract class TypedObjectSerializer<T> implements JsonSerializer<T>, Jso
     public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
         String type = jsonObject.get(TYPE_KEY).getAsString();
-        return DEFAULT_GSON.fromJson(jsonObject, getImplementationTypeFor(type));
+        return DEFAULT_GSON.fromJson(jsonObject, getImplementationTypeForDeserialization(type));
     }
 
-    protected abstract Type getImplementationTypeFor(String type);
+    protected abstract Type getImplementationTypeForDeserialization(String type);
 
-    protected abstract String getTypeFor(T object);
+    protected abstract String getTypeForSerialization(T object);
 
 }

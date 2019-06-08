@@ -9,17 +9,11 @@ import java.util.Map;
 public class RawSensorData {
 
     private String emitterId;
-    private float sensedValue;
     private Map<String, Object> attributes;
 
-    public RawSensorData(String emitterId, float sensedValue) {
+    public RawSensorData(String emitterId) {
         this.emitterId = emitterId;
-        this.sensedValue = sensedValue;
         this.attributes = new HashMap<>();
-    }
-
-    public void setSensedValue(float sensedValue) {
-        this.sensedValue = sensedValue;
     }
 
     public void setEmitterId(String emitterId) {
@@ -40,10 +34,6 @@ public class RawSensorData {
 
     public String getEmitterId() {
         return this.emitterId;
-    }
-
-    public float getSensedValue() {
-        return this.sensedValue;
     }
 
     public Map<String, Object> getAttributes() {

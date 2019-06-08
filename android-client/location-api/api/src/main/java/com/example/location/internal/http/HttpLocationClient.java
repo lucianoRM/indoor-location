@@ -39,9 +39,8 @@ public interface HttpLocationClient {
      * Update last sensed objects for this sensor in the server.
      * @param sensorId the id of this sensor
      * @param sensedObjects all new objects being sensed
-     * @return The sensor updated
      */
     @PUT(SENSORS_ENDPOINT + "/{sensorId}")
-    Call<Sensor> updateSensor(@Path("sensorId") String sensorId, @Body List<SensedObject> sensedObjects);
+    Call<String> updateSensor(@Path("sensorId") String sensorId, @Body List<SensedObject> sensedObjects);
 
 }

@@ -8,12 +8,12 @@ import java.lang.reflect.Type;
 public class SignalEmitterSerializer extends TypedObjectSerializer<SignalEmitter> {
 
     @Override
-    protected Type getImplementationTypeFor(String type) {
+    protected Type getImplementationTypeForDeserialization(String type) {
         return DefaultSignalEmitter.class;
     }
 
     @Override
-    protected String getTypeFor(SignalEmitter object) {
+    protected String getTypeForSerialization(SignalEmitter object) {
         //TODO: Fix this
         return "ANCHOR";
     }

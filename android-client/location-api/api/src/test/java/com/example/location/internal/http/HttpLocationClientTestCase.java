@@ -24,6 +24,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.location.TestUtils.readFile;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -59,19 +60,13 @@ public class HttpLocationClientTestCase {
 
     @Test
     public void getSignalEmitters() throws Exception {
-        String serializedSignalEmitters = getJsonString("signal_emitters.json");
+        String serializedSignalEmitters = readFile("signal_emitters.json");
         List<SignalEmitter> expectedSignalEmitters = gson.fromJson(serializedSignalEmitters, signalEmitterListType);
         mockWebServer.enqueue(new MockResponse().setBody(serializedSignalEmitters));
         Call<List<SignalEmitter>> signalEmittersCall = httpLocationClient.getSignalEmitters();
         Response<List<SignalEmitter>> response = signalEmittersCall.execute();
         List<SignalEmitter> receivedEmitters = response.body();
         assertThat(receivedEmitters, is(equalTo(expectedSignalEmitters)));
-    }
-
-    private String getJsonString(String name) throws Exception {
-        InputStream user = this.getClass().getClassLoader().getResourceAsStream(name);
-        return IOUtils.toString(user, UTF_8);
-
     }
 
 }

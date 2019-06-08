@@ -43,8 +43,8 @@ public class DefaultSensorTestCase {
         when(se2.getId()).thenReturn(emitterId2);
 
         List<RawSensorData> sensedDataList = new ArrayList<>();
-        sensedDataList.add(new RawSensorData(emitterId1, 0.0f));
-        sensedDataList.add(new RawSensorData(emitterId2, 0.0f));
+        sensedDataList.add(new RawSensorData(emitterId1));
+        sensedDataList.add(new RawSensorData(emitterId2));
         when(sensorFeed.getData()).thenReturn(sensedDataList);
 
         List<SensorData> transformedData = new ArrayList<>();

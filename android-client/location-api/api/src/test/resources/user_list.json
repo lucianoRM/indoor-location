@@ -5,8 +5,7 @@
     "type" : "SENSOR",
     "position" : {
       "x" : 0,
-      "y" : 0,
-      "unit" : "m"
+      "y" : 0
     }
   },
   {
@@ -15,8 +14,7 @@
     "type" : "ANCHOR",
     "position" : {
       "x" : 0,
-      "y" : 0,
-      "unit" : "m"
+      "y" : 0
     }
   },
   {
@@ -25,8 +23,7 @@
     "type" : "SENSOR",
     "position" : {
       "x" : 0,
-      "y" : 0,
-      "unit" : "m"
+      "y" : 0
     }
   }
 ]
