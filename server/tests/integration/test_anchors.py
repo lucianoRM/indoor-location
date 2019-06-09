@@ -1,5 +1,3 @@
-import json
-
 from api import ANCHORS_ENDPOINT
 from tests.integration.test_api import TestApi
 
@@ -32,7 +30,7 @@ class TestAnchorsEndpoint(TestApi):
         res = self._client().post(ANCHORS_ENDPOINT, json=user)
         assert res.status_code == 200
         res = self._client().post(ANCHORS_ENDPOINT, json=user)
-        assert res.status_code == 500
+        assert res.status_code == 409
         assert "was already registered" in str(res.get_data())
 
     def test_add_multiple_anchors_and_get_list(self):

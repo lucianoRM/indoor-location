@@ -32,7 +32,7 @@ class TestSignalEmittersEndpoint(TestApi):
         res = self._client().post(SIGNAL_EMITTERS_ENDPOINT, json=signal_emitter)
         assert res.status_code == 200
         res = self._client().post(SIGNAL_EMITTERS_ENDPOINT, json=signal_emitter)
-        assert res.status_code == 500
+        assert res.status_code == 409
         assert "was already registered" in str(res.get_data())
 
     def test_add_multiple_signal_emitters_and_get_list(self):

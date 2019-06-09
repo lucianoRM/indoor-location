@@ -13,8 +13,15 @@ class AnchorListResource(AbstractResource):
     Represents anchors in the system
     """
 
+    __custom_error_mappings = {
+        'AnchorAlreadyExistsException': {
+            'code': 409,
+            'message': lambda e: str(e)
+        }
+    }
+
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(custom_error_mappings=self.__custom_error_mappings, **kwargs)
         self.__anchors_manager = DependencyContainer.anchors_manager()
         self.__anchors_schema = AnchorSchema(many=True, strict=True)
         self.__anchor_schema = AnchorSchema(strict=True)

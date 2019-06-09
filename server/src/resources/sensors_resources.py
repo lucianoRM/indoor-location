@@ -1,5 +1,6 @@
 
 from src.core.anchor.sensing_anchor import SensingAnchor
+from src.core.sensor.sensors_manager import SensorAlreadyExistsException
 from src.core.user.sensing_user import SensingUser
 from src.core.user.user import User
 from src.dependency_container import DependencyContainer
@@ -12,12 +13,18 @@ class SensorListResource(AbstractResource):
     """
     Resource related to sensors in the system
     """
+    __custom_error_mappings = {
+        'SensorAlreadyExistsException': {
+            'code': 409,
+            'message': lambda e : str(e)
+        }
+    }
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(custom_error_mappings=self.__custom_error_mappings,**kwargs)
         self.__sensor_manager = DependencyContainer.sensors_manager()
         self.__sensors_schema = SensorSchema(many=True, strict=True)
-        self.__sensor_schema = SensorSchema(strict = True)
+        self.__sensor_schema = SensorSchema(strict=True)
 
     def _do_get(self):
         return self.__sensors_schema.dump(self.__sensor_manager.get_all_sensors())

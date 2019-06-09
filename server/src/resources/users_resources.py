@@ -13,8 +13,15 @@ class UserListResource(AbstractResource):
     Resource representing Users in the system
     '''
 
+    __custom_error_mappings = {
+        'UserAlreadyExistsException': {
+            'code': 409,
+            'message': lambda e: str(e)
+        }
+    }
+
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(custom_error_mappings=self.__custom_error_mappings, **kwargs)
         self.__user_manager = DependencyContainer.users_manager()
         self.__users_schema = UserSchema(many=True, strict=True)
         self.__user_schema = UserSchema(strict=True)

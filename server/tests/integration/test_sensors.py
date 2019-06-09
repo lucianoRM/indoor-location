@@ -31,7 +31,7 @@ class TestSensorsEndpoint(TestApi):
         res = self._client().post(SENSORS_ENDPOINT, json=sensor)
         assert res.status_code == 200
         res = self._client().post(SENSORS_ENDPOINT, json=sensor)
-        assert res.status_code == 500
+        assert res.status_code == 409
         assert "was already registered" in str(res.get_data())
 
     def test_add_multiple_sensors_and_get_list(self):

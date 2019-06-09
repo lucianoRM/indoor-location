@@ -4,6 +4,7 @@ from typing import Callable
 import flask_restful
 from flask import request
 from flask_restful import Resource
+from marshmallow import ValidationError
 from werkzeug.exceptions import NotFound
 
 APPLICATION_JSON = "application/json"
@@ -18,11 +19,11 @@ class AbstractResource(Resource):
             'code': 500
         }
         self.__common_error_mappings = {
-            'NotFound' : {
+            'NotFound': {
                 'code' : 404,
                 'message' : lambda e : 'Not Found'
             },
-            'ValidationError' : {
+            'ValidationError': {
                 'code' : 400,
                 'message' : lambda e : ",".join(e.messages['_schema'])
             }

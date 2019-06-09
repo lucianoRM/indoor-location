@@ -12,8 +12,15 @@ class SignalEmitterListResource(AbstractResource):
     Resource related to signal emitters in the system
     """
 
+    __custom_error_mappings = {
+        'SignalEmitterAlreadyExistsException': {
+            'code': 409,
+            'message': lambda e: str(e)
+        }
+    }
+
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super().__init__(custom_error_mappings=self.__custom_error_mappings, **kwargs)
         self.__signal_emitters_manager = DependencyContainer.signal_emitters_manager()
         self.__signal_emitters_schema = SignalEmitterSchema(many=True, strict=True)
         self.__signal_emitter_schema = SignalEmitterSchema(strict=True)
