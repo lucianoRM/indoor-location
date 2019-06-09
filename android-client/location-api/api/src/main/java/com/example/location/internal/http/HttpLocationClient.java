@@ -1,8 +1,8 @@
-package com.example.location.functional.http;
+package com.example.location.internal.http;
 
-import com.example.location.internal.data.SensedObject;
-import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.api.entity.emitter.SignalEmitter;
+import com.example.location.api.entity.sensor.Sensor;
+import com.example.location.internal.data.SensedObject;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.example.location.internal.container;
 
-import com.example.location.functional.http.HttpLocationClient;
+import com.example.location.internal.http.HttpLocationClient;
 
 import javax.inject.Singleton;
 

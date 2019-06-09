@@ -6,7 +6,7 @@ import com.example.location.internal.container.DaggerLocationSystemComponent;
 import com.example.location.internal.container.LocationServiceModule;
 import com.example.location.internal.container.LocationSystemComponent;
 import com.example.location.internal.container.SensorManagerModule;
-import com.example.location.functional.http.HttpLocationClient;
+import com.example.location.internal.http.HttpLocationClient;
 import com.example.location.internal.serialization.SensorSerializer;
 import com.example.location.internal.serialization.SignalEmitterSerializer;
 import com.google.gson.Gson;
@@ -32,7 +32,7 @@ public abstract class AbstractFunctionalTestCase {
     @Before
     public void setUp() throws Exception{
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:" + getServerPort())
+                .baseUrl(getServerUrl())
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(GSON))
                 .build();
@@ -50,6 +50,10 @@ public abstract class AbstractFunctionalTestCase {
 
     protected Gson getGson() {
         return GSON;
+    }
+
+    protected String getServerUrl() {
+        return "http://localhost:" + getServerPort();
     }
 
     protected abstract int getServerPort();

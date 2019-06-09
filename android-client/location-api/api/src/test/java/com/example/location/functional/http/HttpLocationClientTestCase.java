@@ -2,6 +2,7 @@ package com.example.location.functional.http;
 
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.functional.MockedServerFunctionalTestCase;
+import com.example.location.internal.http.HttpLocationClient;
 import com.google.gson.reflect.TypeToken;
 
 

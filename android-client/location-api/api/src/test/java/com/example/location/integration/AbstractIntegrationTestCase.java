@@ -1,19 +1,19 @@
 package com.example.location.integration;
 
-import com.example.location.api.data.DataTransformer;
 import com.example.location.api.entity.sensor.Sensor;
-import com.example.location.api.entity.sensor.SensorFeed;
 import com.example.location.functional.AbstractFunctionalTestCase;
-import com.example.location.functional.StaticSensorFeed;
-import com.example.location.functional.TestDataTransformer;
+import com.example.location.internal.http.HttpLocationClient;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 
-import static com.example.location.api.entity.sensor.SensorConfiguration.sensorConfigurationBuilder;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.getProperty;
 import static java.lang.Thread.sleep;
@@ -31,7 +31,7 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
     private static final int THREAD_WAITING_TIME = 1000;
 
     private static final String SERVER_START_COMMAND;
-    private static final String SERVER_ENVIRORMENT_VARIABLE;
+    private static final String SERVER_ENVIRONMENT_VARIABLE;
     static {
         try {
             File rootFolder = new File(getProperty(ROOT_FOLDER_SYSTEM_PROPERTY));
@@ -39,13 +39,14 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
             File apiFile = new File(serverRootFolder, API_EXECUTABLE_LOCATION);
             File flaskFile =  new File(serverRootFolder, FLASK_EXECUTABLE_LOCATION);
 
-            SERVER_ENVIRORMENT_VARIABLE = "FLASK_APP=" + apiFile.getAbsolutePath();
+            SERVER_ENVIRONMENT_VARIABLE = "FLASK_APP=" + apiFile.getAbsolutePath();
             SERVER_START_COMMAND = flaskFile.getAbsolutePath() + " run";
         }catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    private OkHttpClient client;
     private Process serverProcess;
     private Thread readingThread;
     private Thread errorThread;
@@ -53,7 +54,10 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
     @Before
     public void setUp() throws Exception{
         super.setUp();
-        serverProcess = getRuntime().exec(SERVER_START_COMMAND, new String[]{SERVER_ENVIRORMENT_VARIABLE});
+
+        client = new OkHttpClient();
+
+        serverProcess = getRuntime().exec(SERVER_START_COMMAND, new String[]{SERVER_ENVIRONMENT_VARIABLE});
         readingThread = new Thread(() -> {
             while(!readingThread.isInterrupted()) {
                 try {
@@ -99,16 +103,10 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
         return PORT;
     }
 
-    @Test
-    public void test() {
-        final SensorFeed feed = new StaticSensorFeed();
-        final DataTransformer transformer = new TestDataTransformer();
-        Sensor sensor = getContainer().sensorManager().createSensor(sensorConfigurationBuilder()
-                .withId("id")
-                .withName("name")
-                .withFeed(feed)
-                .withTransformer(transformer)
-                .build());
+    protected Sensor getSensorFromServer(String id) throws IOException {
+        Request request = new Request.Builder().url(getServerUrl() + "/sensors/" + id).get().build();
+        Response response = this.client.newCall(request).execute();
+        return getGson().fromJson(response.body().string() ,Sensor.class);
     }
 
 }

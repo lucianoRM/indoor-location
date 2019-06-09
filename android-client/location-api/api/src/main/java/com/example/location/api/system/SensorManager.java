@@ -13,6 +13,6 @@ public interface SensorManager {
      * @param config The sensor configuration to be created
      * @return The new Sensor being created
      */
-    Sensor createSensor(SensorConfiguration config);
+    Sensor createSensor(SensorConfiguration config) throws SensorManagerException;
 
 }

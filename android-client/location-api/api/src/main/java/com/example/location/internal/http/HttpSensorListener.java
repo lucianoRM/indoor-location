@@ -1,7 +1,7 @@
-package com.example.location.functional.http;
+package com.example.location.internal.http;
 
-import com.example.location.internal.data.SensedObject;
 import com.example.location.api.entity.sensor.Sensor;
+import com.example.location.internal.data.SensedObject;
 import com.example.location.internal.entity.sensor.SensorListener;
 
 import java.io.IOException;
@@ -11,7 +11,7 @@ import retrofit2.Call;
 
 /**
  * {@link SensorListener} that connects to a remote HttpServer when the
- * {@link com.example.location.api.entity.sensor.Sensor} updates it's sensed objects
+ * {@link Sensor} updates it's sensed objects
  */
 public class HttpSensorListener implements SensorListener {
 
