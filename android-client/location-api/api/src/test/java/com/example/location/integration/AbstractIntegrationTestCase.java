@@ -14,6 +14,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.example.location.internal.config.StaticSystemConfiguration.config;
+import static com.example.location.internal.http.HttpLocationClient.SENSORS_ENDPOINT;
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.getProperty;
 import static java.lang.Thread.sleep;
@@ -21,7 +23,7 @@ import static org.apache.commons.io.IOUtils.copy;
 
 public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
 
-    private static final int PORT = 5000;
+    private static final int PORT = config().getServerPort();
 
     //TODO: FIX THIS
     private static final String ROOT_FOLDER_SYSTEM_PROPERTY = "user.dir";
@@ -104,7 +106,7 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
     }
 
     protected Sensor getSensorFromServer(String id) throws IOException {
-        Request request = new Request.Builder().url(getServerUrl() + "/sensors/" + id).get().build();
+        Request request = new Request.Builder().url(getServerUrl() + SENSORS_ENDPOINT + "/" + id).get().build();
         Response response = this.client.newCall(request).execute();
         return getGson().fromJson(response.body().string() ,Sensor.class);
     }

@@ -18,6 +18,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+import static com.example.location.internal.config.StaticSystemConfiguration.config;
+
 public abstract class AbstractFunctionalTestCase {
 
     private static final Gson GSON = new GsonBuilder()
@@ -53,7 +55,7 @@ public abstract class AbstractFunctionalTestCase {
     }
 
     protected String getServerUrl() {
-        return "http://localhost:" + getServerPort();
+        return config().getServerUrl() + ":" + getServerPort();
     }
 
     protected abstract int getServerPort();
