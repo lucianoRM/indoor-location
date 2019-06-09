@@ -23,7 +23,7 @@ class UserListResource(AbstractResource):
         return self.__users_schema.dumps(self.__user_manager.get_all_users())
 
     def _do_post(self):
-        user = self.__user_schema.loads(self._get_post_data_as_json()).data
+        user = self.__user_schema.load(self._get_post_data_as_json()).data
         return self.__user_schema.dumps(self.__user_manager.add_user(user_id=user.id, user=user))
 
 

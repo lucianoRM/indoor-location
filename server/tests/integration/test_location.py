@@ -7,13 +7,13 @@ from tests.integration.test_api import TestApi
 class TestLocation(TestApi):
 
     def __add_sensor(self, sensor):
-        assert self._client().post(SENSORS_ENDPOINT, json=json.dumps(sensor)).status_code == 200
+        assert self._client().post(SENSORS_ENDPOINT, json=sensor).status_code == 200
 
     def __add_user(self, user):
-        assert self._client().post(USERS_ENDPOINT, json=json.dumps(user)).status_code == 200
+        assert self._client().post(USERS_ENDPOINT, json=user).status_code == 200
 
     def __add_signal_emitter(self, signal_emitter):
-        assert self._client().post(SIGNAL_EMITTERS_ENDPOINT, json=json.dumps(signal_emitter)).status_code == 200
+        assert self._client().post(SIGNAL_EMITTERS_ENDPOINT, json=signal_emitter).status_code == 200
 
     def __assert_location(self, actual_location, expected_location, allowed_error=0.001):
         assert abs(actual_location['x'] - expected_location[0]) < allowed_error
@@ -53,9 +53,7 @@ class TestLocation(TestApi):
             "type": "SIGNAL_EMITTER"
         })
 
-        #update sensor information and check that user position changed
-        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id1, json=json.dumps(
-            [
+        sensors = [
                 {
                     'id': 'user',
                     'data' : {
@@ -67,9 +65,10 @@ class TestLocation(TestApi):
                     }
                 }
             ]
-        ))
-        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id2, json=json.dumps(
-            [
+        #update sensor information and check that user position changed
+        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id1, json=sensors)
+
+        sensed_objects = [
                 {
                     'id': 'user',
                     'data': {
@@ -81,7 +80,8 @@ class TestLocation(TestApi):
                     }
                 }
             ]
-        ))
+
+        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id2, json=sensed_objects)
 
         #get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
@@ -122,9 +122,7 @@ class TestLocation(TestApi):
             "type": "SENSOR"
         })
 
-        # update sensor information and check that user position changed
-        self._client().put(SENSORS_ENDPOINT + "/" + user_id, json=json.dumps(
-            [
+        sensed_objects = [
                 {
                     'id': emitter_id1,
                     'data': {
@@ -147,7 +145,9 @@ class TestLocation(TestApi):
                 }
 
             ]
-        ))
+
+        # update sensor information and check that user position changed
+        self._client().put(SENSORS_ENDPOINT + "/" + user_id, json=sensed_objects)
 
         # get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
@@ -186,9 +186,7 @@ class TestLocation(TestApi):
             "type": "SIGNAL_EMITTER"
         })
 
-        # update sensor information and check that user position changed
-        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id1, json=json.dumps(
-            [
+        sensors = [
                 {
                     'id': 'user',
                     'data': {
@@ -209,9 +207,11 @@ class TestLocation(TestApi):
                     }
                 }
             ]
-        ))
-        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id2, json=json.dumps(
-            [
+
+        # update sensor information and check that user position changed
+        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id1, json=sensors)
+
+        sensed_objects = [
                 {
                     'id': 'user',
                     'data': {
@@ -223,7 +223,8 @@ class TestLocation(TestApi):
                     }
                 }
             ]
-        ))
+
+        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id2, json=sensed_objects)
 
         # get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
@@ -264,9 +265,7 @@ class TestLocation(TestApi):
             "type": "SENSOR"
         })
 
-        # update sensor information and check that user position changed
-        self._client().put(SENSORS_ENDPOINT + "/" + user_id, json=json.dumps(
-            [
+        sensed_objects = [
                 {
                     'id': emitter_id1,
                     'data': {
@@ -298,7 +297,9 @@ class TestLocation(TestApi):
                 }
 
             ]
-        ))
+
+        # update sensor information and check that user position changed
+        self._client().put(SENSORS_ENDPOINT + "/" + user_id, json=sensed_objects)
 
         # get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)

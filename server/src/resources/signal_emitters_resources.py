@@ -22,7 +22,7 @@ class SignalEmitterListResource(AbstractResource):
         return self.__signal_emitters_schema.dumps(self.__signal_emitters_manager.get_all_signal_emitters())
 
     def _do_post(self):
-        signal_emitter = self.__signal_emitter_schema.loads(self._get_post_data_as_json()).data
+        signal_emitter = self.__signal_emitter_schema.load(self._get_post_data_as_json()).data
         return self.__signal_emitter_schema.dumps(self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=signal_emitter.id, signal_emitter=signal_emitter))
 
 

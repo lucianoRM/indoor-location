@@ -56,7 +56,7 @@ class AbstractResource(Resource):
         Return post data as json or fail if not correctly formatter
         :return: the post value data correctly formatted as JSON
         """
-        return request.get_json(force=True)
+        return request.get_json()
 
 
     def get(self, **kwargs):

@@ -23,7 +23,7 @@ class AnchorListResource(AbstractResource):
         return self.__anchors_schema.dumps(self.__anchors_manager.get_all_anchors())
 
     def _do_post(self):
-        anchor = self.__anchor_schema.loads(self._get_post_data_as_json()).data
+        anchor = self.__anchor_schema.load(self._get_post_data_as_json()).data
         return self.__anchor_schema.dumps(self.__anchors_manager.add_anchor(anchor_id=anchor.id, anchor=anchor))
 
 

@@ -23,7 +23,7 @@ class SensorListResource(AbstractResource):
         return self.__sensors_schema.dumps(self.__sensor_manager.get_all_sensors())
 
     def _do_post(self):
-        sensor = self.__sensor_schema.loads(self._get_post_data_as_json()).data
+        sensor = self.__sensor_schema.load(self._get_post_data_as_json()).data
         return self.__sensor_schema.dumps(self.__sensor_manager.add_sensor(sensor_id=sensor.id, sensor=sensor))
 
 
@@ -44,7 +44,7 @@ class SensorResource(AbstractResource):
         return self.__sensor_schema.dumps(self.__sensor_manager.get_sensor(sensor_id=sensor_id))
 
     def _do_put(self, sensor_id):
-        objects = self.__sensed_objects_schema.loads(self._get_post_data_as_json()).data
+        objects = self.__sensed_objects_schema.load(self._get_post_data_as_json()).data
         self.__sensed_objects_processor.process_sensed_objects(sensor_id=sensor_id, sensed_objects=objects)
 
 
