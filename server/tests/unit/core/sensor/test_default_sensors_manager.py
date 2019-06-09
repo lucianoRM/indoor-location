@@ -7,7 +7,7 @@ from src.core.object.kvdb_static_objects_manager import KVDBStaticObjectsManager
 from src.core.sensor.default_sensors_manager import DefaultSensorsManager
 from src.core.sensor.sensor import Sensor
 from src.core.sensor.sensors_manager import SensorAlreadyExistsException, UnknownSensorException
-from tests.unit.test_implementations.implementations import TestStaticSensor, TestMovingSensor
+from tests.unit.test_implementations.implementations import FakeStaticSensor, FakeMovingSensor
 
 
 class TestDefaultSensorsManager:
@@ -17,8 +17,8 @@ class TestDefaultSensorsManager:
 
     @fixture(autouse=True)
     def setUp(self):
-        self.__test_static_sensor = TestStaticSensor(id=self.__STATIC_SENSOR_ID, position=None)
-        self.__test_moving_sensor = TestMovingSensor(id=self.__MOVING_SENSOR_ID, position=None)
+        self.__test_static_sensor = FakeStaticSensor(id=self.__STATIC_SENSOR_ID, position=None)
+        self.__test_moving_sensor = FakeMovingSensor(id=self.__MOVING_SENSOR_ID, position=None)
         db = MemoryKVDatabase()
         observer = PositionableObjectsManagerObserver(
                 observable_static_objects_manager=KVDBStaticObjectsManager(kv_database=db),
@@ -35,7 +35,7 @@ class TestDefaultSensorsManager:
 
     def test_add_sensor_with_same_id(self):
         self.__sensors_manager.add_sensor(sensor_id=self.__STATIC_SENSOR_ID, sensor=self.__test_static_sensor)
-        sameIdSensor = TestStaticSensor(id=self.__STATIC_SENSOR_ID, position=None)
+        sameIdSensor = FakeStaticSensor(id=self.__STATIC_SENSOR_ID, position=None)
         with raises(SensorAlreadyExistsException):
             self.__sensors_manager.add_sensor(sensor_id=self.__STATIC_SENSOR_ID, sensor=sameIdSensor)
 
@@ -43,7 +43,7 @@ class TestDefaultSensorsManager:
         all_sensors = []
         for i in range(100):
             id = str(i)
-            sensor = TestStaticSensor(id=id, position=None) if i % 2 == 0 else TestMovingSensor(id=id, position=None)
+            sensor = FakeStaticSensor(id=id, position=None) if i % 2 == 0 else FakeMovingSensor(id=id, position=None)
             all_sensors.append(sensor)
             self.__sensors_manager.add_sensor(sensor_id=id, sensor=sensor)
         retrieved_sensors = self.__sensors_manager.get_all_sensors()
@@ -63,7 +63,7 @@ class TestDefaultSensorsManager:
 
     def test_update_sensor(self):
         self.__sensors_manager.add_sensor(self.__STATIC_SENSOR_ID, self.__test_static_sensor)
-        newSensor = TestStaticSensor(id=self.__STATIC_SENSOR_ID, position="newPosition")
+        newSensor = FakeStaticSensor(id=self.__STATIC_SENSOR_ID, position="newPosition")
         self.__sensors_manager.update_sensor(self.__STATIC_SENSOR_ID,
                                              newSensor)
         assert self.__sensors_manager.get_sensor(self.__STATIC_SENSOR_ID) == newSensor

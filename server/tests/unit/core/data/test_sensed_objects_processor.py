@@ -5,7 +5,7 @@ from src.core.data.default_sensed_objects_processor import DefaultSensedObjectsP
 from src.core.data.sensed_object import SensedObject
 from src.core.data.sensing_data import SensingData
 from src.core.database.memory_kv_database import MemoryKVDatabase
-from tests.unit.test_implementations.implementations import TestStaticSensor
+from tests.unit.test_implementations.implementations import FakeStaticSensor
 
 
 class TestSensedObjectsProcessor:
@@ -19,7 +19,7 @@ class TestSensedObjectsProcessor:
         self.__sensor_manager = Mock()
         self.__location_service = Mock()
 
-        self.__test_sensor = TestStaticSensor(id="some_id", position="pos")
+        self.__test_sensor = FakeStaticSensor(id="some_id", position="pos")
 
         self.__processor = DefaultSensedObjectsProcessor(database=__database,
                                                          static_objects_manager=self.__static_objects_manager,
@@ -33,7 +33,7 @@ class TestSensedObjectsProcessor:
         sensed_object_information = SensingData(distance=10, timestamp=1)
 
         sensor_id = "id"
-        sensor = TestStaticSensor(id="some_id", position="pos")
+        sensor = FakeStaticSensor(id="some_id", position="pos")
         self.__sensor_manager.get_sensor.side_effect = (lambda sensor_id : sensor)
 
         self.__processor.process_sensed_objects(sensor_id,[SensedObject(id=sensed_object_id, data=sensed_object_information)])

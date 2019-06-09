@@ -9,7 +9,7 @@ from src.core.sensor.sensor import Sensor
 from src.core.user.user import User
 
 
-class TestStaticSensor(StaticObject, Sensor):
+class FakeStaticSensor(StaticObject, Sensor):
     def __init__(self, id, position, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
 
@@ -19,7 +19,7 @@ class TestStaticSensor(StaticObject, Sensor):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-class TestMovingSensor(MovingObject, Sensor):
+class FakeMovingSensor(MovingObject, Sensor):
     def __init__(self, id, position, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
 
@@ -29,7 +29,7 @@ class TestMovingSensor(MovingObject, Sensor):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-class TestStaticSignalEmitter(StaticObject, SignalEmitter):
+class FakeStaticSignalEmitter(StaticObject, SignalEmitter):
     def __init__(self, id, position, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
 
@@ -39,7 +39,7 @@ class TestStaticSignalEmitter(StaticObject, SignalEmitter):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-class TestMovingSignalEmitter(MovingObject, SignalEmitter):
+class FakeMovingSignalEmitter(MovingObject, SignalEmitter):
     def __init__(self, id, position, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
 
@@ -49,18 +49,18 @@ class TestMovingSignalEmitter(MovingObject, SignalEmitter):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-class TestAnchor(Anchor):
+class FakeAnchor(Anchor):
     def __init__(self, id, position, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
 
-class TestStaticObject(StaticObject):
+class FakeStaticObject(StaticObject):
     def __init__(self, id, position, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
 
-class TestMovingObject(MovingObject):
+class FakeMovingObject(MovingObject):
     def __init__(self, id, position, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
 
-class TestUser(User):
+class FakeUser(User):
     def __init__(self, id, position, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
