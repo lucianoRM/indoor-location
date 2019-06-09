@@ -19,11 +19,11 @@ class SignalEmitterListResource(AbstractResource):
         self.__signal_emitter_schema = SignalEmitterSchema(strict=True)
 
     def _do_get(self):
-        return self.__signal_emitters_schema.dumps(self.__signal_emitters_manager.get_all_signal_emitters())
+        return self.__signal_emitters_schema.dump(self.__signal_emitters_manager.get_all_signal_emitters())
 
     def _do_post(self):
         signal_emitter = self.__signal_emitter_schema.load(self._get_post_data_as_json()).data
-        return self.__signal_emitter_schema.dumps(self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=signal_emitter.id, signal_emitter=signal_emitter))
+        return self.__signal_emitter_schema.dump(self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=signal_emitter.id, signal_emitter=signal_emitter))
 
 
 class SignalEmitterResource(AbstractResource):
@@ -37,7 +37,7 @@ class SignalEmitterResource(AbstractResource):
         self.__signal_emitter_schema = SignalEmitterSchema(strict=True)
 
     def _do_get(self, signal_emitter_id):
-        return self.__signal_emitter_schema.dumps(self.__signal_emitters_manager.get_signal_emitter(signal_emitter_id=signal_emitter_id))
+        return self.__signal_emitter_schema.dump(self.__signal_emitters_manager.get_signal_emitter(signal_emitter_id=signal_emitter_id))
 
 
 class SignalEmitterSchema(TypedObjectSchema):

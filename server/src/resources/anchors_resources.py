@@ -20,11 +20,11 @@ class AnchorListResource(AbstractResource):
         self.__anchor_schema = AnchorSchema(strict=True)
 
     def _do_get(self):
-        return self.__anchors_schema.dumps(self.__anchors_manager.get_all_anchors())
+        return self.__anchors_schema.dump(self.__anchors_manager.get_all_anchors())
 
     def _do_post(self):
         anchor = self.__anchor_schema.load(self._get_post_data_as_json()).data
-        return self.__anchor_schema.dumps(self.__anchors_manager.add_anchor(anchor_id=anchor.id, anchor=anchor))
+        return self.__anchor_schema.dump(self.__anchors_manager.add_anchor(anchor_id=anchor.id, anchor=anchor))
 
 
 class AnchorResource(AbstractResource):
@@ -38,7 +38,7 @@ class AnchorResource(AbstractResource):
         self.__anchor_schema = AnchorSchema(strict=True)
 
     def _do_get(self, anchor_id):
-        return self.__anchor_schema.dumps(self.__anchors_manager.get_anchor(anchor_id=anchor_id))
+        return self.__anchor_schema.dump(self.__anchors_manager.get_anchor(anchor_id=anchor_id))
 
 
 class AnchorSchema(TypedObjectSchema):

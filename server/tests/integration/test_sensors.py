@@ -1,5 +1,3 @@
-import json
-
 from api import SENSORS_ENDPOINT
 from tests.integration.test_api import TestApi
 

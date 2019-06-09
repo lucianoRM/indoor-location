@@ -1,5 +1,3 @@
-import json
-
 from api import SENSORS_ENDPOINT, USERS_ENDPOINT, SIGNAL_EMITTERS_ENDPOINT
 from tests.integration.test_api import TestApi
 
@@ -86,7 +84,7 @@ class TestLocation(TestApi):
         #get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
         assert res.status_code == 200
-        self.__assert_location(json.loads(res.get_json())["position"], (5,0))
+        self.__assert_location(res.get_json()["position"], (5,0))
 
     def test_sensing_information_changes_location_on_sensing_user(self):
         # add static signal emitters
@@ -152,7 +150,7 @@ class TestLocation(TestApi):
         # get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
         assert res.status_code == 200
-        self.__assert_location(json.loads(res.get_json())["position"], (5, 0))
+        self.__assert_location(res.get_json()["position"], (5, 0))
 
     def test_noise_in_sensed_information_static_sensor(self):
         sensor_id1 = "sensor1"
@@ -229,7 +227,7 @@ class TestLocation(TestApi):
         # get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
         assert res.status_code == 200
-        self.__assert_location(json.loads(res.get_json())["position"], (5, 0))
+        self.__assert_location(res.get_json()["position"], (5, 0))
 
     def test_sensing_information_changes_location_on_moving_sensor(self):
         # add static signal emitters
@@ -304,4 +302,4 @@ class TestLocation(TestApi):
         # get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
         assert res.status_code == 200
-        self.__assert_location(json.loads(res.get_json())["position"], (5, 0))
+        self.__assert_location(res.get_json()["position"], (5, 0))
