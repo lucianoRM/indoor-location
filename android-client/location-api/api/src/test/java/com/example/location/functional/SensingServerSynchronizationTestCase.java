@@ -3,6 +3,7 @@ package com.example.location.functional;
 
 import com.example.location.api.data.DataTransformer;
 import com.example.location.api.data.RawSensorData;
+import com.example.location.api.data.SensorData;
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.api.entity.sensor.SensorFeed;
@@ -32,13 +33,12 @@ public class SensingServerSynchronizationTestCase extends MockedServerFunctional
         getMockedServer().enqueue(new MockResponse().setBody(serializedSensor));
 
         final StaticSensorFeed feed = new StaticSensorFeed();
-        final TestDataTransformer transformer = new TestDataTransformer();
 
         Sensor createdSensor = getContainer().sensorManager().createSensor(
                 sensorConfigurationBuilder()
                         .withId("id")
                         .withFeed(feed)
-                        .withTransformer(transformer)
+                        .withTransformer((s,d) -> new SensorData(0,0))
                         .build());
         getMockedServer().takeRequest(); //create sensor request
 
@@ -68,7 +68,6 @@ public class SensingServerSynchronizationTestCase extends MockedServerFunctional
     @Test
     public void sensorCreationUpdatesServer() throws Exception{
         final SensorFeed feed = new StaticSensorFeed();
-        final DataTransformer transformer = new TestDataTransformer();
         String serializedSensor = readFile(SENSOR_JSON);
         Sensor expectedSensor = getGson().fromJson(serializedSensor, Sensor.class);
 
@@ -79,7 +78,7 @@ public class SensingServerSynchronizationTestCase extends MockedServerFunctional
                         .withId(expectedSensor.getId())
                         .withName(expectedSensor.getName())
                         .withFeed(feed)
-                        .withTransformer(transformer)
+                        .withTransformer((s,d) -> new SensorData(0,0))
                         .build());
 
         assertThat(createdSensor, equalTo(expectedSensor));

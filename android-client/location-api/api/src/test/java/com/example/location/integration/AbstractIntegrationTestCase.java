@@ -1,8 +1,8 @@
 package com.example.location.integration;
 
+import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.functional.AbstractFunctionalTestCase;
-import com.example.location.internal.http.HttpLocationClient;
 
 import org.junit.After;
 import org.junit.Before;
@@ -10,15 +10,19 @@ import org.junit.Before;
 import java.io.File;
 import java.io.IOException;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static com.example.location.internal.config.StaticSystemConfiguration.config;
 import static com.example.location.internal.http.HttpLocationClient.SENSORS_ENDPOINT;
+import static com.example.location.internal.http.HttpLocationClient.SIGNAL_EMITTERS_ENDPOINT;
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.getProperty;
 import static java.lang.Thread.sleep;
+import static okhttp3.MediaType.get;
 import static org.apache.commons.io.IOUtils.copy;
 
 public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
@@ -103,6 +107,13 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
     @Override
     protected int getServerPort() {
         return PORT;
+    }
+
+    protected void registerSignalEmitterInServer(SignalEmitter signalEmitter) throws IOException{
+        MediaType json = get("application/json");
+        RequestBody requestBody = RequestBody.create(json, getGson().toJson(signalEmitter));
+        Request request = new Request.Builder().url(getServerUrl() + SIGNAL_EMITTERS_ENDPOINT).post(requestBody).build();
+        Response response = this.client.newCall(request).execute();
     }
 
     protected Sensor getSensorFromServer(String id) throws IOException {

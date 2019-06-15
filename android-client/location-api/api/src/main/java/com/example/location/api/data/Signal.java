@@ -20,4 +20,20 @@ public class Signal {
     public Optional<String> getAttribute(String key) {
         return ofNullable(attributes.get(key));
     }
+
+    @Override
+    public int hashCode() {
+        return attributes.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null) {
+            return false;
+        }
+        if(!(obj instanceof Signal)) {
+           return false;
+        }
+        return attributes.equals(((Signal)obj).attributes);
+    }
 }

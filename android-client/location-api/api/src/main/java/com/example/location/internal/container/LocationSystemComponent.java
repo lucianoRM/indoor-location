@@ -1,5 +1,6 @@
 package com.example.location.internal.container;
 
+import com.example.location.api.system.EmitterManager;
 import com.example.location.internal.http.HttpLocationClient;
 import com.example.location.api.system.SensorManager;
 
@@ -16,6 +17,7 @@ import dagger.Component;
 public interface LocationSystemComponent {
 
     SensorManager sensorManager();
+    EmitterManager emitterManager();
     HttpLocationClient locationServiceClient();
 
 }
