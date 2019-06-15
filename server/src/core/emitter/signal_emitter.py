@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from typing import Dict
 
 
 class SignalEmitter:
@@ -10,4 +11,12 @@ class SignalEmitter:
 
     @abstractmethod
     def __init__(self, **kwargs):
+        signal = kwargs.pop("signal", None)
+        if not signal:
+            signal = {}
+        self.__signal = signal
         super().__init__(**kwargs)
+
+    @property
+    def signal(self):
+        return self.__signal

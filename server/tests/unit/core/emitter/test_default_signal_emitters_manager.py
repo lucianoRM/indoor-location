@@ -18,8 +18,8 @@ class TestDefaultSignalEmittersManager:
 
     @fixture(autouse=True)
     def setUp(self):
-        self.__test_static_signal_emitter = FakeStaticSignalEmitter(id=self.__STATIC_SIGNAL_EMITTER_ID, position=None)
-        self.__test_moving_signal_emitter = FakeMovingSignalEmitter(id=self.__MOVING_SIGNAL_EMITTER_ID, position=None)
+        self.__test_static_signal_emitter = FakeStaticSignalEmitter(id=self.__STATIC_SIGNAL_EMITTER_ID, position=None, signal={})
+        self.__test_moving_signal_emitter = FakeMovingSignalEmitter(id=self.__MOVING_SIGNAL_EMITTER_ID, position=None, signal={})
         db = MemoryKVDatabase()
         self.__signal_emitters_manager = DefaultSignalEmittersManager(
             PositionableObjectsManagerObserver(
@@ -36,7 +36,7 @@ class TestDefaultSignalEmittersManager:
 
     def test_add_signal_emitter_with_same_id(self):
         self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=self.__STATIC_SIGNAL_EMITTER_ID, signal_emitter=self.__test_static_signal_emitter)
-        sameIdSensor = FakeStaticSignalEmitter(id=self.__STATIC_SIGNAL_EMITTER_ID, position=None)
+        sameIdSensor = FakeStaticSignalEmitter(id=self.__STATIC_SIGNAL_EMITTER_ID, position=None, signal={})
         with raises(SignalEmitterAlreadyExistsException):
             self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=self.__STATIC_SIGNAL_EMITTER_ID, signal_emitter=sameIdSensor)
 
@@ -44,7 +44,7 @@ class TestDefaultSignalEmittersManager:
         all_signal_emitters = []
         for i in range(100):
             id = str(i)
-            signal_emitter = FakeStaticSignalEmitter(id=id, position=None) if i % 2 == 0 else FakeMovingSignalEmitter(id=id, position=None)
+            signal_emitter = FakeStaticSignalEmitter(id=id, position=None, signal={}) if i % 2 == 0 else FakeMovingSignalEmitter(id=id, position=None, signal={})
             all_signal_emitters.append(signal_emitter)
             self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=id, signal_emitter=signal_emitter)
         retrieved_signal_emitters = self.__signal_emitters_manager.get_all_signal_emitters()
@@ -64,7 +64,7 @@ class TestDefaultSignalEmittersManager:
 
     def test_update_signal_emitter(self):
         self.__signal_emitters_manager.add_signal_emitter(self.__STATIC_SIGNAL_EMITTER_ID, self.__test_static_signal_emitter)
-        newSensor = FakeStaticSignalEmitter(id=self.__STATIC_SIGNAL_EMITTER_ID, position="newPosition")
+        newSensor = FakeStaticSignalEmitter(id=self.__STATIC_SIGNAL_EMITTER_ID, position="newPosition", signal={})
         self.__signal_emitters_manager.update_signal_emitter(self.__STATIC_SIGNAL_EMITTER_ID,
                                                              newSensor)
         assert self.__signal_emitters_manager.get_signal_emitter(self.__STATIC_SIGNAL_EMITTER_ID) == newSensor

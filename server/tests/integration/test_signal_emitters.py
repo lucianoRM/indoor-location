@@ -38,20 +38,26 @@ class TestSignalEmittersEndpoint(TestApi):
     def test_add_multiple_signal_emitters_and_get_list(self):
         signal_emitters = [
             {
-                "id": "signal_emitterId",
+                "id": "signal_emitterId1",
+                "signal": {
+                    "a": "b"
+                },
                 "position": {
                     'x':0,
                     'y':0
                 },
-                "type": "USER"
+                "type": "USER",
             },
             {
                 "id": "signal_emitterId2",
+                "signal": {
+                    "a": "b"
+                },
                 "position": {
                     'x':0,
                     'y':0
                 },
-                "type": "ANCHOR"
+                "type": "ANCHOR",
             }
         ]
         for signal_emitter in signal_emitters:

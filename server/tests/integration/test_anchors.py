@@ -49,7 +49,8 @@ class TestAnchorsEndpoint(TestApi):
                     'x':0,
                     'y':0
                 },
-                "type": "SIGNAL_EMITTER"
+                "type": "SIGNAL_EMITTER",
+                "signal": {"a":"a"}
             }
         ]
         for anchor in anchors:

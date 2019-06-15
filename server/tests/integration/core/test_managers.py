@@ -180,7 +180,7 @@ class TestManagers:
 
     def test_add_anchor_and_get_signal_emitter(self):
         anchor_id = "id"
-        se_anchor = SignalEmittingAnchor(id=anchor_id, position="position")
+        se_anchor = SignalEmittingAnchor(id=anchor_id, position="position", signal={})
         self.__anchors_manager.add_anchor(anchor_id=anchor_id, anchor=se_anchor)
         signal_emitter = self.__signal_emitters_manager.remove_signal_emitter(signal_emitter_id=anchor_id)
         assert signal_emitter == se_anchor
@@ -189,7 +189,7 @@ class TestManagers:
 
     def test_add_signal_emitter_and_get_anchor(self):
         signal_emitter_id = "id"
-        se_anchor = SignalEmittingAnchor(id=signal_emitter_id, position="position")
+        se_anchor = SignalEmittingAnchor(id=signal_emitter_id, position="position", signal={})
         self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=signal_emitter_id, signal_emitter=se_anchor)
         anchor = self.__anchors_manager.remove_anchor(anchor_id=signal_emitter_id)
         assert anchor == se_anchor
@@ -198,21 +198,21 @@ class TestManagers:
 
     def test_add_anchor_and_signal_emitter_with_same_id(self):
         anchor_id = "id"
-        anchor = SignalEmittingAnchor(id=anchor_id, position="position")
+        anchor = SignalEmittingAnchor(id=anchor_id, position="position", signal={})
         self.__anchors_manager.add_anchor(anchor_id=anchor_id, anchor=anchor)
         with raises(SignalEmitterAlreadyExistsException):
             self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=anchor_id, signal_emitter=anchor)
 
     def test_add_signal_emitter_and_anchor_with_same_id(self):
         signal_emitter_id = "id"
-        se = SignalEmittingAnchor(id=signal_emitter_id, position="position")
+        se = SignalEmittingAnchor(id=signal_emitter_id, position="position", signal={})
         self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=signal_emitter_id, signal_emitter=se)
         with raises(AnchorAlreadyExistsException):
             self.__anchors_manager.add_anchor(anchor_id=signal_emitter_id, anchor=se)
 
     def test_add_anchor_and_signal_emitter_and_get_both(self):
-        anchor = SignalEmittingAnchor(id="anchor_id", position="position")
-        se = SignalEmittingAnchor(id="se_id", position="position")
+        anchor = SignalEmittingAnchor(id="anchor_id", position="position", signal={})
+        se = SignalEmittingAnchor(id="se_id", position="position", signal={})
         self.__anchors_manager.add_anchor(anchor_id=anchor.id, anchor=anchor)
         self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=se.id, signal_emitter=se)
         anchors = self.__anchors_manager.get_all_anchors()
@@ -236,8 +236,8 @@ class TestManagers:
         assert len(self.__users_manager.get_all_users()) == 1
 
     def test_add_anchor_and_user_and_get_signal_emitters(self):
-        anchor = SignalEmittingAnchor(id="a_id", position="position")
-        user = SignalEmittingUser(id="u_id",position="position")
+        anchor = SignalEmittingAnchor(id="a_id", position="position", signal={})
+        user = SignalEmittingUser(id="u_id",position="position", signal={})
         self.__anchors_manager.add_anchor(anchor_id=anchor.id, anchor=anchor)
         self.__users_manager.add_user(user_id=user.id, user=user)
         assert len(self.__signal_emitters_manager.get_all_signal_emitters()) == 2

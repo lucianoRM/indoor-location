@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
+from copy import deepcopy
 
-from marshmallow import fields, post_dump, post_load, ValidationError, validates_schema
+from marshmallow import fields, post_dump, post_load, ValidationError, validates_schema, Schema
 
 from src.resources.schemas.positionable_object_schema import PositionableObjectSchema
 
@@ -19,11 +20,6 @@ class TypedObjectSchema(PositionableObjectSchema):
     @validates_schema
     def validate_input(self, serialized_data):
         super().validate_input(serialized_data=serialized_data)
-        if self.__TYPE_ATTRIBUTE_KEY not in serialized_data:
-            raise ValidationError("Missing " + self.__TYPE_ATTRIBUTE_KEY)
-        type = serialized_data[self.__TYPE_ATTRIBUTE_KEY]
-        if type not in self._get_valid_types():
-            raise ValidationError("Got wrong type: " + type + ", expecting one of: " + ", ".join(self._get_valid_types()))
 
     @abstractmethod
     def _get_valid_types(self):
@@ -55,3 +51,40 @@ class TypedObjectSchema(PositionableObjectSchema):
     @abstractmethod
     def _get_object_type(self, original_object):
         raise NotImplementedError
+
+    def _get_type_schema(self, type):
+        return None
+
+    def __with_updated_fields(self, other_schema: Schema, func: callable, *args, **kwargs):
+        original_declared_fields = self.declared_fields
+        original_fields = self.fields
+        if other_schema:
+            all_declared_fields = deepcopy(original_declared_fields)
+            all_fields = deepcopy(original_fields)
+            all_declared_fields.update(other_schema.declared_fields)
+            all_fields.update(other_schema.fields)
+            self.declared_fields = all_declared_fields
+            self.fields = all_fields
+        result = func(*args, **kwargs)
+        self.fields = original_fields
+        self.declared_fields = original_declared_fields
+        return result
+
+    def load(self, data, **kwargs):
+        if self.__TYPE_ATTRIBUTE_KEY not in data:
+            raise ValidationError("Missing " + self.__TYPE_ATTRIBUTE_KEY)
+        type = data[self.__TYPE_ATTRIBUTE_KEY]
+        if type not in self._get_valid_types():
+            raise ValidationError("Got wrong type: " + type + ", expecting one of: " + ", ".join(self._get_valid_types()))
+        type_schema = self._get_type_schema(type)
+        return self.__with_updated_fields(type_schema, super().load, data, False, **kwargs)
+
+
+    def dump(self, object, **kwargs):
+        type = self._get_object_type(object)
+        type_schema = self._get_type_schema(type)
+        return self.__with_updated_fields(type_schema, super().dump, object, **kwargs)
+
+
+
+

@@ -1,3 +1,5 @@
+from typing import Dict
+
 from src.core.anchor.anchor import Anchor
 from src.core.emitter.signal_emitter import SignalEmitter
 

@@ -6,6 +6,7 @@ from src.core.user.user import User
 from src.dependency_container import DependencyContainer
 from src.resources.abstract_resource import AbstractResource
 from src.resources.schemas.typed_object_schema import TypedObjectSchema
+from src.resources.signal_emitters_resources import SignalEmitterSchema
 
 
 class UserListResource(AbstractResource):
@@ -53,8 +54,15 @@ class UserSchema(TypedObjectSchema):
     __SENSOR_TYPE = "SENSOR"
     __SIGNAL_EMITTER_TYPE = "SIGNAL_EMITTER"
 
+    __SIGNAL_EMITTER_SCHEMA = SignalEmitterSchema()
+
     def _get_valid_types(self):
         return [self.__SENSOR_TYPE, self.__SIGNAL_EMITTER_TYPE]
+
+    def _get_type_schema(self, type):
+        if type == self.__SIGNAL_EMITTER_TYPE:
+            return self.__SIGNAL_EMITTER_SCHEMA
+        return super()._get_type_schema(type)
 
     def _do_make_object(self, type, kwargs) -> User:
         if type == self.__SENSOR_TYPE:

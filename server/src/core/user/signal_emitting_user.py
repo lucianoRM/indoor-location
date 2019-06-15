@@ -1,3 +1,5 @@
+from typing import Dict
+
 from src.core.emitter.signal_emitter import SignalEmitter
 from src.core.user.user import User
 

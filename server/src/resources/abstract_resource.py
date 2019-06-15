@@ -1,3 +1,4 @@
+import itertools
 import json
 from typing import Callable
 
@@ -25,7 +26,7 @@ class AbstractResource(Resource):
             },
             'ValidationError': {
                 'code' : 400,
-                'message' : lambda e : ",".join(e.messages['_schema'])
+                'message' : lambda e : ",".join(e.messages) if isinstance(e.messages, list) else ",".join(list(itertools.chain(*e.messages.values())))
             }
         }
 
