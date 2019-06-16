@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * {@link SensorListener} that connects to a remote HttpServer when the
@@ -25,7 +26,10 @@ public class HttpSensorListener implements SensorListener {
     public void onSensorUpdate(Sensor sensor, List<SensedObject> sensedObjects) {
         Call<String> updateSensorCall = httpLocationClient.updateSensor(sensor.getId(), sensedObjects);
         try {
-            updateSensorCall.execute();
+            Response<String> res = updateSensorCall.execute();
+            if(!res.isSuccessful()) {
+                throw new RuntimeException("Sensor update request unsuccessful " + res.errorBody().string());
+            }
         }catch (IOException e) {
             //TODO: fix this
             throw new RuntimeException(e);

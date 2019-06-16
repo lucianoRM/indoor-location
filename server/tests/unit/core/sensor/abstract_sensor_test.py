@@ -1,7 +1,5 @@
 from abc import ABCMeta, abstractmethod
 
-from measurement.measures import Distance
-
 from src.core.data.sensing_data import SensingData
 from src.core.data.sensed_object import SensedObject
 
@@ -29,17 +27,17 @@ class AbstractSensorTest:
         sensor = self._create_sensor(id=1, position=1)
 
         sensed_object_id1 = "id1"
-        sensed_distance1 = Distance(m=1)
+        sensed_distance1 = 1
         sensed_data1 = SensingData(distance=sensed_distance1, timestamp=1)
         sensed_object1 = SensedObject(id=sensed_object_id1, data=sensed_data1,)
 
         sensor.update_sensed_objects([sensed_object1])
         sensed_objects = sensor.get_sensed_objects()
 
-        assert sensed_objects.get(sensed_object_id1).data.distance.m == sensed_distance1.m
+        assert sensed_objects.get(sensed_object_id1).data.distance == sensed_distance1
 
         sensed_object_id2 = "id2"
-        sensed_distance2 = Distance(m=200)
+        sensed_distance2 = 200
         sensed_data2 = SensingData(distance=sensed_distance2, timestamp=1)
         sensed_object2 = SensedObject(id=sensed_object_id2, data=sensed_data2)
 
@@ -48,24 +46,24 @@ class AbstractSensorTest:
 
         assert len(sensed_objects) == 1
         assert sensed_object_id1 not in sensed_objects
-        assert sensed_objects.get(sensed_object_id2).data.distance.m == sensed_distance2.m
+        assert sensed_objects.get(sensed_object_id2).data.distance == sensed_distance2
 
 
     def test_sensor_update_merge(self):
         sensor = self._create_sensor(id=1, position=1)
 
         sensed_object_id1 = "id1"
-        sensed_distance1 = Distance(m=1)
+        sensed_distance1 = 1
         sensed_data1 = SensingData(distance=sensed_distance1, timestamp=1)
         sensed_object1 = SensedObject(id=sensed_object_id1, data=sensed_data1)
 
         sensor.update_sensed_objects([sensed_object1])
         sensed_objects = sensor.get_sensed_objects()
 
-        assert sensed_objects.get(sensed_object_id1).data.distance.m == sensed_distance1.m
+        assert sensed_objects.get(sensed_object_id1).data.distance == sensed_distance1
 
         sensed_object_id2 = "id2"
-        sensed_distance2 = Distance(m=200)
+        sensed_distance2 = 200
         sensed_data2 = SensingData(distance=sensed_distance2, timestamp=1)
         sensed_object2 = SensedObject(id=sensed_object_id2, data=sensed_data2)
 
@@ -73,28 +71,28 @@ class AbstractSensorTest:
         sensed_objects = sensor.get_sensed_objects()
 
         assert len(sensed_objects) == 2
-        assert sensed_objects.get(sensed_object_id1).data.distance.m == sensed_distance1.m
-        assert sensed_objects.get(sensed_object_id2).data.distance.m == sensed_distance2.m
+        assert sensed_objects.get(sensed_object_id1).data.distance == sensed_distance1
+        assert sensed_objects.get(sensed_object_id2).data.distance == sensed_distance2
 
 
     def test_sensor_update_merge_new_value(self):
         sensor = self._create_sensor(id=1, position=1)
 
         sensed_object_id1 = "id1"
-        sensed_distance1a= Distance(m=1)
+        sensed_distance1a= 1
         sensed_data1a = SensingData(distance=sensed_distance1a, timestamp=1)
         sensed_object1 = SensedObject(id=sensed_object_id1, data=sensed_data1a)
 
         sensor.update_sensed_objects([sensed_object1])
         sensed_objects = sensor.get_sensed_objects()
 
-        assert sensed_objects.get(sensed_object_id1).data.distance.m == sensed_distance1a.m
+        assert sensed_objects.get(sensed_object_id1).data.distance == sensed_distance1a
 
-        sensed_distance1b = Distance(m=500)
+        sensed_distance1b = 500
         sensed_data1b = SensingData(distance=sensed_distance1b, timestamp=1)
         sensed_object1 = SensedObject(id=sensed_object_id1, data=sensed_data1b)
         sensed_object_id2 = "id2"
-        sensed_distance2 = Distance(m=200)
+        sensed_distance2 = 200
         sensed_data2 = SensingData(distance=sensed_distance2, timestamp=1)
         sensed_object2 = SensedObject(id=sensed_object_id2, data=sensed_data2)
 
@@ -104,5 +102,5 @@ class AbstractSensorTest:
         sensed_objects = sensor.get_sensed_objects()
 
         assert len(sensed_objects) == 2
-        assert sensed_objects.get(sensed_object_id1).data.distance.m == sensed_distance1b.m
-        assert sensed_objects.get(sensed_object_id2).data.distance.m == sensed_distance2.m
+        assert sensed_objects.get(sensed_object_id1).data.distance == sensed_distance1b
+        assert sensed_objects.get(sensed_object_id2).data.distance == sensed_distance2

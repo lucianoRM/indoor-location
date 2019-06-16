@@ -7,7 +7,6 @@ from werkzeug.exceptions import NotFound
 
 APPLICATION_JSON = "application/json"
 
-
 class AbstractResource(Resource):
     """
     Abstract class extending flask-restful Resource that adds extra common logic.

@@ -1,26 +1,20 @@
 package com.example.location.internal.serialization;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
 
-public abstract class TypedObjectSerializer<T> implements JsonSerializer<T>, JsonDeserializer<T> {
-
-    //This GSON is an instance with no typeAdapter registered.
-    private static final Gson DEFAULT_GSON = new Gson();
+public abstract class TypedObjectSerializer<T> extends DelegatingSerializer<T> {
 
     private static final String TYPE_KEY = "type";
 
     @Override
     public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {
-        JsonElement serializedElement = DEFAULT_GSON.toJsonTree(src);
+        JsonElement serializedElement = getGson().toJsonTree(src);
         JsonObject serializedObject = serializedElement.getAsJsonObject();
         serializedObject.addProperty(TYPE_KEY, getTypeForSerialization(src));
         return serializedObject;
@@ -30,7 +24,7 @@ public abstract class TypedObjectSerializer<T> implements JsonSerializer<T>, Jso
     public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
         String type = jsonObject.get(TYPE_KEY).getAsString();
-        return DEFAULT_GSON.fromJson(jsonObject, getImplementationTypeForDeserialization(type));
+        return getGson().fromJson(jsonObject, getImplementationTypeForDeserialization(type));
     }
 
     protected abstract Type getImplementationTypeForDeserialization(String type);

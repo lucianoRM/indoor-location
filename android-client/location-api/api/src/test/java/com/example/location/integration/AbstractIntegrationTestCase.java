@@ -119,7 +119,7 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
     protected Sensor getSensorFromServer(String id) throws IOException {
         Request request = new Request.Builder().url(getServerUrl() + SENSORS_ENDPOINT + "/" + id).get().build();
         Response response = this.client.newCall(request).execute();
-        return getGson().fromJson(response.body().string() ,Sensor.class);
+        return getGson().fromJson(response.body().string(), Sensor.class);
     }
 
 }

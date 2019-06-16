@@ -55,10 +55,7 @@ class TestLocation(TestApi):
                 {
                     'id': 'user',
                     'data' : {
-                        'distance' : {
-                            'value' : 5,
-                            'unit' : 'm'
-                        },
+                        'distance' : 5,
                         'timestamp' : 1
                     }
                 }
@@ -70,10 +67,7 @@ class TestLocation(TestApi):
                 {
                     'id': 'user',
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 2
                     }
                 }
@@ -124,20 +118,14 @@ class TestLocation(TestApi):
                 {
                     'id': emitter_id1,
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 1
                     }
                 },
                 {
                     'id': emitter_id2,
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 1
                     }
                 }
@@ -188,19 +176,13 @@ class TestLocation(TestApi):
                 {
                     'id': 'user',
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 1
                     }
                 }, {
                     'id': 'idontexist',
                     'data' : {
-                        'distance': {
-                            'value' : 1000,
-                            'unit' : 'm'
-                        },
+                        'distance': 1000,
                         'timestamp' :20
                     }
                 }
@@ -213,10 +195,7 @@ class TestLocation(TestApi):
                 {
                     'id': 'user',
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 2
                     }
                 }
@@ -267,29 +246,20 @@ class TestLocation(TestApi):
                 {
                     'id': emitter_id1,
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 1
                     }
                 },
                 {
                     'id': emitter_id2,
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 1
                     }
                 }, {
                     'id': 'noise',
                     'data' : {
-                        'distance' : {
-                            'value' : -1000,
-                            'unit': 'km'
-                        },
+                        'distance' : -1000000,
                         'timestamp': 45
                     }
                 }
@@ -332,10 +302,7 @@ class TestLocation(TestApi):
                 {
                     'id': emitter_id1,
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 1
                     }
                 }

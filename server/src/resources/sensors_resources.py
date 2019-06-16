@@ -1,14 +1,9 @@
 
-from src.core.anchor.sensing_anchor import SensingAnchor
 from src.core.location.location_service import NotEnoughPointsException
-from src.core.sensor.sensors_manager import SensorAlreadyExistsException
-from src.core.user.sensing_user import SensingUser
-from src.core.user.user import User
 from src.dependency_container import DependencyContainer
 from src.resources.abstract_resource import AbstractResource
 from src.resources.schemas.sensed_object_schema import SensedObjectSchema
-from src.resources.schemas.typed_object_schema import TypedObjectSchema
-
+from src.resources.schemas.sensor_schema import SensorSchema
 
 class SensorListResource(AbstractResource):
     """
@@ -57,27 +52,6 @@ class SensorResource(AbstractResource):
             self.__sensed_objects_processor.process_sensed_objects(sensor_id=sensor_id, sensed_objects=objects)
         except NotEnoughPointsException:
             pass
-
-
-class SensorSchema(TypedObjectSchema):
-
-    __USER_TYPE = "USER"
-    __ANCHOR_TYPE = "ANCHOR"
-
-    def _get_valid_types(self):
-        return [self.__USER_TYPE, self.__ANCHOR_TYPE]
-
-    def _do_make_object(self, type, kwargs):
-        if type == self.__USER_TYPE:
-            return SensingUser(**kwargs)
-        else:
-            return SensingAnchor(**kwargs)
-
-    def _get_object_type(self, original_object):
-        if isinstance(original_object, User):
-            return self.__USER_TYPE
-        else:
-            return self.__ANCHOR_TYPE
 
 
 
