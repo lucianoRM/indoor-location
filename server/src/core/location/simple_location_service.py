@@ -1,6 +1,6 @@
 from typing import Tuple, List
 
-from src.core.location.location_service import LocationService, LocationServiceException
+from src.core.location.location_service import LocationService, LocationServiceException, NotEnoughPointsException
 from src.core.location.shape.circle import Circle
 
 
@@ -22,7 +22,7 @@ class SimpleLocationService(LocationService):
         :return: approximate location of the sensed object
         """
         if len(anchors) < 2:
-            raise LocationServiceException("Not enough sensing points to locate object")
+            raise NotEnoughPointsException("Not enough sensing points to locate object")
 
         sorted_anchor_objects = sorted(anchors, key=lambda object: object.timestamp, reverse=True)
         final_location_area = self.__get_location_area_intersection(sorted_anchor_objects.pop(0), sorted_anchor_objects.pop(0))

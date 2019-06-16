@@ -1,5 +1,6 @@
 
 from src.core.anchor.sensing_anchor import SensingAnchor
+from src.core.location.location_service import NotEnoughPointsException
 from src.core.sensor.sensors_manager import SensorAlreadyExistsException
 from src.core.user.sensing_user import SensingUser
 from src.core.user.user import User
@@ -52,7 +53,10 @@ class SensorResource(AbstractResource):
 
     def _do_put(self, sensor_id):
         objects = self.__sensed_objects_schema.load(self._get_post_data_as_json()).data
-        self.__sensed_objects_processor.process_sensed_objects(sensor_id=sensor_id, sensed_objects=objects)
+        try:
+            self.__sensed_objects_processor.process_sensed_objects(sensor_id=sensor_id, sensed_objects=objects)
+        except NotEnoughPointsException:
+            pass
 
 
 class SensorSchema(TypedObjectSchema):

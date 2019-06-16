@@ -303,3 +303,45 @@ class TestLocation(TestApi):
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
         assert res.status_code == 200
         self.__assert_location(res.get_json()["position"], (5, 0))
+
+    def test_less_than_required_sensing_points_still_returns_200(self):
+        # add static signal emitters
+
+        emitter_id1 = "emitter1"
+        self.__add_signal_emitter({
+            "id": emitter_id1,
+            "position": {
+                'x': 0,
+                'y': 0
+            },
+            "type": "ANCHOR"
+        })
+
+        # add sensing user
+        user_id = "user"
+        self.__add_user({
+            "id": user_id,
+            "position": {
+                'x': 0,
+                'y': 0
+            },
+            "type": "SENSOR"
+        })
+
+        sensed_objects = [
+                {
+                    'id': emitter_id1,
+                    'data': {
+                        'distance': {
+                            'value': 5,
+                            'unit': 'm'
+                        },
+                        'timestamp': 1
+                    }
+                }
+            ]
+
+        # update sensor information and check that user position changed
+        res = self._client().put(SENSORS_ENDPOINT + "/" + user_id, json=sensed_objects)
+        assert res.status_code == 200
+

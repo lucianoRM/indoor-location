@@ -18,3 +18,10 @@ class LocationServiceException(Exception):
     """
     Base exception to raise from a location service.
     """
+    pass
+
+class NotEnoughPointsException(LocationServiceException):
+    """
+    There are not enough sensing points to properly locate the object
+    """
+    pass
