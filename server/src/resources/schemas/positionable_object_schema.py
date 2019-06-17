@@ -27,10 +27,6 @@ class PositionableObjectSchema(Schema):
         if self.__POSITION_KEY not in serialized_data:
             raise ValidationError("Missing " + self.__POSITION_KEY)
 
-    @post_load
-    def make_object(self, kwargs):
-        return self._do_make_object(type=type, kwargs=kwargs)
-
     @abstractmethod
     def _do_make_object(self, type, kwargs):
         raise NotImplementedError

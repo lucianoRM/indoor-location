@@ -57,7 +57,12 @@ class TestApi:
 
     def __get_object_key_for_sorting(self, object):
         if isinstance(object, dict):
-            return "".join(object.keys())
+            keys = object.keys()
+            keys = sorted(keys)
+            first_value = ""
+            if len(keys) > 0:
+                first_value = object[keys[0]]
+            return str(first_value)
         return object
 
     def test_check_value_simple_object(self):
