@@ -14,19 +14,30 @@ class AbstractResource(Resource):
 
     def __collect_validation_error_keys(self, context, actual):
         all_keys = []
+        errors = []
         if "_schema" not in actual:
-            for key in actual:
-                context[key] = {}
-                next_level_keys = self.__collect_validation_error_keys(context[key], actual[key])
-                if not next_level_keys:
-                    all_keys.append(key)
-                else:
-                    for next_key in next_level_keys:
-                        all_keys.append(".".join([str(key), next_key]))
+            if isinstance(actual, list):
+                errors = actual
+            elif isinstance(actual, dict):
+                for key in actual:
+                    context[key] = {}
+                    next_level_keys = self.__collect_validation_error_keys(context[key], actual[key])
+                    if not next_level_keys:
+                        all_keys.append(key)
+                    else:
+                        for next_key in next_level_keys:
+                            joiner = "."
+                            if len(next_level_keys) == 0:
+                                joiner = ""
+                            elif len(next_level_keys) == 1:
+                                joiner = ":"
+                            all_keys.append(joiner.join([str(key), next_key]))
+            else:
+                errors = [str(actual)]
         else:
-            schema_errors = actual['_schema']
-            for error in schema_errors:
-                all_keys.append("'" + error + "'")
+            errors = actual['_schema']
+        for error in errors:
+            all_keys.append(error)
         return all_keys
 
     def __get_validation_error_keys(self, messages):
@@ -75,7 +86,7 @@ class AbstractResource(Resource):
         code = error.get('code', 500)
         message_getter = error.get('message', lambda e: str(e))
         message = message_getter(e)
-        flask_restful.abort(code, message=message)
+        flask_restful.abort(code, errors=message)
 
     def _get_post_data_as_json(self):
         """

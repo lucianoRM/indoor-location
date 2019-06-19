@@ -18,7 +18,8 @@ class AnchorListResource(AbstractResource):
     def __init__(self, **kwargs):
         super().__init__(custom_error_mappings=self.__custom_error_mappings, **kwargs)
         self.__anchors_manager = DependencyContainer.anchors_manager()
-        self.__anchors_schema = AnchorSchema(many=True, strict=True)
+        anchor_schema = AnchorSchema()
+        self.__anchors_schema = se
         self.__anchor_schema = AnchorSchema(strict=True)
 
     def _do_get(self):

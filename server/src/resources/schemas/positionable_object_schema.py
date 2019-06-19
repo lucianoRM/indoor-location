@@ -15,17 +15,17 @@ class PositionableObjectSchema(Schema):
     __ID_KEY = 'id'
     __POSITION_KEY = 'position'
 
-    id = fields.String()
-    position = fields.Nested(PositionSchema)
+    id = fields.String(required=True)
+    position = fields.Nested(PositionSchema, required=True)
 
     name = fields.String()
 
-    @validates_schema
-    def validate_input(self, serialized_data):
-        if self.__ID_KEY not in serialized_data:
-            raise ValidationError(message="Missing " + self.__ID_KEY)
-        if self.__POSITION_KEY not in serialized_data:
-            raise ValidationError("Missing " + self.__POSITION_KEY)
+    # @validates_schema
+    # def validate_input(self, serialized_data):
+    #     if self.__ID_KEY not in serialized_data:
+    #         raise ValidationError(message="Missing " + self.__ID_KEY)
+    #     if self.__POSITION_KEY not in serialized_data:
+    #         raise ValidationError("Missing " + self.__POSITION_KEY)
 
     @abstractmethod
     def _do_make_object(self, type, kwargs):
