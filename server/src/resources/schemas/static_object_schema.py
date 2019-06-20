@@ -15,10 +15,4 @@ class StaticObjectSchema(IdentifiableObjectSchema):
 
     __POSITION_KEY = 'position'
 
-    position = fields.Nested(PositionSchema)
-
-    @validates_schema
-    def validate_input(self, serialized_data):
-        super().validate_input(serialized_data)
-        if self.__POSITION_KEY not in serialized_data:
-            raise ValidationError("Missing " + self.__POSITION_KEY)
+    position = fields.Nested(PositionSchema, required=True)

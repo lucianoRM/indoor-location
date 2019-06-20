@@ -12,7 +12,6 @@ import com.example.location.api.entity.sensor.SensorFeed;
 import com.example.location.api.system.SensorAlreadyExistsException;
 import com.example.location.functional.StaticSensorFeed;
 import com.example.location.internal.entity.emitter.DefaultSignalEmitter;
-import com.example.location.internal.entity.sensor.DefaultSensor;
 import com.example.location.internal.serialization.SensorView;
 
 import org.junit.Rule;
@@ -32,6 +31,7 @@ public class SensorIntegrationTestCase extends AbstractIntegrationTestCase {
 
     @Rule
     public ExpectedException expectedException = none();
+
 
     @Test
     public void createSensorIsSuccessful() throws Exception {

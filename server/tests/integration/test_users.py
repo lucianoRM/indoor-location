@@ -64,14 +64,16 @@ class TestUsersEndpoint(TestApi):
         user.pop("id")
         res = self._client().post(USERS_ENDPOINT, json=user)
         assert res.status_code == 400
-        assert "Missing id" in str(res.get_data())
+        assert "Invalid format" in str(res.get_data())
+        assert "id:Missing data for required field" in str(res.get_data())
 
-    def test_add_user_with_missing_position(self):
+    def test_add_user_with_missing_position_gets_default(self):
         user = self.__base_user
         user.pop("position")
         res = self._client().post(USERS_ENDPOINT, json=user)
-        assert res.status_code == 400
-        assert "Missing position" in str(res.get_data())
+        assert res.status_code == 200
+        assert res.get_json()['position']['x'] == 0
+        assert res.get_json()['position']['y'] == 0
 
     def test_add_user_with_missing_type(self):
         user = self.__base_user

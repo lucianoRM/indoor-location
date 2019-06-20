@@ -13,10 +13,5 @@ class MovingObjectSchema(IdentifiableObjectSchema):
 
     __metaclass__ = ABCMeta
 
-    __POSITION_KEY = 'position'
-
-    position = fields.Nested(PositionSchema)
-
-    def validate_input(self, serialized_data):
-        super().validate_input(serialized_data)
+    position = fields.Nested(PositionSchema, missing={'x':0, 'y':0})
 

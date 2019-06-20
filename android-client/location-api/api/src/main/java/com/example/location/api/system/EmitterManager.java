@@ -10,6 +10,12 @@ import java.util.Optional;
 public interface EmitterManager {
 
     /**
+     * Register a new {@link SignalEmitter}
+     * @param signalEmitter to be registered
+     */
+    void registerEmitter(SignalEmitter signalEmitter) throws EmitterManagerException;
+
+    /**
      * Gets the {@link SignalEmitter} associated with this id
      * @param id the id for the signal emmiter.
      * @return an {@link Optional<SignalEmitter>} if it exists or {@link Optional#empty()}

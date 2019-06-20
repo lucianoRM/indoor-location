@@ -60,6 +60,6 @@ class KVDBStaticObjectsManager(KVDBBackedManager, ObservableStaticObjectsManager
 
     def get_all_static_objects(self) -> List[T]:
         try:
-            return self._database.retrieve(key=self.__STATIC_OBJECTS_POSITION_KEY).values()
+            return list(self._database.retrieve(key=self.__STATIC_OBJECTS_POSITION_KEY).values())
         except KeyDoesNotExistException:
             return []

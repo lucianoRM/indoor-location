@@ -61,6 +61,6 @@ class KVDBMovingObjectsManager(KVDBBackedManager, ObservableMovingObjectsManager
 
     def get_all_moving_objects(self) -> List[T]:
         try:
-            return self._database.retrieve(key=self.__MOVING_OBJECTS_POSITION_KEY).values()
+            return list(self._database.retrieve(key=self.__MOVING_OBJECTS_POSITION_KEY).values())
         except KeyDoesNotExistException:
             return []

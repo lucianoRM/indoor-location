@@ -2,6 +2,7 @@ package com.example.location.internal.system;
 
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.api.system.EmitterManager;
+import com.example.location.api.system.EmitterManagerException;
 import com.example.location.internal.http.HttpLocationClient;
 
 import java.io.IOException;
@@ -25,6 +26,11 @@ public class DefaultEmitterManager implements EmitterManager {
     @Inject
     public DefaultEmitterManager(HttpLocationClient httpClient) {
         this.httpClient = httpClient;
+    }
+
+    @Override
+    public void registerEmitter(SignalEmitter signalEmitter) throws EmitterManagerException {
+        
     }
 
     @Override

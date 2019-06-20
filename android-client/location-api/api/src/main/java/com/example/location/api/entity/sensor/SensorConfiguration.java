@@ -3,7 +3,6 @@ package com.example.location.api.entity.sensor;
 import com.example.location.api.data.DataTransformer;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.UUID.randomUUID;
 
 public final class SensorConfiguration {

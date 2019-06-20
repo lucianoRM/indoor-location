@@ -11,6 +11,10 @@ from src.core.object.kvdb_moving_objects_manager import KVDBMovingObjectsManager
 from src.core.object.kvdb_static_objects_manager import KVDBStaticObjectsManager
 from src.core.sensor.default_sensors_manager import DefaultSensorsManager
 from src.core.user.default_users_manager import DefaultUsersManager
+from src.resources.schemas.anchor_schema import AnchorSchema
+from src.resources.schemas.sensor_schema import SensorSchema
+from src.resources.schemas.signal_emitter_schema import SignalEmitterSchema
+from src.resources.schemas.user_schema import UserSchema
 
 """
 This is where we can store the dependencies needed to inject into the resources in order to properly work.
@@ -35,6 +39,11 @@ class DependencyContainer(DeclarativeContainer):
 
     sensors_manager = Singleton(DefaultSensorsManager, objects_manager=__objects_manager)
     signal_emitters_manager = Singleton(DefaultSignalEmittersManager, objects_manager=__objects_manager)
+
+    user_schema = Singleton(UserSchema)
+    sensor_schema = Singleton(SensorSchema)
+    anchor_schema = Singleton(AnchorSchema)
+    signal_emitter_schema = Singleton(SignalEmitterSchema)
 
     location_service = Singleton(SimpleLocationService)
 

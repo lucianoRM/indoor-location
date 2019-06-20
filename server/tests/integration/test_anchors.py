@@ -65,14 +65,16 @@ class TestAnchorsEndpoint(TestApi):
         anchor.pop("id")
         res = self._client().post(ANCHORS_ENDPOINT, json=anchor)
         assert res.status_code == 400
-        assert "Missing id" in str(res.get_data())
+        assert "Invalid format" in str(res.get_data())
+        assert "id:Missing data for required field" in str(res.get_data())
 
     def test_add_anchor_with_missing_position(self):
         anchor = self.__base_anchor
         anchor.pop("position")
         res = self._client().post(ANCHORS_ENDPOINT, json=anchor)
-        assert res.status_code == 400
-        assert "Missing position" in str(res.get_data())
+        assert "Invalid format" in str(res.get_data())
+        assert "position.x:Missing data for required field" in str(res.get_data())
+        assert "position.y:Missing data for required field" in str(res.get_data())
 
     def test_add_anchor_with_missing_type(self):
         anchor = self.__base_anchor

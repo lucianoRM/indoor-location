@@ -1,6 +1,6 @@
 from abc import ABCMeta
 
-from marshmallow import fields, ValidationError, validates_schema, Schem
+from marshmallow import fields, ValidationError, validates_schema, Schema
 
 class IdentifiableObjectSchema(Schema):
     """
@@ -11,11 +11,5 @@ class IdentifiableObjectSchema(Schema):
 
     __ID_KEY = 'id'
 
-    id = fields.String()
+    id = fields.String(required=True)
     name = fields.String()
-
-    @validates_schema
-    def validate_input(self, serialized_data):
-        super().validate_input(serialized_data)
-        if self.__ID_KEY not in serialized_data:
-            raise ValidationError(message="Missing " + self.__ID_KEY)
