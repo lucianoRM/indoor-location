@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 from typing import Callable
 
 import flask_restful
@@ -11,6 +12,7 @@ class AbstractResource(Resource):
     """
     Abstract class extending flask-restful Resource that adds extra common logic.
     """
+    __metaclass__ = ABCMeta
 
     def __collect_validation_error_keys(self, context, actual):
         all_keys = []
@@ -49,6 +51,7 @@ class AbstractResource(Resource):
             error_keys = self.__collect_validation_error_keys(all_errors, messages)
         return error_keys
 
+    @abstractmethod
     def __init__(self, custom_error_mappings=None, **kwargs):
         self.__default_error = {
             'code': 500
@@ -98,7 +101,7 @@ class AbstractResource(Resource):
     def get(self, **kwargs):
         """
         Base method for implementing HTTP GET requests.
-        Child classes should not re implement this, but the Template method: _do_get
+        Child classes should not re implement this, but the Template method: _Fdo_get
         :param kwargs: extra kwargs
         :return: the response to send to the client
         """

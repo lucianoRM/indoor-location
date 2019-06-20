@@ -1,3 +1,5 @@
+from abc import ABCMeta, abstractmethod
+
 from src.core.anchor.anchor import Anchor
 from src.core.anchor.sensing_anchor import SensingAnchor
 from src.core.location.location_service import NotEnoughPointsException
@@ -12,7 +14,21 @@ from src.resources.schemas.typed_object_serializer import SerializationContext, 
 from src.resources.schemas.user_schema import USER_TYPE
 
 
-class SensorListResource(AbstractResource):
+class AbstractSensorResource(AbstractResource):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._sensor_manager = DependencyContainer.sensors_manager()
+        self._serializer = TypedObjectSerializer(contexts=[
+            SerializationContext(type=ANCHOR_TYPE, schema=SensingAnchorSchema(strict=True), klass=SensingAnchor),
+            SerializationContext(type=USER_TYPE, schema=SensingUserSchema(strict=True),
+                                 klass=SensingUser),
+        ])
+
+
+class SensorListResource(AbstractSensorResource):
     """
     Resource related to sensors in the system
     """
@@ -24,44 +40,28 @@ class SensorListResource(AbstractResource):
     }
 
     def __init__(self, **kwargs):
-        super().__init__(custom_error_mappings=self.__custom_error_mappings,**kwargs)
-        self.__sensor_manager = DependencyContainer.sensors_manager()
-        contexts = [
-            SerializationContext(type=ANCHOR_TYPE, schema=SensingAnchorSchema(strict=True), klass=SensingAnchor),
-            SerializationContext(type=USER_TYPE, schema=SensingUserSchema(strict=True),
-                                 klass=SensingUser),
-        ]
-        self.__sensor_schema = TypedObjectSerializer(contexts=contexts)
+        super().__init__(custom_error_mappings=self.__custom_error_mappings, **kwargs)
 
     def _do_get(self):
-        return self.__sensor_schema.dump(self.__sensor_manager.get_all_sensors())
+        return self._serializer.dump(self._sensor_manager.get_all_sensors())
 
     def _do_post(self):
-        sensor = self.__sensor_schema.load(self._get_post_data_as_json()).data
-        return self.__sensor_schema.dump(self.__sensor_manager.add_sensor(sensor_id=sensor.id, sensor=sensor))
+        sensor = self._serializer.load(self._get_post_data_as_json())
+        return self._serializer.dump(self._sensor_manager.add_sensor(sensor_id=sensor.id, sensor=sensor))
 
 
-class SensorResource(AbstractResource):
+class SensorResource(AbstractSensorResource):
     """
     Resource related to one particular sensor in the system
     """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.__sensor_manager = DependencyContainer.sensors_manager()
-
-        contexts = [
-            SerializationContext(type=ANCHOR_TYPE, schema=SensingAnchorSchema(strict=True), klass=SensingAnchor),
-            SerializationContext(type=USER_TYPE, schema=SensingUserSchema(strict=True),
-                                 klass=SensingUser),
-        ]
-        self.__sensor_schema = TypedObjectSerializer(contexts=contexts)
-
         self.__sensed_objects_processor = DependencyContainer.sensed_objects_processor()
         self.__sensed_objects_schema = SensedObjectSchema(strict=True, many=True)
 
     def _do_get(self, sensor_id):
-        return self.__sensor_schema.dump(self.__sensor_manager.get_sensor(sensor_id=sensor_id))
+        return self._serializer.dump(self._sensor_manager.get_sensor(sensor_id=sensor_id))
 
     def _do_put(self, sensor_id):
         objects = self.__sensed_objects_schema.load(self._get_post_data_as_json()).data

@@ -44,7 +44,7 @@ class TypedObjectSerializer:
         if type not in self.__contexts_by_type:
             raise ValidationError("Got wrong type: " + type + ", expecting one of: " + ", ".join(self.__contexts_by_type.keys()))
         context = self.__contexts_by_type[type]
-        return context.schema.load(data=data, **kwargs)
+        return context.schema.load(data=data, **kwargs).data
 
     def __dump_list(self, object_list, **kwargs):
         dumped_objects = []
