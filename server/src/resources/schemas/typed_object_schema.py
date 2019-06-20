@@ -7,10 +7,9 @@ from marshmallow import fields, post_dump, post_load, ValidationError, Schema
 
 class SerializationContext:
 
-    def __init__(self, type, schema, klass, implementation):
+    def __init__(self, type, schema, klass):
         self.__type = type
         self.__schema = schema
-        self.__implementation = implementation
         self.__klass = klass
 
     @property
@@ -20,10 +19,6 @@ class SerializationContext:
     @property
     def schema(self):
         return self.__schema
-
-    @property
-    def constructor(self):
-        return self.__implementation
 
     @property
     def klass(self):
@@ -45,14 +40,9 @@ class TypedObjectSchema(Schema):
         self.__contexts_by_type = {}
         self.__contexts_by_klass = {}
         for context in contexts:
-            self.__contexts_by_type[context.type] = context
             self.__contexts_by_klass[context.klass] = context
+            self.__contexts_by_type[context.type] = context
 
-
-
-    @abstractmethod
-    def _get_valid_types(self):
-        return []
 
     @post_load
     def make_object(self, kwargs):
@@ -72,7 +62,7 @@ class TypedObjectSchema(Schema):
             self._add_synthetic_data(serialized_values[i], original_values[i])
 
     def _add_synthetic_data(self, serialized_object, original_object):
-        context = self.__contexts_by_klass[type(original_object)]
+        context = self.__get_context(original_object)
         serialized_object[self.__TYPE_ATTRIBUTE_KEY] = context.type
 
     def __with_updated_fields(self, other_schema: Schema, func: callable, *args, **kwargs):
@@ -103,6 +93,7 @@ class TypedObjectSchema(Schema):
         self.declared_fields = original_declared_fields
         return result
 
+
     def load(self, data, **kwargs):
         if self.__TYPE_ATTRIBUTE_KEY not in data:
             raise ValidationError("Missing " + self.__TYPE_ATTRIBUTE_KEY)
@@ -114,15 +105,14 @@ class TypedObjectSchema(Schema):
 
 
     def dump(self, value, **kwargs):
-        value_context = None
-        for klass, context in self.__contexts_by_klass.items():
-            if isinstance(value, klass):
-                value_context = context
-                break
-        if not value_context:
-            raise ValidationError("Serializer is not configured to deserialize: " + str(type(value)))
-        type_schema = value_context.schema
-        return self.__with_updated_fields(type_schema, super().dump, value, **kwargs)
+        if not isinstance(value, list):
+            value = [value]
+        dumped = []
+        for obj in value:
+            value_context = self.__get_context(obj)
+            type_schema = value_context.schema
+            dumped.append(self.__with_updated_fields(type_schema, super().dump, obj, **kwargs))
+        return dumped
 
 
 
