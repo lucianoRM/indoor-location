@@ -27,8 +27,6 @@ public final class LocationSystem {
     private LocationSystemComponent locationSystemComponent;
 
     public LocationSystem() {
-
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://192.168.1.6:8082")
                 .addConverterFactory(ScalarsConverterFactory.create())
@@ -42,8 +40,7 @@ public final class LocationSystem {
                 .build();
     }
 
-    public LocationSystemComponent getContainer() {
-        return locationSystemComponent;
+    public SensorManager getSensorManager() {
+        return locationSystemComponent.sensorManager();
     }
-
 }
