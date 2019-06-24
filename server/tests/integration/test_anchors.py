@@ -23,7 +23,7 @@ class TestAnchorsEndpoint(TestApi):
         res = self._client().post(ANCHORS_ENDPOINT, json=anchor)
         assert res.status_code == 200
         res = self._client().get(ANCHORS_ENDPOINT + "/" + anchor['id'])
-        self.assert_response(res, anchor, ['unit'])
+        self.assert_response(res, anchor)
 
     def test_add_anchor_twice_should_fail(self):
         user = self.__base_anchor
@@ -58,7 +58,7 @@ class TestAnchorsEndpoint(TestApi):
             assert res.status_code == 200
         res = self._client().get(ANCHORS_ENDPOINT)
         assert res.status_code == 200
-        self.assert_response(res, anchors, ['unit'])
+        self.assert_response(res, anchors)
 
     def test_add_anchor_with_missing_id(self):
         anchor = self.__base_anchor

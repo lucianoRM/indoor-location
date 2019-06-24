@@ -25,9 +25,9 @@ class AbstractUserResource(AbstractResource):
         ])
 
 class UserListResource(AbstractUserResource):
-    '''
+    """
     Resource representing Users in the system
-    '''
+    """
 
     __custom_error_mappings = {
         'UserAlreadyExistsException': {
@@ -48,9 +48,9 @@ class UserListResource(AbstractUserResource):
 
 
 class UserResource(AbstractUserResource):
-    '''
+    """
     Resource related to one user in particular in the system
-    '''
+    """
 
     def _do_get(self, user_id):
         return self._serializer.dump(self._user_manager.get_user(user_id=user_id))

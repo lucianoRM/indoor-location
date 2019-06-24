@@ -36,8 +36,8 @@ public class RawSensorData {
         return this.emitterId;
     }
 
-    public Map<String, Object> getAttributes() {
-        return this.attributes;
+    public <T> T getAttribute(String key) {
+        return (T) this.attributes.get(key);
     }
 
 }

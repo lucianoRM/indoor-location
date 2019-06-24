@@ -9,7 +9,7 @@ import com.example.location.api.entity.emitter.SignalEmitter;
 public interface DataTransformer {
 
     /**
-     * Transform raw data from the sensor into usable data for the System
+     * Transform raw data from the sensor into usable data for the LocationSystem
      * @param signalEmitter the emitter source of this data
      * @param rawData the data received by the sensor
      * @return the transformed data.

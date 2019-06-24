@@ -29,7 +29,7 @@ import static java.util.Optional.of;
 public class DefaultSensorTestCase {
 
     @Test
-    public void sensorGetsObjectsFromFeed() {
+    public void sensorGetsObjectsFromFeed() throws Exception{
         SensorFeed sensorFeed = mock(SensorFeed.class);
         DataTransformer dataTransformer = mock(DataTransformer.class);
         SensorListener sensorListener = mock(SensorListener.class);

@@ -4,6 +4,8 @@ import com.example.location.api.data.DataTransformer;
 import com.example.location.api.data.Position;
 import com.example.location.api.data.RawSensorData;
 import com.example.location.api.system.EmitterManager;
+import com.example.location.api.system.EmitterManagerException;
+import com.example.location.internal.ThrowingConsumer;
 import com.example.location.internal.data.SensedObject;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.api.entity.sensor.SensorFeed;
@@ -40,8 +42,9 @@ public class DefaultSensor extends SkeletalIdentifiableObject implements Sensor 
     public void sense() {
         List<RawSensorData> sensedObjectsData = feed.getData();
         List<SensedObject> transformedObjects = new ArrayList<>();
+
         sensedObjectsData.forEach(
-                data -> emitterManager.getSignalEmitter(data.getEmitterId())
+                (ThrowingConsumer<RawSensorData, EmitterManagerException>) data -> emitterManager.getSignalEmitter(data.getEmitterId())
                         .ifPresent(
                                 emitter -> transformedObjects.add(
                                         new SensedObject(
@@ -51,6 +54,7 @@ public class DefaultSensor extends SkeletalIdentifiableObject implements Sensor 
                                 )
                         )
         );
+
         listener.onSensorUpdate(this, transformedObjects);
     }
 }

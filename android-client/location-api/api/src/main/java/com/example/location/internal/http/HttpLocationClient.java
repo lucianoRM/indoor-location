@@ -21,6 +21,14 @@ public interface HttpLocationClient {
     String SIGNAL_EMITTERS_ENDPOINT = "/signal_emitters";
 
     /**
+     * Register a new {@link SignalEmitter}
+     * @param signalEmitter the {@link SignalEmitter} to be registered
+     * @return the signal emitter registered
+     */
+    @POST(SIGNAL_EMITTERS_ENDPOINT)
+    Call<SignalEmitter> registerSignalEmitter(@Body SignalEmitter signalEmitter);
+
+    /**
      * Get all {@link SignalEmitter}s registered in the server.
      * @return A {@link List<SignalEmitter>} containing all {@link SignalEmitter}s
      */
