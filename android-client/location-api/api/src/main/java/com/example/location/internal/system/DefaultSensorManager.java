@@ -51,9 +51,11 @@ public class DefaultSensorManager implements SensorManager {
                 HttpCode responseCode = codeFrom(httpResponse.code());
                 switch (responseCode) {
                     case CONFLICT:
-                        throw new SensorAlreadyExistsException("The sensor with id: " + config.getSensorId() + " already exists");
+                        //TODO: see what to do here
+                        return sensor;
+//                        throw new SensorAlreadyExistsException("The sensor with id: " + config.getSensorId() + " already exists");
                     case SERVER_ERROR:
-                        throw new RuntimeException("Internal server error");
+                        throw new SensorManagerException("Internal server error");
                     default:
                         break;
                 }

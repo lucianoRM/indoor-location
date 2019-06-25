@@ -1,4 +1,4 @@
-package com.example.luciano.location_api;
+package com.example.luciano.location;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

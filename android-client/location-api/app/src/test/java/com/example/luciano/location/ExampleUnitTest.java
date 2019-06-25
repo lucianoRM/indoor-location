@@ -1,4 +1,4 @@
-package com.example.luciano.location_api;
+package com.example.luciano.location;
 
 import org.junit.Test;
 
