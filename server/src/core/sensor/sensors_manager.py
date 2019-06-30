@@ -16,17 +16,6 @@ class SensorsManager:
         super().__init__(**kwargs)
 
     @abstractmethod
-    def add_sensor(self, sensor_id: str, sensor: Generic[T]) -> T:
-        """
-        Add a new sensor
-        :param sensor_id: the sensor_id
-        :param sensor: the sensor to add
-        :raise SensorAlreadyExistsException: if the sensor was already added
-        :return: the sensor added
-        """
-        raise NotImplementedError
-
-    @abstractmethod
     def get_sensor(self, sensor_id: str) -> T:
         """
         Get a sensor by id
@@ -37,34 +26,12 @@ class SensorsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def remove_sensor(self, sensor_id: str) -> T:
-        """
-        Remove an sensor by id
-        :param sensor_id: The id to uniquely locate the sensor to remove
-        :raise: UnkownSensorException: If the sensor is not found
-        :return: The sensor with the given id
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    def update_sensor(self, sensor_id:str, sensor: Generic[T]) -> T:
-        """
-        Update an already existent sensor.
-        :param sensor_id: The id of the sensor to be updated
-        :param sensor: The new sensor that will replace the old one with new information
-        :raise: UnknownSensorException if no sensor is found with the given id.
-        :return: The new sensor updated
-        """
-        raise NotImplementedError
-
-    @abstractmethod
     def get_all_sensors(self) -> List[T]:
         """
         Return all registered sensors
         :return: all sensors
         """
         raise NotImplementedError
-
 
 
 class SensorManagerException(Exception):

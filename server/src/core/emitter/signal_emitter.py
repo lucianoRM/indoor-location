@@ -1,15 +1,12 @@
-from abc import ABCMeta, abstractmethod
+from src.core.object.object import Object
 
 
-class SignalEmitter:
+class SignalEmitter(Object):
     """
-    Abstract class that models an object that emits a signal
+    Class that models an object that emits a signal
     """
 
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def __init__(self, **kwargs):
+    def __init__(self,**kwargs):
         signal = kwargs.pop("signal", None)
         if not signal:
             signal = {}

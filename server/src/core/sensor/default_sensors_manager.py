@@ -1,9 +1,11 @@
 from typing import List
 
 from src.core.manager.default_positionable_objects_manager import PositionableObjectsManagerObserver
-from src.core.manager.positionable_objects_manager import ObjectAlreadyExistsException, UnknownObjectException
+from src.core.manager.observable_objects_manager import Callback
+from src.core.manager.positionable_objects_manager import UnknownObjectException
+from src.core.object.sensor_aware_object import SensorAwareObject
 from src.core.sensor.sensor import Sensor
-from src.core.sensor.sensors_manager import SensorsManager, SensorAlreadyExistsException, UnknownSensorException
+from src.core.sensor.sensors_manager import SensorsManager, UnknownSensorException, SensorAlreadyExistsException
 
 
 class DefaultSensorsManager(SensorsManager):
@@ -15,34 +17,39 @@ class DefaultSensorsManager(SensorsManager):
         :param objects_manager: manager that handles sensors
         """
         super().__init__()
+        self.__index = {}
         self.__objects_manager = objects_manager
-        self.__objects_manager.accepted_types = [Sensor]
+        self.__objects_manager.register_on_add_callback(Callback(self.__on_add, self.__on_remove))
+        self.__objects_manager.register_on_remove_callback(Callback(self.__on_remove, self.__on_add))
 
+    def __on_add(self, owner_id: str, owner: SensorAwareObject):
+        for s_id in owner.sensors:
+            if s_id in self.__index:
+                raise SensorAlreadyExistsException(
+                    "The sensor with id: " + s_id + " already exists in the system")
+            self.__index[s_id] = owner_id
 
-    def add_sensor(self, sensor_id: str, sensor: Sensor) -> Sensor:
-        try:
-            return self.__objects_manager.add_object(object_id=sensor_id, object=sensor)
-        except ObjectAlreadyExistsException:
-            raise SensorAlreadyExistsException("Sensor with id: " + sensor_id + " was already registered")
+    def __on_remove(self, owner: SensorAwareObject):
+        for s_id in owner.sensors:
+            self.__index.pop(s_id)
+
+    def __get_owner(self, s_id: str) -> SensorAwareObject:
+        owner_id = self.__index.get(s_id)
+        owner = self.__objects_manager.get_object(object_id=owner_id)
+        return owner
 
     def get_sensor(self, sensor_id: str) -> Sensor:
         try:
-            return self.__objects_manager.get_object(object_id=sensor_id)
-        except UnknownObjectException:
+            owner = self.__get_owner(sensor_id)
+            return owner.sensors.get(sensor_id)
+        except (UnknownObjectException, KeyError):
             pass
         raise UnknownSensorException("A sensor with id: " + sensor_id + " does not exist")
 
-    def update_sensor(self, sensor_id: str, sensor: Sensor) -> Sensor:
-        try:
-            return self.__objects_manager.update_object(object_id=sensor_id, object=sensor)
-        except UnknownObjectException:
-            raise UnknownSensorException("A sensor with id: " + sensor_id + " does not exist")
-
-    def remove_sensor(self, sensor_id: str) -> Sensor:
-        try:
-            return self.__objects_manager.remove_object(object_id=sensor_id)
-        except UnknownObjectException:
-            raise UnknownSensorException("A sensor with id: " + sensor_id + " does not exist")
-
     def get_all_sensors(self) -> List[Sensor]:
-        return self.__objects_manager.get_all_objects()
+        sensors = []
+        for s_id in self.__index:
+            owner = self.__get_owner(s_id)
+            for s in owner.sensors.values():
+                sensors.append(s)
+        return sensors

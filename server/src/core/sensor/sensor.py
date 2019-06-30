@@ -1,21 +1,18 @@
-from abc import ABCMeta, abstractmethod
 from copy import deepcopy
 from typing import Dict, List
 
 from src.core.data.sensed_object import SensedObject
+from src.core.object.object import Object
 
 
-class Sensor:
+class Sensor(Object):
     """
-    Abstract class to simulate a signal sensor
+    Class to simulate a signal sensor
     Stores all information related to a sensor that is part of the system.
     Keep in mind that sensors can be any kind of device that senses data. If it contributes new data to the system,
     it should be a Sensor.
     """
 
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
     def __init__(self, **kwargs):
         #Dict to store the objects that where located by this sensor. It should have the objects id as key and the sensed data as value
         self.__sensed_objects = {}
