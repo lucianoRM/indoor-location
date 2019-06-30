@@ -1,6 +1,11 @@
+from marshmallow import post_load
+
+from src.core.sensor.sensor import Sensor
 from src.resources.schemas.identifiable_object_schema import IdentifiableObjectSchema
 
-SENSOR_TYPE = "SENSOR"
 
 class SensorSchema(IdentifiableObjectSchema):
-    pass
+
+    @post_load
+    def make_object(self, kwargs):
+        return Sensor(**kwargs)

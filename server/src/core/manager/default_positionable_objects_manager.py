@@ -45,7 +45,7 @@ class PositionableObjectsManagerObserver(PositionableObjectsManager):
         self.__static_objects_manager.call_on_add(callback)
         self.__moving_objects_manager.call_on_add(callback)
 
-    def register_on_remove_callback(self, callback: callable):
+    def register_on_remove_callback(self, callback: Callback):
         self.__static_objects_manager.call_on_remove(callback)
         self.__moving_objects_manager.call_on_remove(callback)
 

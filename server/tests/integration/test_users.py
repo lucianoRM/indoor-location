@@ -8,10 +8,9 @@ class TestUsersEndpoint(TestApi):
         self.__base_user = {
             "id": "userId",
             "position": {
-                    'x':0,
-                    'y':0
-                },
-            "type": "SENSOR"
+                'x': 0,
+                'y': 0
+            }
         }
 
     def test_get_empty_user_list(self):
@@ -38,18 +37,16 @@ class TestUsersEndpoint(TestApi):
             {
                 "id": "userId",
                 "position": {
-                    'x':0,
-                    'y':0
-                },
-                "type": "SENSOR"
+                    'x': 0,
+                    'y': 0
+                }
             },
             {
                 "id": "userId2",
                 "position": {
-                    'x':0,
-                    'y':0
-                },
-                "type": "SIGNAL_EMITTER"
+                    'x': 0,
+                    'y': 0
+                }
             }
         ]
         for user in users:
@@ -58,6 +55,66 @@ class TestUsersEndpoint(TestApi):
         res = self._client().get(USERS_ENDPOINT)
         assert res.status_code == 200
         self.assert_response(res, users)
+
+    def test_add_user_with_sensors(self):
+        user = self.__base_user
+        s1_id = 's1'
+        s1 = {'id': s1_id}
+        s2_id = 's2'
+        s2 = {'id': s1_id}
+        user['sensors'] = {s1_id: s1, s2_id: s2}
+        res = self._client().post(USERS_ENDPOINT, json=user)
+        assert res.status_code == 200
+        self.assert_response(res, user)
+
+    def test_add_user_with_signal_emitters(self):
+        user = self.__base_user
+        se1_id = 'se1'
+        se1 = {'id': se1_id}
+        se2_id = 'se2'
+        se2 = {'id': se1_id}
+        user['signal_emitters'] = {se1_id: se1, se2_id: se2}
+        res = self._client().post(USERS_ENDPOINT, json=user)
+        assert res.status_code == 200
+        self.assert_response(res, user)
+
+    def test_add_user_with_sensors_and_signal_emitters(self):
+        user = self.__base_user
+        se_id = 'se'
+        se = {'id': se_id}
+        s_id = 's'
+        s = {'id': s_id}
+        user['sensors'] = {s_id: s}
+        user['signal_emitters'] = {se_id: se}
+        res = self._client().post(USERS_ENDPOINT, json=user)
+        assert res.status_code == 200
+        self.assert_response(res, user)
+
+    def test_register_user_with_existent_sensor(self):
+        user1 = self.__base_user
+        s_id = 's'
+        s = {'id': s_id}
+        user1['sensors'] = {s_id: s}
+        res = self._client().post(USERS_ENDPOINT, json=user1)
+        assert res.status_code == 200
+
+        user2 = {"id": "user2", 'sensors': {s_id: s}}
+        res = self._client().post(USERS_ENDPOINT, json=user2)
+        assert res.status_code == 400
+        assert "The sensor with id: s already exists in the system" in str(res.get_data())
+
+    def test_register_user_with_existent_signal_emitter(self):
+        user1 = self.__base_user
+        se_id = 'se'
+        se = {'id': se_id}
+        user1['signal_emitters'] = {se_id: se}
+        res = self._client().post(USERS_ENDPOINT, json=user1)
+        assert res.status_code == 200
+
+        user2 = {"id": "user2", 'signal_emitters': {se_id: se}}
+        res = self._client().post(USERS_ENDPOINT, json=user2)
+        assert res.status_code == 400
+        assert "The signal emitter with id: se already exists in the system" in str(res.get_data())
 
     def test_add_user_with_missing_id(self):
         user = self.__base_user
@@ -74,17 +131,3 @@ class TestUsersEndpoint(TestApi):
         assert res.status_code == 200
         assert res.get_json()['position']['x'] == 0
         assert res.get_json()['position']['y'] == 0
-
-    def test_add_user_with_missing_type(self):
-        user = self.__base_user
-        user.pop("type")
-        res = self._client().post(USERS_ENDPOINT, json=user)
-        assert res.status_code == 400
-        assert "Missing type" in str(res.get_data())
-
-    def test_add_user_with_wrong_type(self):
-        user = self.__base_user
-        user['type'] = "INVALID_TYPE"
-        res = self._client().post(USERS_ENDPOINT, json=user)
-        assert res.status_code == 400
-        assert "Got wrong type: INVALID_TYPE, expecting one of: SENSOR, SIGNAL_EMITTER" in str(res.get_data())

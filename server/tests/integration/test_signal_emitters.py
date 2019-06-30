@@ -12,8 +12,7 @@ class TestSignalEmittersEndpoint(TestApi):
             "position": {
                     'x':0,
                     'y':0
-                },
-            "type": "USER"
+                }
         }
 
     def test_get_empty_signal_emitters_list(self):
@@ -45,8 +44,7 @@ class TestSignalEmittersEndpoint(TestApi):
                 "position": {
                     'x':0,
                     'y':0
-                },
-                "type": "USER",
+                }
             },
             {
                 "id": "signal_emitterId2",
@@ -56,8 +54,7 @@ class TestSignalEmittersEndpoint(TestApi):
                 "position": {
                     'x':0,
                     'y':0
-                },
-                "type": "ANCHOR",
+                }
             }
         ]
         for signal_emitter in signal_emitters:
@@ -82,19 +79,3 @@ class TestSignalEmittersEndpoint(TestApi):
         assert res.status_code == 200
         assert res.get_json()['position']['x'] == 0
         assert res.get_json()['position']['y'] == 0
-
-    def test_add_signal_emitter_with_missing_type(self):
-        signal_emitter = self.__base_signal_emitter
-        signal_emitter.pop("type")
-        res = self._client().post(SIGNAL_EMITTERS_ENDPOINT, json=signal_emitter)
-        assert res.status_code == 400
-        assert "Missing type" in str(res.get_json())
-
-    def test_add_signal_emitter_with_wrong_type(self):
-        signal_emitter = self.__base_signal_emitter
-        signal_emitter['type'] = "INVALID_TYPE"
-        res = self._client().post(SIGNAL_EMITTERS_ENDPOINT, json=signal_emitter)
-        assert res.status_code == 400
-        assert "Got wrong type: INVALID_TYPE, expecting one of" in str(res.get_json())
-        assert "ANCHOR" in str(res.get_json())
-        assert "USER" in str(res.get_json())

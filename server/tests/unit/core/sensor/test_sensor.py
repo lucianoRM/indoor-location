@@ -4,27 +4,26 @@ from src.core.data.sensing_data import SensingData
 from src.core.data.sensed_object import SensedObject
 
 #Do not name this starting with Test so that the runner does not execute it
-class AbstractSensorTest:
+from src.core.sensor.sensor import Sensor
 
-    __metaclass__ = ABCMeta
 
-    @abstractmethod
-    def _create_sensor(self, id, position, name=None):
-        pass
+class TestSensor:
+
+
+    def _create_sensor(self, id, name=None):
+        return Sensor(id=id, name=name)
 
 
     def test_create_sensor_and_get_values(self):
         name = 'sensor1'
         id = 'sensorId'
-        position = (5,5)
-        sensor = self._create_sensor(id=id, position=position, name=name)
+        sensor = self._create_sensor(id=id, name=name)
         assert sensor.name == name
         assert sensor.id == id
-        assert sensor.position == position
 
 
     def test_sensor_update_no_merge(self):
-        sensor = self._create_sensor(id=1, position=1)
+        sensor = self._create_sensor(id=1)
 
         sensed_object_id1 = "id1"
         sensed_distance1 = 1
@@ -50,7 +49,7 @@ class AbstractSensorTest:
 
 
     def test_sensor_update_merge(self):
-        sensor = self._create_sensor(id=1, position=1)
+        sensor = self._create_sensor(id=1)
 
         sensed_object_id1 = "id1"
         sensed_distance1 = 1
@@ -76,7 +75,7 @@ class AbstractSensorTest:
 
 
     def test_sensor_update_merge_new_value(self):
-        sensor = self._create_sensor(id=1, position=1)
+        sensor = self._create_sensor(id=1)
 
         sensed_object_id1 = "id1"
         sensed_distance1a= 1

@@ -1,14 +1,10 @@
 from abc import ABCMeta, abstractmethod
 
-from src.core.user.sensing_user import SensingUser
-from src.core.user.signal_emitting_user import SignalEmittingUser
 from src.dependency_container import DependencyContainer
 from src.resources.abstract_resource import AbstractResource
-from src.resources.schemas.sensing_user_schema import SensingUserSchema
-from src.resources.schemas.sensor_schema import SENSOR_TYPE
-from src.resources.schemas.signal_emitter_schema import SIGNAL_EMITTER_TYPE
-from src.resources.schemas.signal_emitting_user_schema import SignalEmittingUserSchema
-from src.resources.schemas.typed_object_serializer import SerializationContext, TypedObjectSerializer
+from src.resources.schemas.serializer import Serializer
+from src.resources.schemas.user_schema import UserSchema
+
 
 class AbstractUserResource(AbstractResource):
     __metaclass__ = ABCMeta
@@ -17,12 +13,8 @@ class AbstractUserResource(AbstractResource):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._user_manager = DependencyContainer.users_manager()
-        self._serializer = TypedObjectSerializer(contexts=[
-            SerializationContext(type=SENSOR_TYPE, schema=SensingUserSchema(strict=True),
-                                 klass=SensingUser),
-            SerializationContext(type=SIGNAL_EMITTER_TYPE, schema=SignalEmittingUserSchema(strict=True),
-                                 klass=SignalEmittingUser),
-        ])
+        self._serializer = Serializer(UserSchema(strict=True))
+
 
 class UserListResource(AbstractUserResource):
     """
@@ -33,6 +25,14 @@ class UserListResource(AbstractUserResource):
         'UserAlreadyExistsException': {
             'code': 409,
             'message': lambda e: str(e)
+        },
+        'SensorAlreadyExistsException': {
+            'code' : 400,
+            'message': lambda e: str(e)
+        },
+        'SignalEmitterAlreadyExistsException': {
+            'code' : 400,
+            'message' : lambda e: str(e)
         }
     }
 
@@ -40,11 +40,11 @@ class UserListResource(AbstractUserResource):
         super().__init__(custom_error_mappings=self.__custom_error_mappings, **kwargs)
 
     def _do_get(self):
-        return self._serializer.dump(self._user_manager.get_all_users())
+        return self._serializer.serialize(self._user_manager.get_all_users())
 
     def _do_post(self):
-        user = self._serializer.load(self._get_post_data_as_json())
-        return self._serializer.dump(self._user_manager.add_user(user_id=user.id, user=user))
+        user = self._serializer.deserialize(self._get_post_data_as_json())
+        return self._serializer.serialize(self._user_manager.add_user(user_id=user.id, user=user))
 
 
 class UserResource(AbstractUserResource):
@@ -53,7 +53,4 @@ class UserResource(AbstractUserResource):
     """
 
     def _do_get(self, user_id):
-        return self._serializer.dump(self._user_manager.get_user(user_id=user_id))
-
-
-
+        return self._serializer.serialize(self._user_manager.get_user(user_id=user_id))

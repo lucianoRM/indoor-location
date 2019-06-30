@@ -4,6 +4,7 @@ from src.core.emitter.signal_emitter import SignalEmitter
 from src.core.emitter.signal_emitters_manager import SignalEmittersManager, UnknownSignalEmitterException, \
     SignalEmitterAlreadyExistsException
 from src.core.manager.default_positionable_objects_manager import PositionableObjectsManagerObserver
+from src.core.manager.observable_objects_manager import Callback
 from src.core.manager.positionable_objects_manager import UnknownObjectException
 from src.core.object.signal_emitter_aware_object import SignalEmitterAwareObject
 
@@ -19,14 +20,14 @@ class DefaultSignalEmittersManager(SignalEmittersManager):
         super().__init__()
         self.__index = {}
         self.__objects_manager = objects_manager
-        self.__objects_manager.register_on_add_callback(self.__on_add)
-        self.__objects_manager.register_on_remove_callback(self.__on_remove)
+        self.__objects_manager.register_on_add_callback(Callback(self.__on_add, self.__on_remove))
+        self.__objects_manager.register_on_remove_callback(Callback(self.__on_remove, self.__on_add))
 
     def __on_add(self, owner_id: str, owner: SignalEmitterAwareObject):
         for se_id in owner.signal_emitters:
             if se_id in self.__index:
                 raise SignalEmitterAlreadyExistsException(
-                    "The signal emitter with id: " + se_id + "already exists in the system")
+                    "The signal emitter with id: " + se_id + " already exists in the system")
             self.__index[se_id] = owner_id
 
     def __on_remove(self, obj: SignalEmitterAwareObject):

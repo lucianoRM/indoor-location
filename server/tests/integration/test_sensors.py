@@ -10,8 +10,7 @@ class TestSensorsEndpoint(TestApi):
             "position": {
                     'x':0,
                     'y':0
-                },
-            "type": "USER"
+                }
         }
 
 
@@ -41,16 +40,14 @@ class TestSensorsEndpoint(TestApi):
                 "position": {
                     'x':0,
                     'y':0
-                },
-                "type": "USER"
+                }
             },
             {
                 "id": "sensorId2",
                 "position": {
                     'x':0,
                     'y':0
-                },
-                "type": "ANCHOR"
+                }
             }
         ]
         for sensor in sensors:
@@ -75,19 +72,3 @@ class TestSensorsEndpoint(TestApi):
         assert res.status_code == 200
         assert res.get_json()['position']['x'] == 0
         assert res.get_json()['position']['y'] == 0
-
-    def test_add_sensor_with_missing_type(self):
-        sensor = self.__base_sensor
-        sensor.pop("type")
-        res = self._client().post(SENSORS_ENDPOINT, json=sensor)
-        assert res.status_code == 400
-        assert "Missing type" in str(res.get_data())
-
-    def test_add_sensor_with_wrong_type(self):
-        sensor = self.__base_sensor
-        sensor['type'] = "INVALID_TYPE"
-        res = self._client().post(SENSORS_ENDPOINT, json=sensor)
-        assert res.status_code == 400
-        assert "Got wrong type: INVALID_TYPE, expecting one of" in str(res.get_data())
-        assert "USER" in str(res.get_data())
-        assert "ANCHOR" in str(res.get_data())

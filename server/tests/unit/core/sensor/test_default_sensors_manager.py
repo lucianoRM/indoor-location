@@ -81,36 +81,66 @@ class TestDefaultSensorsManager:
 
         assert not self.__static_objects_manager.get_all_static_objects()
 
-
-    def test_add_multiple_sensors_and_get_all(self):
+    def test_add_multiple_objects_and_get_all_sensors(self):
         all_sensors = []
-        for i in range(100):
-            id = str(i)
-            sensor = FakeStaticSensor(id=id, position=None) if i % 2 == 0 else FakeMovingSensor(id=id, position=None)
-            all_sensors.append(sensor)
-            self.__sensors_manager.add_sensor(sensor_id=id, sensor=sensor)
+        for i in range(0, 100):
+            moving_object_id = str(i)
+            moving_sensor_id = str(100 + i)
+            static_object_id = str(200 + i)
+            static_sensor_id = str(300 + i)
+
+            user = FakeUser(id=moving_object_id, position=None)
+            user_sensor = {"id": moving_sensor_id}
+            user.add_sensor(moving_sensor_id, user_sensor)
+
+            self.__moving_objects_manager.add_moving_object(moving_sensor_id, user)
+
+            anchor = FakeAnchor(id=static_object_id, position=None)
+            anchor_sensor = {"id": static_sensor_id}
+            anchor.add_sensor(static_sensor_id, anchor_sensor)
+
+            self.__static_objects_manager.add_static_object(static_object_id, anchor)
+
+            all_sensors.append(anchor_sensor)
+            all_sensors.append(user_sensor)
+
         retrieved_sensors = self.__sensors_manager.get_all_sensors()
         for sensor in all_sensors:
             assert sensor in retrieved_sensors
-
-    def test_remove_sensor_and_try_get_it(self):
-        self.__sensors_manager.add_sensor(sensor_id=self.__STATIC_SENSOR_ID, sensor=self.__test_static_sensor)
-        assert self.__sensors_manager.get_sensor(self.__STATIC_SENSOR_ID) == self.__test_static_sensor
-        self.__sensors_manager.remove_sensor(self.__STATIC_SENSOR_ID)
-        with raises(UnknownSensorException):
-            self.__sensors_manager.get_sensor(sensor_id=self.__STATIC_SENSOR_ID)
 
     def test_get_sensor_from_empty_db(self):
         with raises(UnknownSensorException):
             self.__sensors_manager.get_sensor(sensor_id=self.__STATIC_SENSOR_ID)
 
-    def test_update_sensor(self):
-        self.__sensors_manager.add_sensor(self.__STATIC_SENSOR_ID, self.__test_static_sensor)
-        newSensor = FakeStaticSensor(id=self.__STATIC_SENSOR_ID, position="newPosition")
-        self.__sensors_manager.update_sensor(self.__STATIC_SENSOR_ID,
-                                             newSensor)
-        assert self.__sensors_manager.get_sensor(self.__STATIC_SENSOR_ID) == newSensor
+    def test_update_object_changes_sensor_on_static_object(self):
+        s1_id = "s1"
+        s1 = {"id": s1_id, "version": 1}
 
-    def test_update_not_existent_sensor(self):
-        with raises(UnknownSensorException):
-            self.__sensors_manager.update_sensor(sensor_id="missingSensorId", sensor={})
+        so_id = "static_object"
+        static_object = FakeAnchor(id=so_id, position=None)
+        static_object.add_sensor(s1_id, s1)
+        self.__static_objects_manager.add_static_object(so_id, static_object)
+
+        assert self.__sensors_manager.get_sensor(s1_id) == s1
+
+        s2 = {"id": s1_id, "version": 2}
+        static_object = FakeAnchor(id=so_id, position=None)
+        static_object.add_sensor(s1_id, s2)
+        self.__static_objects_manager.update_static_object(so_id, static_object)
+
+        assert self.__sensors_manager.get_sensor(s1_id) == s1
+
+    def test_update_object_with_new_sensor(self):
+        so_id = "static_object"
+        static_object = FakeAnchor(id=so_id, position=None)
+        self.__static_objects_manager.add_static_object(so_id, static_object)
+
+        assert not self.__sensors_manager.get_all_sensors()
+
+        s_id = "s_id"
+        s = {"id": s_id}
+        static_object = FakeAnchor(id=so_id, position=None)
+        static_object.add_sensor(s_id, s)
+        self.__static_objects_manager.update_static_object(so_id, static_object)
+
+        assert self.__sensors_manager.get_sensor(s_id) == s

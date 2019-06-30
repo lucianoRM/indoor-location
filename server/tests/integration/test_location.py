@@ -26,8 +26,7 @@ class TestLocation(TestApi):
             "position": {
                 'x':0,
                 'y':0
-            },
-            "type": "ANCHOR"
+            }
         })
 
         sensor_id2 = "sensor2"
@@ -36,8 +35,7 @@ class TestLocation(TestApi):
             "position": {
                     'x':10,
                     'y':0
-                },
-            "type": "ANCHOR"
+                }
         })
 
         #add users
@@ -47,8 +45,7 @@ class TestLocation(TestApi):
             "position": {
                     'x':0,
                     'y':0
-                },
-            "type": "SIGNAL_EMITTER"
+                }
         })
 
         sensors = [
@@ -89,8 +86,7 @@ class TestLocation(TestApi):
             "position": {
                 'x': 0,
                 'y': 0
-            },
-            "type": "ANCHOR"
+            }
         })
 
         emitter_id2 = "emitter2"
@@ -99,8 +95,7 @@ class TestLocation(TestApi):
             "position": {
                 'x': 10,
                 'y': 0
-            },
-            "type": "ANCHOR"
+            }
         })
 
         # add sensing user
@@ -110,8 +105,7 @@ class TestLocation(TestApi):
             "position": {
                 'x': 0,
                 'y': 0
-            },
-            "type": "SENSOR"
+            }
         })
 
         sensed_objects = [
@@ -147,8 +141,7 @@ class TestLocation(TestApi):
             "position": {
                 'x': 0,
                 'y': 0
-            },
-            "type": "ANCHOR"
+            }
         })
 
         sensor_id2 = "sensor2"
@@ -157,8 +150,7 @@ class TestLocation(TestApi):
             "position": {
                 'x': 10,
                 'y': 0
-            },
-            "type": "ANCHOR"
+            }
         })
 
         # add users
@@ -168,8 +160,7 @@ class TestLocation(TestApi):
             "position": {
                 'x': 0,
                 'y': 0
-            },
-            "type": "SIGNAL_EMITTER"
+            }
         })
 
         sensors = [
@@ -217,8 +208,7 @@ class TestLocation(TestApi):
             "position": {
                 'x': 0,
                 'y': 0
-            },
-            "type": "ANCHOR"
+            }
         })
 
         emitter_id2 = "emitter2"
@@ -227,8 +217,7 @@ class TestLocation(TestApi):
             "position": {
                 'x': 10,
                 'y': 0
-            },
-            "type": "ANCHOR"
+            }
         })
 
         # add sensing user
@@ -238,8 +227,7 @@ class TestLocation(TestApi):
             "position": {
                 'x': 0,
                 'y': 0
-            },
-            "type": "SENSOR"
+            }
         })
 
         sensed_objects = [
@@ -283,8 +271,7 @@ class TestLocation(TestApi):
             "position": {
                 'x': 0,
                 'y': 0
-            },
-            "type": "ANCHOR"
+            }
         })
 
         # add sensing user
@@ -294,8 +281,7 @@ class TestLocation(TestApi):
             "position": {
                 'x': 0,
                 'y': 0
-            },
-            "type": "SENSOR"
+            }
         })
 
         sensed_objects = [
