@@ -28,6 +28,7 @@ class ObservableObjectsManager:
     def __init__(self, **kwargs):
         self.__add_object_callbacks = []
         self.__remove_object_callbacks = []
+        self.__update_object_callbacks = []
         super().__init__(**kwargs)
 
     def call_on_add(self, callback: Callback):
@@ -36,19 +37,25 @@ class ObservableObjectsManager:
     def call_on_remove(self, callback: Callback):
         self.__remove_object_callbacks.append(callback)
 
+    def call_on_update(self, callback: Callback):
+        self.__update_object_callbacks.append(callback)
+
     def _on_add(self, object_id: str, object: Object):
-        self.__execute_transactionally(object_id, object, self.__add_object_callbacks)
+        self.__execute_transactionally(self.__add_object_callbacks, object_id, object)
 
     def _on_remove(self, object_id: str, object: Object):
-        self.__execute_transactionally(object_id, object, self.__remove_object_callbacks)
+        self.__execute_transactionally(self.__remove_object_callbacks, object_id, object)
 
-    def __execute_transactionally(self, object_id: str, object: Object, callbacks: List[Callback]):
+    def _on_update(self, object_id: str, new_obj: Object, old_obj: Object):
+        self.__execute_transactionally(self.__update_object_callbacks, object_id, new_obj, old_obj)
+
+    def __execute_transactionally(self,callbacks: List[Callback], *args, **kwargs):
         executed = []
         try:
             for callback in callbacks:
-                callback.exec(object_id, object)
+                callback.exec(*args, **kwargs)
                 executed.append(callback)
         except Exception as e:
             for callback in executed:
-                callback.rollback(object_id, object)
+                callback.rollback(*args, **kwargs)
                 raise e

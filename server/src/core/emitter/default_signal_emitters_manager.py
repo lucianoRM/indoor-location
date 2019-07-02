@@ -22,6 +22,7 @@ class DefaultSignalEmittersManager(SignalEmittersManager):
         self.__objects_manager = objects_manager
         self.__objects_manager.register_on_add_callback(Callback(self.__on_add, self.__on_remove))
         self.__objects_manager.register_on_remove_callback(Callback(self.__on_remove, self.__on_add))
+        self.__objects_manager.register_on_update_callback(Callback(self.__on_update, self.__fix_update))
 
     def __on_add(self, owner_id: str, owner: SignalEmitterAwareObject):
         for se_id in owner.signal_emitters:
@@ -30,9 +31,17 @@ class DefaultSignalEmittersManager(SignalEmittersManager):
                     "The signal emitter with id: " + se_id + " already exists in the system")
             self.__index[se_id] = owner_id
 
-    def __on_remove(self, obj: SignalEmitterAwareObject):
+    def __on_remove(self, owner_id: str, obj: SignalEmitterAwareObject):
         for se_id in obj.signal_emitters:
             self.__index.pop(se_id)
+
+    def __on_update(self, owner_id: str, owner: SignalEmitterAwareObject, old_owner: SignalEmitterAwareObject):
+        self.__on_remove(owner_id, old_owner)
+        self.__on_add(owner_id, owner)
+
+    def __fix_update(self, owner_id: str, owner: SignalEmitterAwareObject, old_owner: SignalEmitterAwareObject):
+        self.__on_remove(owner_id, owner)
+        self.__on_add(owner_id, old_owner)
 
     def __get_owner(self, se_id: str) -> SignalEmitterAwareObject:
         owner_id = self.__index.get(se_id)

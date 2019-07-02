@@ -1,5 +1,3 @@
-import json
-
 from api import SIGNAL_EMITTERS_ENDPOINT, USERS_ENDPOINT, ANCHORS_ENDPOINT
 from tests.integration.test_api import TestApi
 

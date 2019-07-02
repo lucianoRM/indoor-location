@@ -49,6 +49,10 @@ class PositionableObjectsManagerObserver(PositionableObjectsManager):
         self.__static_objects_manager.call_on_remove(callback)
         self.__moving_objects_manager.call_on_remove(callback)
 
+    def register_on_update_callback(self, callback: Callback):
+        self.__static_objects_manager.call_on_update(callback)
+        self.__moving_objects_manager.call_on_update(callback)
+
     def get_object(self, object_id: str) -> T:
         try:
             if object_id in self.__moving_objects:

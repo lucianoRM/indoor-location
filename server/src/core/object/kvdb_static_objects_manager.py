@@ -49,13 +49,24 @@ class KVDBStaticObjectsManager(KVDBBackedManager, ObservableStaticObjectsManager
             raise UnknownStaticObjectException("A static object with id: " + object_id + " does not exist")
 
     def update_static_object(self, object_id: str, object: Generic[T]) -> T:
+        key = self._build_complex_key(self.__STATIC_OBJECTS_POSITION_KEY, object_id)
         try:
-            return self._database.update(
-                key=self._build_complex_key(self.__STATIC_OBJECTS_POSITION_KEY, object_id),
+            old_obj = self._database.retrieve(key=key)
+            object_updated = self._database.update(
+                key=key,
                 value=object
             )
         except KeyDoesNotExistException:
             raise UnknownStaticObjectException("A static object with id: " + object_id + " does not exist")
+
+        # update listeners
+        try:
+            self._on_update(object_id=object_id, old_obj=old_obj, new_obj=object_updated)
+            return object_updated
+        except Exception as e:
+            # rollback
+            self._database.update(key=key, value=old_obj)
+            raise e
 
     def remove_static_object(self, object_id: str) -> T:
         key = self._build_complex_key(self.__STATIC_OBJECTS_POSITION_KEY, object_id)
@@ -67,12 +78,12 @@ class KVDBStaticObjectsManager(KVDBBackedManager, ObservableStaticObjectsManager
             raise UnknownStaticObjectException(
                 "Attempting to remove a static object that does not exist. With ID: " + object_id)
 
-        #update listeners
+        # update listeners
         try:
             self._on_remove(object_id=object_id, object=object_removed)
             return object_removed
         except Exception as e:
-            #rollback
+            # rollback
             self._database.insert(key=key, value=object_removed)
             raise e
 

@@ -128,7 +128,7 @@ class TestDefaultSensorsManager:
         static_object.add_sensor(s1_id, s2)
         self.__static_objects_manager.update_static_object(so_id, static_object)
 
-        assert self.__sensors_manager.get_sensor(s1_id) == s1
+        assert self.__sensors_manager.get_sensor(s1_id) == s2
 
     def test_update_object_with_new_sensor(self):
         so_id = "static_object"

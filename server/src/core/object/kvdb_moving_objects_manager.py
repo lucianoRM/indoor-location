@@ -50,13 +50,24 @@ class KVDBMovingObjectsManager(KVDBBackedManager, ObservableMovingObjectsManager
             raise UnknownMovingObjectException("A moving object with id: " + object_id + " does not exist")
 
     def update_moving_object(self, object_id: str, object: Generic[T]) -> T:
+        key = self._build_complex_key(self.__MOVING_OBJECTS_POSITION_KEY, object_id)
         try:
-            return self._database.update(
-                key=self._build_complex_key(self.__MOVING_OBJECTS_POSITION_KEY, object_id),
+            old_obj = self._database.retrieve(key=key)
+            object_udpated = self._database.update(
+                key=key,
                 value=object
             )
         except KeyDoesNotExistException:
             raise UnknownMovingObjectException("A moving object with id: " + object_id + " does not exist")
+
+        # update listeners
+        try:
+            self._on_update(object_id=object_id, old_obj=old_obj, new_obj=object_udpated)
+            return object_udpated
+        except Exception as e:
+            # rollback
+            self._database.update(key=key, value=old_obj)
+            raise e
 
     def remove_moving_object(self, object_id: str) -> T:
         key = self._build_complex_key(self.__MOVING_OBJECTS_POSITION_KEY, object_id)
