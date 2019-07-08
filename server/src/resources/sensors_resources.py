@@ -50,7 +50,7 @@ class SensorResource(AbstractSensorResource):
         super().__init__(**kwargs)
 
     def _do_get(self, sensor_id):
-        return self._serializer.serialize(self._sensor_manager.get_sensor(sensor_id=sensor_id))
+        return self._serializer.serialize(self._sensors_manager.get_sensor(sensor_id=sensor_id))
 
 class AbstractOwnedSensorResource(AbstractSensorResource):
     """
