@@ -5,6 +5,7 @@ from src.core.sensor.sensor import Sensor
 
 T = TypeVar('T', bound=Sensor)
 
+
 class SensorsManager:
     """
     API for handling Sensors
@@ -22,6 +23,16 @@ class SensorsManager:
         :param sensor_id: the unique id of the sensor to get
         :raise UnknownSensorException: if a sensor with that id does not exist
         :return: the sensor retrieved
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def locate_sensor(self, sensor_id: str):
+        """
+        Get a sensor position by using the sensor id
+        :param sensor_id: the unique id of the sensor to get
+        :raise UnknownSensorException: if a sensor with that id does not exist
+        :return: the position for the  sensor retrieved
         """
         raise NotImplementedError
 

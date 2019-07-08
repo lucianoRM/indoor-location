@@ -111,36 +111,3 @@ class TestDefaultSensorsManager:
     def test_get_sensor_from_empty_db(self):
         with raises(UnknownSensorException):
             self.__sensors_manager.get_sensor(sensor_id=self.__STATIC_SENSOR_ID)
-
-    def test_update_object_changes_sensor_on_static_object(self):
-        s1_id = "s1"
-        s1 = {"id": s1_id, "version": 1}
-
-        so_id = "static_object"
-        static_object = FakeAnchor(id=so_id, position=None)
-        static_object.add_sensor(s1_id, s1)
-        self.__static_objects_manager.add_static_object(so_id, static_object)
-
-        assert self.__sensors_manager.get_sensor(s1_id) == s1
-
-        s2 = {"id": s1_id, "version": 2}
-        static_object = FakeAnchor(id=so_id, position=None)
-        static_object.add_sensor(s1_id, s2)
-        self.__static_objects_manager.update_static_object(so_id, static_object)
-
-        assert self.__sensors_manager.get_sensor(s1_id) == s2
-
-    def test_update_object_with_new_sensor(self):
-        so_id = "static_object"
-        static_object = FakeAnchor(id=so_id, position=None)
-        self.__static_objects_manager.add_static_object(so_id, static_object)
-
-        assert not self.__sensors_manager.get_all_sensors()
-
-        s_id = "s_id"
-        s = {"id": s_id}
-        static_object = FakeAnchor(id=so_id, position=None)
-        static_object.add_sensor(s_id, s)
-        self.__static_objects_manager.update_static_object(so_id, static_object)
-
-        assert self.__sensors_manager.get_sensor(s_id) == s

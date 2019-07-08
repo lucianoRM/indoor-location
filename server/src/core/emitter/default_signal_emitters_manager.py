@@ -55,6 +55,13 @@ class DefaultSignalEmittersManager(SignalEmittersManager):
         except (UnknownObjectException, KeyError):
             raise UnknownSignalEmitterException("A signal emitter with id: " + signal_emitter_id + " does not exist")
 
+    def locate_signal_emitter(self, signal_emitter_id: str):
+        try:
+            owner = self.__get_owner(signal_emitter_id)
+            return owner.position
+        except KeyError:
+            raise UnknownSignalEmitterException("A signal emitter with id: " + signal_emitter_id + " does not exist")
+
     def get_all_signal_emitters(self) -> List[SignalEmitter]:
         signal_emitters = []
         for se_id in self.__index:

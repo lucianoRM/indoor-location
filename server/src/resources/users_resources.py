@@ -1,9 +1,12 @@
 from abc import ABCMeta, abstractmethod
 
+from src.core.data.sensed_objects_processor import SensedObjectsProcessor
+from src.core.object.sensor_aware_object import SensorAwareObject
 from src.dependency_container import DependencyContainer
 from src.resources.abstract_resource import AbstractResource
 from src.resources.schemas.serializer import Serializer
 from src.resources.schemas.user_schema import UserSchema
+from src.resources.sensors_resources import OwnedSensorListResource, OwnedSensorResource
 
 
 class AbstractUserResource(AbstractResource):
@@ -27,12 +30,12 @@ class UserListResource(AbstractUserResource):
             'message': lambda e: str(e)
         },
         'SensorAlreadyExistsException': {
-            'code' : 400,
+            'code': 400,
             'message': lambda e: str(e)
         },
         'SignalEmitterAlreadyExistsException': {
-            'code' : 400,
-            'message' : lambda e: str(e)
+            'code': 400,
+            'message': lambda e: str(e)
         }
     }
 
@@ -54,3 +57,23 @@ class UserResource(AbstractUserResource):
 
     def _do_get(self, user_id):
         return self._serializer.serialize(self._user_manager.get_user(user_id=user_id))
+
+
+class AbstractSensingUserResource(AbstractUserResource):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.__sensed_objects_processor = DependencyContainer.sensing_user_object_processor()
+
+    def _do_get_processor(self) -> SensedObjectsProcessor:
+        return self.__sensed_objects_processor
+
+
+class SensingUserSensorListResource(AbstractSensingUserResource, OwnedSensorListResource):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+
+class SensingUserSensorResource(AbstractSensingUserResource, OwnedSensorResource):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)

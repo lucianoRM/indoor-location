@@ -4,7 +4,6 @@ from typing import Dict, List
 from src.core.data.sensed_object import SensedObject
 from src.core.object.object import Object
 
-
 class Sensor(Object):
     """
     Class to simulate a signal sensor
@@ -16,6 +15,7 @@ class Sensor(Object):
     def __init__(self, **kwargs):
         #Dict to store the objects that where located by this sensor. It should have the objects id as key and the sensed data as value
         self.__sensed_objects = {}
+
         super().__init__(**kwargs)
 
     def update_sensed_objects(self, sensed_objects: List[SensedObject], merge=False):

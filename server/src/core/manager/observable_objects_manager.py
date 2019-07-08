@@ -56,6 +56,11 @@ class ObservableObjectsManager:
                 callback.exec(*args, **kwargs)
                 executed.append(callback)
         except Exception as e:
+            #TODO: RAISE ALL EXCEPTIONS SOMEHOW
+            rollback_exceptions = []
             for callback in executed:
-                callback.rollback(*args, **kwargs)
+                try:
+                    callback.rollback(*args, **kwargs)
+                except Exception as r_e:
+                    rollback_exceptions.append(r_e)
                 raise e

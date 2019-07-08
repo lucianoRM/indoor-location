@@ -55,6 +55,13 @@ class DefaultSensorsManager(SensorsManager):
             pass
         raise UnknownSensorException("A sensor with id: " + sensor_id + " does not exist")
 
+    def locate_sensor(self, sensor_id: str):
+        try:
+            owner = self.__get_owner(sensor_id)
+            return owner.position
+        except KeyError:
+            raise UnknownSensorException("A sensor with id: " + sensor_id + " does not exist")
+
     def get_all_sensors(self) -> List[Sensor]:
         sensors = []
         for s_id in self.__index:

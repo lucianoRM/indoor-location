@@ -1,17 +1,25 @@
-from api import SENSORS_ENDPOINT, USERS_ENDPOINT, SIGNAL_EMITTERS_ENDPOINT
+from api import SENSORS_ENDPOINT, USERS_ENDPOINT, SIGNAL_EMITTERS_ENDPOINT, ANCHORS_ENDPOINT
 from tests.integration.test_api import TestApi
 
 
 class TestLocation(TestApi):
 
-    def __add_sensor(self, sensor):
-        assert self._client().post(SENSORS_ENDPOINT, json=sensor).status_code == 200
-
     def __add_user(self, user):
         assert self._client().post(USERS_ENDPOINT, json=user).status_code == 200
 
+    def __add_anchor(self, anchor):
+        assert self._client().post(ANCHORS_ENDPOINT, json=anchor).status_code == 200
+
     def __add_signal_emitter(self, signal_emitter):
         assert self._client().post(SIGNAL_EMITTERS_ENDPOINT, json=signal_emitter).status_code == 200
+
+    def __update_sensor_in_user(self, user_id, sensor_id, data):
+        endpoint = USERS_ENDPOINT + "/" + user_id + SENSORS_ENDPOINT + "/" + sensor_id
+        assert self._client().put(endpoint, json=data).status_code == 200
+
+    def __update_sensor_in_anchor(self, anchor_id, sensor_id, data):
+        endpoint = ANCHORS_ENDPOINT + "/" + anchor_id + SENSORS_ENDPOINT + "/" + sensor_id
+        assert self._client().put(endpoint, json=data).status_code == 200
 
     def __assert_location(self, actual_location, expected_location, allowed_error=0.001):
         assert abs(actual_location['x'] - expected_location[0]) < allowed_error
@@ -19,38 +27,65 @@ class TestLocation(TestApi):
 
     def test_sensing_information_changes_location_on_emitter_user(self):
         #add static sensors
+        static_sensor_id1 = "sensor1"
+        static_sensor1 = {
+            "id": static_sensor_id1
+        }
 
-        sensor_id1 = "sensor1"
-        self.__add_sensor({
-            "id": sensor_id1,
-            "position": {
-                'x':0,
-                'y':0
+        anchor1 = {
+            "id" : "anchor1",
+            "position" : {
+                'x' : 0,
+                'y' : 0,
+            },
+            "sensors" : {
+                static_sensor_id1 : static_sensor1
             }
-        })
+        }
 
-        sensor_id2 = "sensor2"
-        self.__add_sensor({
-            "id": sensor_id2,
+        self.__add_anchor(anchor1)
+
+        static_sensor_id2 = "sensor2"
+        static_sensor2 = {
+            "id": static_sensor_id2
+        }
+
+        anchor2 = {
+            "id": "anchor2",
             "position": {
-                    'x':10,
-                    'y':0
-                }
-        })
+                'x': 10,
+                'y': 0,
+            },
+            "sensors": {
+                static_sensor_id2: static_sensor2
+            }
+        }
+
+        self.__add_anchor(anchor2)
+
+        moving_signal_emitter_id = "signal_emitter"
+        moving_signal_emitter = {
+            'id' : moving_signal_emitter_id
+        }
 
         #add users
         user_id = "user"
-        self.__add_user({
+        user = {
             "id": user_id,
             "position": {
-                    'x':0,
-                    'y':0
-                }
-        })
+                'x': 0,
+                'y': 0
+            },
+            'signal_emitters' : {
+                moving_signal_emitter_id : moving_signal_emitter
+            }
+        }
 
-        sensors = [
+        self.__add_user(user)
+
+        sensed_objects = [
                 {
-                    'id': 'user',
+                    'id': moving_signal_emitter_id,
                     'data' : {
                         'distance' : 5,
                         'timestamp' : 1
@@ -58,11 +93,11 @@ class TestLocation(TestApi):
                 }
             ]
         #update sensor information and check that user position changed
-        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id1, json=sensors)
+        self.__update_sensor_in_anchor(anchor1['id'], static_sensor_id1, sensed_objects)
 
         sensed_objects = [
                 {
-                    'id': 'user',
+                    'id': moving_signal_emitter_id,
                     'data': {
                         'distance': 5,
                         'timestamp': 2
@@ -70,7 +105,7 @@ class TestLocation(TestApi):
                 }
             ]
 
-        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id2, json=sensed_objects)
+        self.__update_sensor_in_anchor(anchor2['id'], static_sensor_id2, sensed_objects)
 
         #get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
