@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 from typing import List
 
 from src.core.emitter.signal_emitter import SignalEmitter
+from src.core.object.signal_emitter_aware_object import SignalEmitterAwareObject
 
 
 class SignalEmittersManager:
@@ -25,12 +26,12 @@ class SignalEmittersManager:
         raise NotImplementedError
 
     @abstractmethod
-    def locate_signal_emitter(self, signal_emitter_id: str):
+    def get_owner(self, signal_emitter_id: str) -> SignalEmitterAwareObject:
         """
-        Get a signal emitter position by using the signal emitter id
+        Get the object that owns this signal emitter
         :param signal_emitter_id: the unique id of the signal emitter to get
         :raise UnknownSignalEmitterException: if a signal emitter with that id does not exist
-        :return: the position for the signal emitter retrieved
+        :return: The SignalEmitterAwareObject that holds the signal emitter with id: signal_emitter_id
         """
         raise NotImplementedError
 

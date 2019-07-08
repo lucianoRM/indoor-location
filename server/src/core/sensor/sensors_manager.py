@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import TypeVar, Generic, List
 
+from src.core.object.sensor_aware_object import SensorAwareObject
 from src.core.sensor.sensor import Sensor
 
 T = TypeVar('T', bound=Sensor)
@@ -27,12 +28,12 @@ class SensorsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def locate_sensor(self, sensor_id: str):
+    def get_owner(self, sensor_id: str) -> SensorAwareObject:
         """
-        Get a sensor position by using the sensor id
+        Get the object that owns this sensor
         :param sensor_id: the unique id of the sensor to get
         :raise UnknownSensorException: if a sensor with that id does not exist
-        :return: the position for the  sensor retrieved
+        :return: The SensorAwareObject that holds the sensor with id: sensor_id
         """
         raise NotImplementedError
 

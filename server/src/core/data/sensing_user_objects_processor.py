@@ -2,7 +2,7 @@ from typing import List
 
 from src.core.data.sensed_object import SensedObject
 from src.core.data.sensed_objects_processor import SensedObjectsProcessor
-from src.core.emitter.signal_emitters_manager import SignalEmittersManager
+from src.core.emitter.signal_emitters_manager import SignalEmittersManager, UnknownSignalEmitterException
 from src.core.location.location_service import LocationService
 from src.core.location.simple_location_service import Anchor
 from src.core.object.moving_object import MovingObject
@@ -43,11 +43,12 @@ class SensingUserObjectsProcessor(SensedObjectsProcessor):
         for sensed_object in sensed_objects:
             id = sensed_object.id
             try:
+                signal_emitter_owner = self.__signal_emitters_manager.get_owner(id)
                 anchor_objects.append(
-                    Anchor(position=self.__signal_emitters_manager.locate_signal_emitter(signal_emitter_id=id),
+                    Anchor(position=signal_emitter_owner.position,
                            distance=sensed_object.data.distance,
                            timestamp=sensed_object.data.timestamp))
-            except UnknownStaticObjectException:
+            except UnknownSignalEmitterException:
                 # TODO: Check what to do in these cases, when id's can't be found
                 continue
         new_position = self.__location_service.locate_object(anchor_objects)

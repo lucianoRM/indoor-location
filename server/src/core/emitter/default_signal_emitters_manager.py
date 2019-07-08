@@ -43,29 +43,22 @@ class DefaultSignalEmittersManager(SignalEmittersManager):
         self.__on_remove(owner_id, owner)
         self.__on_add(owner_id, old_owner)
 
-    def __get_owner(self, se_id: str) -> SignalEmitterAwareObject:
-        owner_id = self.__index.get(se_id)
-        owner = self.__objects_manager.get_object(object_id=owner_id)
-        return owner
+    def get_owner(self, se_id: str) -> SignalEmitterAwareObject:
+        try:
+            owner_id = self.__index[se_id]
+            owner = self.__objects_manager.get_object(object_id=owner_id)
+            return owner
+        except (UnknownObjectException, KeyError):
+            raise UnknownSignalEmitterException("A signal emitter with id: " + se_id + " does not exist")
 
     def get_signal_emitter(self, signal_emitter_id: str) -> SignalEmitter:
-        try:
-            owner = self.__get_owner(signal_emitter_id)
-            return owner.signal_emitters.get(signal_emitter_id)
-        except (UnknownObjectException, KeyError):
-            raise UnknownSignalEmitterException("A signal emitter with id: " + signal_emitter_id + " does not exist")
-
-    def locate_signal_emitter(self, signal_emitter_id: str):
-        try:
-            owner = self.__get_owner(signal_emitter_id)
-            return owner.position
-        except KeyError:
-            raise UnknownSignalEmitterException("A signal emitter with id: " + signal_emitter_id + " does not exist")
+        owner = self.get_owner(signal_emitter_id)
+        return owner.signal_emitters.get(signal_emitter_id)
 
     def get_all_signal_emitters(self) -> List[SignalEmitter]:
         signal_emitters = []
         for se_id in self.__index:
-            owner = self.__get_owner(se_id)
+            owner = self.get_owner(se_id)
             for se in owner.signal_emitters.values():
                 signal_emitters.append(se)
         return signal_emitters

@@ -58,6 +58,7 @@ class DependencyContainer(DeclarativeContainer):
                                                 database=__database,
                                                 anchors_manager=anchors_manager,
                                                 sensors_manager=sensors_manager,
+                                                signal_emitters_manager=signal_emitters_manager,
                                                 moving_objects_manager=__moving_objects_manager,
                                                 location_service=location_service)
 

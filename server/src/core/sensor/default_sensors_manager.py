@@ -42,30 +42,23 @@ class DefaultSensorsManager(SensorsManager):
         self.__on_remove(owner_id, owner)
         self.__on_add(owner_id, old_owner)
 
-    def __get_owner(self, s_id: str) -> SensorAwareObject:
-        owner_id = self.__index.get(s_id)
-        owner = self.__objects_manager.get_object(object_id=owner_id)
-        return owner
+    def get_owner(self, s_id: str) -> SensorAwareObject:
+        try:
+            owner_id = self.__index[s_id]
+            owner = self.__objects_manager.get_object(object_id=owner_id)
+            return owner
+        except (UnknownObjectException, KeyError):
+            raise UnknownSensorException("A sensor with id: " + s_id + " does not exist")
 
     def get_sensor(self, sensor_id: str) -> Sensor:
-        try:
-            owner = self.__get_owner(sensor_id)
-            return owner.sensors.get(sensor_id)
-        except (UnknownObjectException, KeyError):
-            pass
-        raise UnknownSensorException("A sensor with id: " + sensor_id + " does not exist")
+        owner = self.get_owner(sensor_id)
+        return owner.sensors.get(sensor_id)
 
-    def locate_sensor(self, sensor_id: str):
-        try:
-            owner = self.__get_owner(sensor_id)
-            return owner.position
-        except KeyError:
-            raise UnknownSensorException("A sensor with id: " + sensor_id + " does not exist")
 
     def get_all_sensors(self) -> List[Sensor]:
         sensors = []
         for s_id in self.__index:
-            owner = self.__get_owner(s_id)
+            owner = self.get_owner(s_id)
             for s in owner.sensors.values():
                 sensors.append(s)
         return sensors

@@ -4,7 +4,7 @@ from src.core.anchor.anchors_manager import AnchorsManager
 from src.core.data.sensed_object import SensedObject
 from src.core.data.sensed_objects_processor import SensedObjectsProcessor
 from src.core.database.kv_database import KeyDoesNotExistException, KVDatabase
-from src.core.emitter.signal_emitters_manager import SignalEmittersManager
+from src.core.emitter.signal_emitters_manager import SignalEmittersManager, UnknownSignalEmitterException
 from src.core.location.location_service import LocationService, LocationServiceException
 from src.core.location.simple_location_service import Anchor
 from src.core.manager.kvdb_backed_manager import KVDBBackedManager
@@ -26,11 +26,13 @@ class SensingAnchorObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
                  anchors_manager: AnchorsManager,
                  sensors_manager: SensorsManager,
                  signal_emitters_manager: SignalEmittersManager,
+                 moving_objects_manager: MovingObjectsManager,
                  location_service: LocationService):
         super().__init__(database)
         self.__anchors_manager = anchors_manager
         self.__sensor_manager = sensors_manager
         self.__signal_emitters_manager = signal_emitters_manager
+        self.__moving_objects_manager = moving_objects_manager
         self.__location_service = location_service
 
     def process_sensed_objects(self, owner_id: str, sensor_id: str, sensed_objects: List[SensedObject]):
@@ -90,8 +92,9 @@ class SensingAnchorObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
             sensors_in_range = sensed_by.get(sensed_object_id, {})
             anchors = []
             for sensor_id in sensors_in_range:
-                sensor = self.__sensor_manager.get_sensor(sensor_id=sensor_id)
-                sensor_position = self.__sensor_manager.locate_sensor(sensor_id=sensor_id)
+                sensor_owner = self.__sensor_manager.get_owner(sensor_id)
+                sensor = sensor_owner.sensors.get(sensor_id)
+                sensor_position = sensor_owner.position
                 sensed_moving_object = sensor.get_sensed_objects().get(sensed_object_id)
                 anchors.append(Anchor(
                     position=sensor_position,
@@ -99,10 +102,10 @@ class SensingAnchorObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
                     timestamp=sensed_moving_object.data.timestamp
                 ))
             try:
-                signal_emitter = self.__signal_emitters_manager.get_signal_emitter(signal_emitter_id=sensed_object_id)
-                moving_object.position = self.__location_service.locate_object(anchors=anchors)
-                self.__moving_objects_manager.update_moving_object(object_id=sensed_object_id, object=moving_object)
-            except UnknownMovingObjectException:
+                signal_emitter_owner = self.__signal_emitters_manager.get_owner(sensed_object_id)
+                signal_emitter_owner.position = self.__location_service.locate_object(anchors=anchors)
+                self.__moving_objects_manager.update_moving_object(object_id=signal_emitter_owner.id, object=signal_emitter_owner)
+            except (UnknownSignalEmitterException, UnknownMovingObjectException):
                 # TODO: Check what to do in these situations
                 continue
             except LocationServiceException:
