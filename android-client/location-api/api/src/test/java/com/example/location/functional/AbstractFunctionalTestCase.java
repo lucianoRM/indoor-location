@@ -20,7 +20,7 @@ import static java.lang.String.format;
 
 public abstract class AbstractFunctionalTestCase {
 
-    private static final String USER_ID = "test_user";
+    protected static final String USER_ID = "test_user";
     private LocationSystemComponent locationSystemComponent;
 
     @Before

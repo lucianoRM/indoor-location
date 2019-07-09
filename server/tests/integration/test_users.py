@@ -1,4 +1,4 @@
-from api import USERS_ENDPOINT
+from api import USERS_ENDPOINT, SENSORS_ENDPOINT, SIGNAL_EMITTERS_ENDPOINT
 from tests.integration.test_api import TestApi
 
 
@@ -23,6 +23,14 @@ class TestUsersEndpoint(TestApi):
         assert res.status_code == 200
         res = self._client().get(USERS_ENDPOINT + "/" + user['id'])
         self.assert_response(res, user)
+
+    def test_add_minimal_user_and_get_it(self):
+        user = self.__base_user
+        user.pop('position')
+        res = self._client().post(USERS_ENDPOINT, json=user)
+        assert res.status_code == 200
+        res = self._client().get(USERS_ENDPOINT + "/" + user['id'])
+        self.assert_response(res, user, 'position')
 
     def test_add_user_twice_should_fail(self):
         user = self.__base_user
@@ -100,7 +108,7 @@ class TestUsersEndpoint(TestApi):
 
         user2 = {"id": "user2", 'sensors': {s_id: s}}
         res = self._client().post(USERS_ENDPOINT, json=user2)
-        assert res.status_code == 400
+        assert res.status_code == 409
         assert "The sensor with id: s already exists in the system" in str(res.get_data())
 
     def test_register_user_with_existent_signal_emitter(self):
@@ -113,7 +121,7 @@ class TestUsersEndpoint(TestApi):
 
         user2 = {"id": "user2", 'signal_emitters': {se_id: se}}
         res = self._client().post(USERS_ENDPOINT, json=user2)
-        assert res.status_code == 400
+        assert res.status_code == 409
         assert "The signal emitter with id: se already exists in the system" in str(res.get_data())
 
     def test_add_user_with_missing_id(self):
@@ -131,3 +139,47 @@ class TestUsersEndpoint(TestApi):
         assert res.status_code == 200
         assert res.get_json()['position']['x'] == 0
         assert res.get_json()['position']['y'] == 0
+
+    def test_register_new_sensor_to_user(self):
+        user = self.__base_user
+        res = self._client().post(USERS_ENDPOINT, json=user)
+        assert res.status_code == 200
+        sensor = {"id" : "sensor_id"}
+        res = self._client().post(USERS_ENDPOINT + "/" + user['id'] + "/sensors", json=sensor)
+        assert res.status_code == 200
+        res = self._client().get(SENSORS_ENDPOINT + "/" + sensor['id'])
+        assert res.status_code == 200
+        self.assert_response(res, sensor)
+
+    def test_register_new_sensor_to_user_multiple_times(self):
+        user = self.__base_user
+        res = self._client().post(USERS_ENDPOINT, json=user)
+        assert res.status_code == 200
+        sensor = {"id" : "sensor_id"}
+        res = self._client().post(USERS_ENDPOINT + "/" + user['id'] + "/sensors", json=sensor)
+        assert res.status_code == 200
+        res = self._client().post(USERS_ENDPOINT + "/" + user['id'] + "/sensors", json=sensor)
+        assert res.status_code == 409
+        assert "The sensor with id: sensor_id already exists in the system" in str(res.get_data())
+
+    def test_register_new_se_to_user(self):
+        user = self.__base_user
+        res = self._client().post(USERS_ENDPOINT, json=user)
+        assert res.status_code == 200
+        se = {"id" : "se_id"}
+        res = self._client().post(USERS_ENDPOINT + "/" + user['id'] + "/signal_emitters", json=se)
+        assert res.status_code == 200
+        res = self._client().get(SIGNAL_EMITTERS_ENDPOINT + "/" + se['id'])
+        assert res.status_code == 200
+        self.assert_response(res, se)
+
+    def test_register_new_se_to_user_multiple_times(self):
+        user = self.__base_user
+        res = self._client().post(USERS_ENDPOINT, json=user)
+        assert res.status_code == 200
+        se = {"id" : "se_id"}
+        res = self._client().post(USERS_ENDPOINT + "/" + user['id'] + "/signal_emitters", json=se)
+        assert res.status_code == 200
+        res = self._client().post(USERS_ENDPOINT + "/" + user['id'] + "/signal_emitters", json=se)
+        assert res.status_code == 409
+        assert "The signal emitter with id: se_id already exists in the system" in str(res.get_data())

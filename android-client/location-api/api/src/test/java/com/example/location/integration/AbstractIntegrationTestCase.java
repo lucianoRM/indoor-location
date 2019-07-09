@@ -19,7 +19,9 @@ import static com.example.location.internal.http.HttpCode.OK;
 import static com.example.location.internal.http.HttpCode.codeFrom;
 import static com.example.location.internal.http.HttpLocationClient.SENSORS_ENDPOINT;
 import static com.example.location.internal.http.HttpLocationClient.SIGNAL_EMITTERS_ENDPOINT;
+import static com.example.location.internal.http.HttpLocationClient.USERS_ENDPOINT;
 import static java.lang.Runtime.getRuntime;
+import static java.lang.String.format;
 import static java.lang.System.getProperty;
 import static java.lang.Thread.sleep;
 import static okhttp3.MediaType.get;
@@ -85,6 +87,13 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
         sleep(2000);
 
         super.setUp();
+        //register user in server
+        MediaType json = get("application/json");
+        String user = format("{\"id\":\"%s\"}", USER_ID);
+        RequestBody requestBody = RequestBody.create(json, user);
+        Request request = new Request.Builder().url(getServerUrl() + USERS_ENDPOINT).post(requestBody).build();
+        Response response = httpClient().newCall(request).execute();
+        assertThat(codeFrom(response.code()), is(equalTo(OK)));
     }
 
     @After

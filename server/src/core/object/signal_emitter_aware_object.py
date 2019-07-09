@@ -19,7 +19,7 @@ class SignalEmitterAwareObject:
 
     def add_signal_emitter(self, id: str, signal_emitter: SignalEmitter):
         if id in self.__signal_emitters:
-            raise SignalEmitterAlreadyExistsException("The signal emitter with id " + id + " is already registered")
+            raise SignalEmitterAlreadyExistsException("The signal emitter with id: " + id + " already exists in the system")
         self.__signal_emitters[id] = signal_emitter
 
     def remove_signal_emitter(self, id: str):

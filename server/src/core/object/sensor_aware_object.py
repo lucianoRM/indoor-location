@@ -20,7 +20,7 @@ class SensorAwareObject:
 
     def add_sensor(self, id: str, sensor: Sensor):
         if id in self.__sensors:
-            raise SensorAlreadyExistsException("The Sensor with id " + id + " was already registered")
+            raise SensorAlreadyExistsException("The sensor with id: " + id + " already exists in the system")
         self.__sensors[id] = sensor
 
     def remove_sensor(self, id: str):
