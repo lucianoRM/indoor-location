@@ -1,6 +1,6 @@
 package com.example.location.api.system;
 
-import com.example.location.internal.config.TestSystemConfiguration;
+import com.example.location.internal.config.LANSystemConfiguration;
 import com.example.location.internal.container.DaggerLocationSystemComponent;
 import com.example.location.internal.container.HttpClientModule;
 import com.example.location.internal.container.LocationSystemComponent;
@@ -13,7 +13,7 @@ public final class LocationSystem {
     public LocationSystem(String userId) {
         this.locationSystemComponent = DaggerLocationSystemComponent
                 .builder()
-                .systemConfigurationModule(new SystemConfigurationModule(new TestSystemConfiguration()))
+                .systemConfigurationModule(new SystemConfigurationModule(new LANSystemConfiguration()))
                 .httpClientModule(new HttpClientModule(userId))
                 .build();
     }

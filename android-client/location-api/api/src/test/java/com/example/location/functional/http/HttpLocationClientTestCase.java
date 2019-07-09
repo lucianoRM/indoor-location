@@ -30,26 +30,15 @@ public class HttpLocationClientTestCase extends MockedServerFunctionalTestCase {
 
     private static Type signalEmitterListType = new TypeToken<List<SignalEmitter>>(){}.getType();
 
-    private HttpLocationClient httpLocationClient;
-
     @Rule
     public ExpectedException expectedException = none();
-
-    @Before
-    public void setUp() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://localhost:" + getServerPort())
-                .addConverterFactory(GsonConverterFactory.create(getGson()))
-                .build();
-        httpLocationClient = retrofit.create(HttpLocationClient.class);
-    }
 
     @Test
     public void getSignalEmitters() throws Exception {
         String serializedSignalEmitters = readFile("signal_emitters.json");
         List<SignalEmitter> expectedSignalEmitters = getGson().fromJson(serializedSignalEmitters, signalEmitterListType);
         getMockedServer().enqueue(new MockResponse().setBody(serializedSignalEmitters));
-        Call<List<SignalEmitter>> signalEmittersCall = httpLocationClient.getSignalEmitters();
+        Call<List<SignalEmitter>> signalEmittersCall = locationClient().getSignalEmitters();
         Response<List<SignalEmitter>> response = signalEmittersCall.execute();
         List<SignalEmitter> receivedEmitters = response.body();
         assertThat(receivedEmitters, is(equalTo(expectedSignalEmitters)));

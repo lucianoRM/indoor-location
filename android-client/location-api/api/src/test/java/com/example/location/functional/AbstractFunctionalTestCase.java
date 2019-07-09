@@ -3,11 +3,13 @@ package com.example.location.functional;
 import com.example.location.api.system.EmitterManager;
 import com.example.location.api.system.SensorManager;
 import com.example.location.internal.config.SystemConfiguration;
+import com.example.location.internal.config.LANSystemConfiguration;
 import com.example.location.internal.config.TestSystemConfiguration;
 import com.example.location.internal.container.DaggerLocationSystemComponent;
 import com.example.location.internal.container.HttpClientModule;
 import com.example.location.internal.container.LocationSystemComponent;
 import com.example.location.internal.container.SystemConfigurationModule;
+import com.example.location.internal.http.HttpLocationClient;
 import com.google.gson.Gson;
 
 import org.junit.Before;
@@ -50,8 +52,8 @@ public abstract class AbstractFunctionalTestCase {
         return this.locationSystemComponent.httpClient();
     }
 
-    protected int getServerPort() {
-        return this.locationSystemComponent.systemConfiguration().getServerPort();
+    protected HttpLocationClient locationClient() {
+        return this.locationSystemComponent.locationServiceClient();
     }
 
     protected String getServerUrl() {
