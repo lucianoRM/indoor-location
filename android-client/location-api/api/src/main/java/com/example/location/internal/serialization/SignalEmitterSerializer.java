@@ -5,16 +5,11 @@ import com.example.location.internal.entity.emitter.SignalEmitterView;
 
 import java.lang.reflect.Type;
 
-public class SignalEmitterSerializer extends TypedObjectSerializer<SignalEmitter> {
+public class SignalEmitterSerializer extends InterfaceSerializer<SignalEmitter> {
 
     @Override
-    protected Type getImplementationTypeForDeserialization(String type) {
+    protected Type getImplementationTypeForDeserialization() {
         return SignalEmitterView.class;
     }
 
-    @Override
-    protected String getTypeForSerialization(SignalEmitter object) {
-        //TODO: Fix this
-        return "ANCHOR";
-    }
 }

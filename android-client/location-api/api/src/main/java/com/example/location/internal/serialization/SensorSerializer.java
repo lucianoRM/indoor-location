@@ -1,19 +1,14 @@
 package com.example.location.internal.serialization;
 
 import com.example.location.api.entity.sensor.Sensor;
-import com.example.location.internal.entity.sensor.DefaultSensor;
 
 import java.lang.reflect.Type;
 
-public class SensorSerializer extends TypedObjectSerializer<Sensor> {
+public class SensorSerializer extends InterfaceSerializer<Sensor> {
 
     @Override
-    protected Type getImplementationTypeForDeserialization(String type) {
+    protected Type getImplementationTypeForDeserialization() {
         return SensorView.class;
     }
 
-    @Override
-    protected String getTypeForSerialization(Sensor object) {
-        return "USER";
-    }
 }

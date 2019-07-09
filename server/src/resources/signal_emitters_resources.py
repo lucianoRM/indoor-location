@@ -71,7 +71,7 @@ class OwnedSignalEmitterListResource(AbstractOwnedSignalEmitterResource):
         super().__init__(**kwargs)
 
     def _do_get(self, owner_id: str):
-        signal_emitters = self._do_get_owner(owner_id).signal_emitters.values()
+        signal_emitters = list(self._do_get_owner(owner_id).signal_emitters.values())
         return self._signal_emitter_serializer.serialize(signal_emitters)
 
     def _do_post(self, owner_id: str):

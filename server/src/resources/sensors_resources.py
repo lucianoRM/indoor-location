@@ -80,7 +80,7 @@ class OwnedSensorListResource(AbstractOwnedSensorResource):
         super().__init__(**kwargs)
 
     def _do_get(self, owner_id: str):
-        sensors = self._do_get_owner(owner_id).sensors.values()
+        sensors = list(self._do_get_owner(owner_id).sensors.values())
         return self._sensor_serializer.serialize(sensors)
 
     def _do_post(self, owner_id: str):

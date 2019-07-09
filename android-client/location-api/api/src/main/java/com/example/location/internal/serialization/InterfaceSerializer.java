@@ -8,27 +8,20 @@ import com.google.gson.JsonSerializationContext;
 
 import java.lang.reflect.Type;
 
-public abstract class TypedObjectSerializer<T> extends DelegatingSerializer<T> {
-
-    private static final String TYPE_KEY = "type";
+public abstract class InterfaceSerializer<T> extends DelegatingSerializer<T> {
 
     @Override
     public JsonElement serialize(T src, Type typeOfSrc, JsonSerializationContext context) {
         JsonElement serializedElement = getGson().toJsonTree(src);
         JsonObject serializedObject = serializedElement.getAsJsonObject();
-        serializedObject.addProperty(TYPE_KEY, getTypeForSerialization(src));
         return serializedObject;
     }
 
     @Override
     public T deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
-        String type = jsonObject.get(TYPE_KEY).getAsString();
-        return getGson().fromJson(jsonObject, getImplementationTypeForDeserialization(type));
+        return getGson().fromJson(jsonObject, getImplementationTypeForDeserialization());
     }
 
-    protected abstract Type getImplementationTypeForDeserialization(String type);
-
-    protected abstract String getTypeForSerialization(T object);
-
+    protected abstract Type getImplementationTypeForDeserialization();
 }
