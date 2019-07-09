@@ -11,12 +11,12 @@ import java.io.File;
 import java.io.IOException;
 
 import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.location.internal.config.StaticSystemConfiguration.config;
+import static com.example.location.internal.http.HttpCode.OK;
+import static com.example.location.internal.http.HttpCode.codeFrom;
 import static com.example.location.internal.http.HttpLocationClient.SENSORS_ENDPOINT;
 import static com.example.location.internal.http.HttpLocationClient.SIGNAL_EMITTERS_ENDPOINT;
 import static java.lang.Runtime.getRuntime;
@@ -24,10 +24,11 @@ import static java.lang.System.getProperty;
 import static java.lang.Thread.sleep;
 import static okhttp3.MediaType.get;
 import static org.apache.commons.io.IOUtils.copy;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
-
-    private static final int PORT = config().getServerPort();
 
     //TODO: FIX THIS
     private static final String ROOT_FOLDER_SYSTEM_PROPERTY = "user.dir";
@@ -52,17 +53,12 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
         }
     }
 
-    private OkHttpClient client;
     private Process serverProcess;
     private Thread readingThread;
     private Thread errorThread;
 
     @Before
-    public void setUp() throws Exception{
-        super.setUp();
-
-        client = new OkHttpClient();
-
+    public void setUp() throws Exception {
         serverProcess = getRuntime().exec(SERVER_START_COMMAND, new String[]{SERVER_ENVIRONMENT_VARIABLE});
         readingThread = new Thread(() -> {
             while(!readingThread.isInterrupted()) {
@@ -87,6 +83,8 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
 
         //wait for server to start
         sleep(2000);
+
+        super.setUp();
     }
 
     @After
@@ -104,21 +102,17 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
         }
     }
 
-    @Override
-    protected int getServerPort() {
-        return PORT;
-    }
-
     protected void registerSignalEmitterInServer(SignalEmitter signalEmitter) throws IOException{
         MediaType json = get("application/json");
         RequestBody requestBody = RequestBody.create(json, getGson().toJson(signalEmitter));
         Request request = new Request.Builder().url(getServerUrl() + SIGNAL_EMITTERS_ENDPOINT).post(requestBody).build();
-        Response response = this.client.newCall(request).execute();
+        Response response = httpClient().newCall(request).execute();
+        assertThat(codeFrom(response.code()), is(equalTo(OK)));
     }
 
     protected Sensor getSensorFromServer(String id) throws IOException {
         Request request = new Request.Builder().url(getServerUrl() + SENSORS_ENDPOINT + "/" + id).get().build();
-        Response response = this.client.newCall(request).execute();
+        Response response = httpClient().newCall(request).execute();
         return getGson().fromJson(response.body().string(), Sensor.class);
     }
 

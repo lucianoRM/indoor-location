@@ -36,7 +36,7 @@ public class SensorIntegrationTestCase extends AbstractIntegrationTestCase {
     @Test
     public void createSensorIsSuccessful() throws Exception {
         final SensorFeed feed = new StaticSensorFeed();
-        Sensor createdSensor = getContainer().sensorManager().createSensor(sensorConfigurationBuilder()
+        Sensor createdSensor = getSensorManager().createSensor(sensorConfigurationBuilder()
                 .withId("id")
                 .withName("name")
                 .withFeed(feed)
@@ -57,10 +57,10 @@ public class SensorIntegrationTestCase extends AbstractIntegrationTestCase {
                 .build();
 
         //Register one time
-        getContainer().sensorManager().createSensor(config);
+        getSensorManager().createSensor(config);
 
         expectedException.expect(SensorAlreadyExistsException.class);
-        getContainer().sensorManager().createSensor(config);
+        getSensorManager().createSensor(config);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class SensorIntegrationTestCase extends AbstractIntegrationTestCase {
         final DataTransformer transformer = (se, d) ->
             //Here we should do a computation based on the sensed data and the signal being emitted. This is easier
             new SensorData(Long.parseLong(se.getSignal().getAttribute(signalDistanceKey).get()), 0);
-        Sensor createdSensor = getContainer().sensorManager().createSensor(sensorConfigurationBuilder()
+        Sensor createdSensor = getSensorManager().createSensor(sensorConfigurationBuilder()
                 .withId("id")
                 .withName("name")
                 .withFeed(feed)

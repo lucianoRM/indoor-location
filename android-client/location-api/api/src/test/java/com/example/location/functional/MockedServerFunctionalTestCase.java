@@ -1,5 +1,7 @@
 package com.example.location.functional;
 
+import com.example.location.internal.config.SystemConfiguration;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,8 +39,23 @@ public class MockedServerFunctionalTestCase extends AbstractFunctionalTestCase {
     }
 
     @Override
-    protected int getServerPort() {
-        return PORT;
+    protected SystemConfiguration getSystemConfig() {
+        return new SystemConfiguration() {
+            @Override
+            public String getServerHost() {
+                return "localhost";
+            }
+
+            @Override
+            public int getServerPort() {
+                return PORT;
+            }
+
+            @Override
+            public String getServerProtocol() {
+                return "http";
+            }
+        };
     }
 
     protected MockWebServer getMockedServer() {

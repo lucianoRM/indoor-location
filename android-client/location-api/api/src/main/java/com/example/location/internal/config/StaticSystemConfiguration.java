@@ -11,8 +11,13 @@ public class StaticSystemConfiguration implements SystemConfiguration{
     }
 
     @Override
-    public String getServerUrl() {
-        return "http://localhost";
+    public String getServerProtocol() {
+        return "http";
+    }
+
+    @Override
+    public String getServerHost() {
+        return "localhost";
     }
 
     @Override

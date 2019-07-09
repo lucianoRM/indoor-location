@@ -6,19 +6,14 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 @Module
 public class LocationServiceModule {
 
-    private HttpLocationClient httpLocationClient;
-
-    public LocationServiceModule(HttpLocationClient httpLocationClient) {
-        this.httpLocationClient = httpLocationClient;
-    }
-
     @Provides
     @Singleton
-    public HttpLocationClient locationService() {
-        return httpLocationClient;
+    public HttpLocationClient locationService(Retrofit retrofit) {
+       return retrofit.create(HttpLocationClient.class);
     }
 }

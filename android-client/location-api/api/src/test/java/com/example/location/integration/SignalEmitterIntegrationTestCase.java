@@ -30,7 +30,7 @@ public class SignalEmitterIntegrationTestCase extends AbstractIntegrationTestCas
         SignalEmitter signalEmitter = new DefaultSignalEmitter(id,name,position,signal);
         registerSignalEmitterInServer(signalEmitter);
 
-        Optional<SignalEmitter> emitterFromServer = getContainer().emitterManager().getSignalEmitter(id);
+        Optional<SignalEmitter> emitterFromServer = getEmitterManager().getSignalEmitter(id);
         assertThat(emitterFromServer, is(not(emptyOptional())));
         assertThat(emitterFromServer.get(), is(sameAs(signalEmitter)));
         assertThat(emitterFromServer.get().getSignal(), is(equalTo(signal)));

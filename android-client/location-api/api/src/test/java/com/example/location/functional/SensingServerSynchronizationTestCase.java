@@ -34,7 +34,7 @@ public class SensingServerSynchronizationTestCase extends MockedServerFunctional
 
         final StaticSensorFeed feed = new StaticSensorFeed();
 
-        Sensor createdSensor = getContainer().sensorManager().createSensor(
+        Sensor createdSensor = getSensorManager().createSensor(
                 sensorConfigurationBuilder()
                         .withId("id")
                         .withFeed(feed)
@@ -73,7 +73,7 @@ public class SensingServerSynchronizationTestCase extends MockedServerFunctional
 
         getMockedServer().enqueue(new MockResponse().setBody(serializedSensor));
 
-        Sensor createdSensor = getContainer().sensorManager().createSensor(
+        Sensor createdSensor = getSensorManager().createSensor(
                 sensorConfigurationBuilder()
                         .withId(expectedSensor.getId())
                         .withName(expectedSensor.getName())

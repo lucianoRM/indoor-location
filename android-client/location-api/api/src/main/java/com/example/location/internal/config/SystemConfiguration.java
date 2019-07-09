@@ -8,11 +8,16 @@ public interface SystemConfiguration {
     /**
      * @return The URL where the server is hosted.
      */
-    String getServerUrl();
+    String getServerHost();
 
     /**
      * @return The port where the server is listening
      */
     int getServerPort();
+
+    /**
+     * @return The protocol used by the server
+     */
+    String getServerProtocol();
 
 }

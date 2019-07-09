@@ -1,64 +1,64 @@
 package com.example.location.functional;
 
-import com.example.location.api.entity.emitter.SignalEmitter;
-import com.example.location.api.entity.sensor.Sensor;
+import com.example.location.api.system.EmitterManager;
+import com.example.location.api.system.SensorManager;
+import com.example.location.internal.config.SystemConfiguration;
+import com.example.location.internal.config.TestSystemConfiguration;
 import com.example.location.internal.container.DaggerLocationSystemComponent;
-import com.example.location.internal.container.LocationServiceModule;
+import com.example.location.internal.container.HttpClientModule;
 import com.example.location.internal.container.LocationSystemComponent;
-import com.example.location.internal.container.SensorManagerModule;
-import com.example.location.internal.http.HttpLocationClient;
-import com.example.location.internal.serialization.SensorSerializer;
-import com.example.location.internal.serialization.SignalEmitterSerializer;
+import com.example.location.internal.container.SystemConfigurationModule;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.junit.Before;
 
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
+import okhttp3.OkHttpClient;
 
-import static com.example.location.internal.config.StaticSystemConfiguration.config;
+import static java.lang.String.format;
 
 public abstract class AbstractFunctionalTestCase {
 
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeHierarchyAdapter(Sensor.class, new SensorSerializer())
-            .registerTypeHierarchyAdapter(SignalEmitter.class, new SignalEmitterSerializer())
-            .create();
-
-
-    private Retrofit retrofit;
-    private LocationSystemComponent container;
+    private static final String USER_ID = "test_user";
+    private LocationSystemComponent locationSystemComponent;
 
     @Before
     public void setUp() throws Exception{
-        retrofit = new Retrofit.Builder()
-                .baseUrl(getServerUrl())
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(GSON))
-                .build();
-        container = DaggerLocationSystemComponent
+        this.locationSystemComponent = DaggerLocationSystemComponent
                 .builder()
-                .locationServiceModule(new LocationServiceModule(retrofit.create(HttpLocationClient.class)))
-                .sensorManagerModule(new SensorManagerModule())
+                .systemConfigurationModule(new SystemConfigurationModule(getSystemConfig()))
+                .httpClientModule(new HttpClientModule(USER_ID))
                 .build();
     }
 
+    protected SystemConfiguration getSystemConfig() {
+        return new TestSystemConfiguration();
+    }
 
-    protected LocationSystemComponent getContainer() {
-        return this.container;
+    protected SensorManager getSensorManager() {
+        return locationSystemComponent.sensorManager();
+    }
+
+    protected EmitterManager getEmitterManager() {
+        return locationSystemComponent.emitterManager();
     }
 
     protected Gson getGson() {
-        return GSON;
+        return locationSystemComponent.gson();
+    }
+
+    protected OkHttpClient httpClient() {
+        return this.locationSystemComponent.httpClient();
+    }
+
+    protected int getServerPort() {
+        return this.locationSystemComponent.systemConfiguration().getServerPort();
     }
 
     protected String getServerUrl() {
-        return config().getServerUrl() + ":" + getServerPort();
+        String protocol = this.locationSystemComponent.systemConfiguration().getServerProtocol();
+        String host = this.locationSystemComponent.systemConfiguration().getServerHost();
+        int port = this.locationSystemComponent.systemConfiguration().getServerPort();
+        return format("%s://%s:%d", protocol, host, port);
     }
-
-    protected abstract int getServerPort();
-
 
 }

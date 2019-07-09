@@ -15,10 +15,12 @@ import retrofit2.http.Path;
 
 public interface HttpLocationClient {
 
+    String USER_ID_PLACEHOLDER = "$USER_ID$";
+
     //TODO: Move endpoints to configuration
     String USERS_ENDPOINT = "/users";
-    String SENSORS_ENDPOINT = "/sensors";
-    String SIGNAL_EMITTERS_ENDPOINT = "/signal_emitters";
+    String SENSORS_ENDPOINT = USERS_ENDPOINT + "/" +USER_ID_PLACEHOLDER + "/sensors";
+    String SIGNAL_EMITTERS_ENDPOINT = USERS_ENDPOINT + "/" + USER_ID_PLACEHOLDER + "/signal_emitters";
 
     /**
      * Register a new {@link SignalEmitter}
