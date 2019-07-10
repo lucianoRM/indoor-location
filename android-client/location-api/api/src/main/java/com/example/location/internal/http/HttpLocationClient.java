@@ -19,15 +19,17 @@ public interface HttpLocationClient {
 
     //TODO: Move endpoints to configuration
     String USERS_ENDPOINT = "/users";
-    String SENSORS_ENDPOINT = USERS_ENDPOINT + "/" +USER_ID_PLACEHOLDER + "/sensors";
-    String SIGNAL_EMITTERS_ENDPOINT = USERS_ENDPOINT + "/" + USER_ID_PLACEHOLDER + "/signal_emitters";
+    String ANCHORS_ENDPOINT = "/anchors";
+    String SENSORS_ENDPOINT = USERS_ENDPOINT + "/" + USER_ID_PLACEHOLDER + "/sensors";
+    String SIGNAL_EMITTERS_ENDPOINT = "/signal_emitters";
+    String MY_SIGNAL_EMITTERS_ENDPOINT = USERS_ENDPOINT + "/" + USER_ID_PLACEHOLDER + SIGNAL_EMITTERS_ENDPOINT;
 
     /**
      * Register a new {@link SignalEmitter}
      * @param signalEmitter the {@link SignalEmitter} to be registered
      * @return the signal emitter registered
      */
-    @POST(SIGNAL_EMITTERS_ENDPOINT)
+    @POST(MY_SIGNAL_EMITTERS_ENDPOINT)
     Call<SignalEmitter> registerSignalEmitter(@Body SignalEmitter signalEmitter);
 
     /**

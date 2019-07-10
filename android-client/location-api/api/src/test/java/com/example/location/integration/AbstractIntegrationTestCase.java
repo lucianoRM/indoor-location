@@ -1,5 +1,7 @@
 package com.example.location.integration;
 
+import com.example.location.api.data.Position;
+import com.example.location.api.entity.User;
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.functional.AbstractFunctionalTestCase;
@@ -9,6 +11,7 @@ import org.junit.Before;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -17,6 +20,7 @@ import okhttp3.Response;
 
 import static com.example.location.internal.http.HttpCode.OK;
 import static com.example.location.internal.http.HttpCode.codeFrom;
+import static com.example.location.internal.http.HttpLocationClient.ANCHORS_ENDPOINT;
 import static com.example.location.internal.http.HttpLocationClient.SENSORS_ENDPOINT;
 import static com.example.location.internal.http.HttpLocationClient.SIGNAL_EMITTERS_ENDPOINT;
 import static com.example.location.internal.http.HttpLocationClient.USERS_ENDPOINT;
@@ -39,18 +43,25 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
 
     private static final int THREAD_WAITING_TIME = 1000;
 
+    private static final String ANCHOR_TEMPLATE =
+            "{" +
+                    "\"id\": \"%s\"," +
+                    " \"position\" : {\"x\":%f, \"y\":%f}" +
+                    "}";
+
     private static final String SERVER_START_COMMAND;
     private static final String SERVER_ENVIRONMENT_VARIABLE;
+
     static {
         try {
             File rootFolder = new File(getProperty(ROOT_FOLDER_SYSTEM_PROPERTY));
             File serverRootFolder = rootFolder.getParentFile().getParentFile().getParentFile();
             File apiFile = new File(serverRootFolder, API_EXECUTABLE_LOCATION);
-            File flaskFile =  new File(serverRootFolder, FLASK_EXECUTABLE_LOCATION);
+            File flaskFile = new File(serverRootFolder, FLASK_EXECUTABLE_LOCATION);
 
             SERVER_ENVIRONMENT_VARIABLE = "FLASK_APP=" + apiFile.getAbsolutePath();
             SERVER_START_COMMAND = flaskFile.getAbsolutePath() + " run";
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -63,7 +74,7 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
     public void setUp() throws Exception {
         serverProcess = getRuntime().exec(SERVER_START_COMMAND, new String[]{SERVER_ENVIRONMENT_VARIABLE});
         readingThread = new Thread(() -> {
-            while(!readingThread.isInterrupted()) {
+            while (!readingThread.isInterrupted()) {
                 try {
                     copy(serverProcess.getInputStream(), System.out);
                 } catch (Exception e) {
@@ -72,7 +83,7 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
             }
         });
         errorThread = new Thread(() -> {
-            while(!errorThread.isInterrupted()) {
+            while (!errorThread.isInterrupted()) {
                 try {
                     copy(serverProcess.getErrorStream(), System.out);
                 } catch (Exception e) {
@@ -111,12 +122,35 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
         }
     }
 
-    protected void registerSignalEmitterInServer(SignalEmitter signalEmitter) throws IOException{
-        MediaType json = get("application/json");
-        RequestBody requestBody = RequestBody.create(json, getGson().toJson(signalEmitter));
-        Request request = new Request.Builder().url(getServerUrl() + SIGNAL_EMITTERS_ENDPOINT).post(requestBody).build();
+    private void executeRequest(Request request) throws IOException{
         Response response = httpClient().newCall(request).execute();
         assertThat(codeFrom(response.code()), is(equalTo(OK)));
+    }
+
+    protected String createAnchor(String id, Position position) {
+        return format(ANCHOR_TEMPLATE, id, position.getX(), position.getY());
+    }
+
+    protected void registerAnchorInServer(String anchor) throws IOException {
+        MediaType json = get("application/json");
+        RequestBody requestBody = RequestBody.create(json, anchor);
+        Request request = new Request.Builder().url(getServerUrl() + ANCHORS_ENDPOINT).post(requestBody).build();
+        executeRequest(request);
+    }
+
+    protected void registerSignalEmitterInAnchor(String anchorId, SignalEmitter signalEmitter) throws IOException {
+        MediaType json = get("application/json");
+        RequestBody requestBody = RequestBody.create(json, getGson().toJson(signalEmitter));
+        String endpoint = getServerUrl() + ANCHORS_ENDPOINT + "/" + anchorId + "/signal_emitters";
+        Request request = new Request.Builder().url(endpoint).post(requestBody).build();
+        executeRequest(request);
+    }
+
+    protected Position findMe() throws IOException {
+        Request request = new Request.Builder().url(getServerUrl() + USERS_ENDPOINT + "/" + USER_ID).get().build();
+        Response response = httpClient().newCall(request).execute();
+        Map user = getGson().fromJson(response.body().string(), Map.class);
+        return new Position(0.0f, 0.0f);
     }
 
     protected Sensor getSensorFromServer(String id) throws IOException {

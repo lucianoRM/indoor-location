@@ -1,6 +1,5 @@
 package com.example.location.internal.serialization;
 
-import com.example.location.api.data.Position;
 import com.example.location.api.data.Signal;
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.internal.entity.emitter.DefaultSignalEmitter;
@@ -19,12 +18,10 @@ public class SignalEmitterSerializerTestCase {
             .registerTypeHierarchyAdapter(SignalEmitter.class, new SignalEmitterSerializer())
             .create();
 
-    private static Position position = new Position(0, 0);
-
     @Test
     public void serializeDeserialize() {
         Signal signal = new Signal();
-        SignalEmitter signalEmitter = new DefaultSignalEmitter("id", "name", position, signal);
+        SignalEmitter signalEmitter = new DefaultSignalEmitter("id", "name", signal);
         SignalEmitter deserializedSignalEmitter = gson.fromJson(gson.toJson(signalEmitter), SignalEmitter.class);
         assertThat(deserializedSignalEmitter, is(equalTo(signalEmitter)));
     }
@@ -35,7 +32,7 @@ public class SignalEmitterSerializerTestCase {
         final String a1Key = "POWER";
         final String a1Value = Float.toString(100.0f);
         signal.addAttribute(a1Key, a1Value);
-        SignalEmitter signalEmitter = new DefaultSignalEmitter("id", "name", position, signal);
+        SignalEmitter signalEmitter = new DefaultSignalEmitter("id", "name", signal);
         SignalEmitter deserializedSignalEmitter = gson.fromJson(gson.toJson(signalEmitter), SignalEmitter.class);
         assertThat(deserializedSignalEmitter, is(equalTo(signalEmitter)));
         Signal deserializedSignal = deserializedSignalEmitter.getSignal();

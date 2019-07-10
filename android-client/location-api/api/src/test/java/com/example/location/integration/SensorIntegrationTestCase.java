@@ -71,17 +71,21 @@ public class SensorIntegrationTestCase extends AbstractIntegrationTestCase {
 
         final String se1id = "se1";
         final String se1Name = "SE1";
+        final String anchor1Id = "a1";
         final Position position1 = new Position(0,0);
 
         final String se2id = "se2";
         final String se2Name = "SE2";
+        final String anchor2Id = "a2";
         final Position position2 = new Position(10,0);
 
-        SignalEmitter signalEmitter1 = new DefaultSignalEmitter(se1id,se1Name,position1,signal);
-        registerSignalEmitterInServer(signalEmitter1);
+        registerAnchorInServer(createAnchor(anchor1Id, position1));
+        SignalEmitter signalEmitter1 = new DefaultSignalEmitter(se1id,se1Name,signal);
+        registerSignalEmitterInAnchor(anchor1Id, signalEmitter1);
 
-        SignalEmitter signalEmitter2 = new DefaultSignalEmitter(se2id,se2Name,position2,signal);
-        registerSignalEmitterInServer(signalEmitter2);
+        registerAnchorInServer(createAnchor(anchor2Id, position2));
+        SignalEmitter signalEmitter2 = new DefaultSignalEmitter(se2id,se2Name,signal);
+        registerSignalEmitterInAnchor(anchor2Id, signalEmitter2);
 
 
         final StaticSensorFeed feed = new StaticSensorFeed();
@@ -95,10 +99,9 @@ public class SensorIntegrationTestCase extends AbstractIntegrationTestCase {
                 .withTransformer(transformer)
                 .build());
 
-        Sensor sensorInServer = getSensorFromServer(createdSensor.getId());
-        Position sensorPosition = ((SensorView)sensorInServer).getPosition();
-        assertThat(sensorPosition.getX(), equalTo(0.0f));
-        assertThat(sensorPosition.getY(), equalTo(0.0f));
+        Position myPosition = findMe();
+        assertThat(myPosition.getX(), equalTo(0.0f));
+        assertThat(myPosition.getY(), equalTo(0.0f));
 
         List<RawSensorData> rawSensorData = new ArrayList<>();
         rawSensorData.add(new RawSensorData(se1id));
@@ -106,10 +109,9 @@ public class SensorIntegrationTestCase extends AbstractIntegrationTestCase {
         feed.setData(rawSensorData);
 
         createdSensor.sense();
-        sensorInServer = getSensorFromServer(createdSensor.getId());
-        sensorPosition = ((SensorView)sensorInServer).getPosition();
-        assertThat(sensorPosition.getX(), closeTo(5.0f));
-        assertThat(sensorPosition.getY(), closeTo(0.0f));
+        myPosition = findMe();
+        assertThat(myPosition.getX(), closeTo(5.0f));
+        assertThat(myPosition.getY(), closeTo(0.0f));
 
     }
 }

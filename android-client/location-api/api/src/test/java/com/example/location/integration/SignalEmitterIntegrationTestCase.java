@@ -22,13 +22,14 @@ public class SignalEmitterIntegrationTestCase extends AbstractIntegrationTestCas
     public void getSignalEmitters() throws Exception{
         final String id = "id";
         final String name = "name";
-        final Position position = new Position(0,0);
         final String signalAttributeKey = "KEY";
         final String signalAttributeValue = "VALUE";
         final Signal signal = new Signal();
         signal.addAttribute(signalAttributeKey, signalAttributeValue);
-        SignalEmitter signalEmitter = new DefaultSignalEmitter(id,name,position,signal);
-        registerSignalEmitterInServer(signalEmitter);
+        SignalEmitter signalEmitter = new DefaultSignalEmitter(id,name,signal);
+        final String anchorId = "anchor";
+        registerAnchorInServer(createAnchor(anchorId,new Position(0.0f, 0.0f)));
+        registerSignalEmitterInAnchor(anchorId, signalEmitter);
 
         Optional<SignalEmitter> emitterFromServer = getEmitterManager().getSignalEmitter(id);
         assertThat(emitterFromServer, is(not(emptyOptional())));

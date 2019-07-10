@@ -31,7 +31,7 @@ public class DefaultSensor extends SkeletalIdentifiableObject implements Sensor 
                          DataTransformer sensedDataTransformer,
                          SensorListener listener,
                          EmitterManager emitterManager) {
-        super(id, name, new Position(0, 0));
+        super(id, name);
         this.feed = feed;
         this.sensedDataTransformer = sensedDataTransformer;
         this.listener = listener;

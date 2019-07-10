@@ -1,19 +1,15 @@
 package com.example.location.internal.entity;
 
-import com.example.location.api.data.Position;
-
 import java.util.Objects;
 
 public abstract class SkeletalIdentifiableObject implements IdentifiableObject {
 
     private String id;
     private String name;
-    private Position position;
 
-    public SkeletalIdentifiableObject(String id, String name, Position position) {
+    public SkeletalIdentifiableObject(String id, String name) {
         this.id = id;
         this.name = name;
-        this.position = position;
     }
 
     public String getId() {
@@ -24,13 +20,9 @@ public abstract class SkeletalIdentifiableObject implements IdentifiableObject {
         return name;
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, position);
+        return Objects.hash(id, name);
     }
 
     @Override
@@ -42,11 +34,11 @@ public abstract class SkeletalIdentifiableObject implements IdentifiableObject {
             return true;
         }
         SkeletalIdentifiableObject other = (SkeletalIdentifiableObject) obj;
-        return this.id.equals(other.id) && this.name.equals(other.name) && this.position.equals(other.position);
+        return this.id.equals(other.id) && this.name.equals(other.name);
     }
 
     @Override
     public String toString() {
-        return getId() + "(" + getName() + ")@" + getPosition().getX() + "-" + getPosition().getY();
+        return getId() + "(" + getName() + ")";
     }
 }

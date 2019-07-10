@@ -1,6 +1,5 @@
 package com.example.location.internal.entity.emitter;
 
-import com.example.location.api.data.Position;
 import com.example.location.api.data.Signal;
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.internal.entity.SkeletalIdentifiableObject;
@@ -10,8 +9,8 @@ public class SignalEmitterView extends SkeletalIdentifiableObject implements Sig
 
     private Signal signal;
 
-    public SignalEmitterView(String id, String name, Position position, Signal signal) {
-        super(id, name, position);
+    public SignalEmitterView(String id, String name, Signal signal) {
+        super(id, name);
         this.signal = signal;
     }
 
