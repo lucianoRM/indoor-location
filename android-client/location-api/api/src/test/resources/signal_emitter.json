@@ -1,9 +1,5 @@
 {
   "id" : "emitterId",
   "name" : "The Signal Emitter",
-  "type" : "ANCHOR",
-  "position" : {
-    "x" : 0,
-    "y" : 0
-  }
+  "signal" : {}
 }

@@ -1,9 +1,4 @@
 {
   "id" : "sensorId",
-  "name" : "The Sensor",
-  "type" : "USER",
-  "position" : {
-    "x" : 0,
-    "y" : 0
-  }
+  "name" : "The Sensor"
 }

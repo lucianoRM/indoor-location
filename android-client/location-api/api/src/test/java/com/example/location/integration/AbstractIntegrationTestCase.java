@@ -150,7 +150,8 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
         Request request = new Request.Builder().url(getServerUrl() + USERS_ENDPOINT + "/" + USER_ID).get().build();
         Response response = httpClient().newCall(request).execute();
         Map user = getGson().fromJson(response.body().string(), Map.class);
-        return new Position(0.0f, 0.0f);
+        Map<String, Double> position = (Map<String, Double>)user.get("position");
+        return new Position(position.get("x").floatValue(), position.get("y").floatValue());
     }
 
     protected Sensor getSensorFromServer(String id) throws IOException {

@@ -23,6 +23,7 @@ import java.util.List;
 
 import static com.example.location.NumberMatcher.closeTo;
 import static com.example.location.api.entity.sensor.SensorConfiguration.sensorConfigurationBuilder;
+import static java.lang.Long.parseLong;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.rules.ExpectedException.none;
@@ -69,14 +70,14 @@ public class SensorIntegrationTestCase extends AbstractIntegrationTestCase {
         final Signal signal = new Signal();
         signal.addAttribute(signalDistanceKey, "5");
 
+        final String anchor1Id = "a1";
         final String se1id = "se1";
         final String se1Name = "SE1";
-        final String anchor1Id = "a1";
         final Position position1 = new Position(0,0);
 
+        final String anchor2Id = "a2";
         final String se2id = "se2";
         final String se2Name = "SE2";
-        final String anchor2Id = "a2";
         final Position position2 = new Position(10,0);
 
         registerAnchorInServer(createAnchor(anchor1Id, position1));
@@ -91,7 +92,7 @@ public class SensorIntegrationTestCase extends AbstractIntegrationTestCase {
         final StaticSensorFeed feed = new StaticSensorFeed();
         final DataTransformer transformer = (se, d) ->
             //Here we should do a computation based on the sensed data and the signal being emitted. This is easier
-            new SensorData(Long.parseLong(se.getSignal().getAttribute(signalDistanceKey).get()), 0);
+            new SensorData(parseLong(se.getSignal().getAttribute(signalDistanceKey).get()), 0);
         Sensor createdSensor = getSensorManager().createSensor(sensorConfigurationBuilder()
                 .withId("id")
                 .withName("name")

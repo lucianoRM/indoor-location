@@ -1,29 +1,14 @@
 [
   {
     "id" : "se1",
-    "name" : "The Signal Emitter 1",
-    "type" : "ANCHOR",
-    "position" : {
-      "x" : 0,
-      "y" : 0
-    }
+    "name" : "The Signal Emitter 1"
   },
   {
     "id" : "se2",
-    "name" : "The Signal Emitter 2",
-    "type" : "ANCHOR",
-    "position" : {
-      "x" : 0,
-      "y" : 0
-    }
+    "name" : "The Signal Emitter 2"
   },
   {
     "id" : "se3",
-    "name" : "The Signal Emitter 3",
-    "type" : "ANCHOR",
-    "position" : {
-      "x" : 0,
-      "y" : 0
-    }
+    "name" : "The Signal Emitter 3"
   }
 ]
