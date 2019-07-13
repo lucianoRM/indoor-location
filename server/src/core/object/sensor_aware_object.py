@@ -32,7 +32,13 @@ class SensorAwareObject:
     def update_sensor(self, id: str, sensor: Sensor):
         if id not in self.__sensors:
             raise UnknownSensorException("There is no sensor registered with id: " + id)
-        self.__sensors.update({id:sensor})
+        self.__sensors.update({id: sensor})
+
+    def get_sensor(self, id: str) -> Sensor:
+        try:
+            return self.__sensors[id]
+        except KeyError:
+            raise UnknownSensorException("There is no sensor registered with id: " + id)
 
     @property
     def sensors(self) -> Dict[str, Sensor]:
@@ -45,11 +51,13 @@ class SensorAwareObjectException(Exception):
     """
     pass
 
+
 class SensorAlreadyExistsException(SensorAwareObjectException):
     """
     Exception to be thrown if the Sensor being registered was already added in this object
     """
     pass
+
 
 class UnknownSensorException(SensorAwareObjectException):
     """

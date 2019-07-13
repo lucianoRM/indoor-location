@@ -25,4 +25,8 @@ public enum HttpCode {
         throw new RuntimeException("I don't know how to react to the response code: " + code);
     }
 
+    public int code() {
+        return code;
+    }
+
 }

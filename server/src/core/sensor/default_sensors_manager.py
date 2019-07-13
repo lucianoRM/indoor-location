@@ -52,7 +52,7 @@ class DefaultSensorsManager(SensorsManager):
 
     def get_sensor(self, sensor_id: str) -> Sensor:
         owner = self.get_owner(sensor_id)
-        return owner.sensors.get(sensor_id)
+        return owner.get_sensor(sensor_id)
 
 
     def get_all_sensors(self) -> List[Sensor]:

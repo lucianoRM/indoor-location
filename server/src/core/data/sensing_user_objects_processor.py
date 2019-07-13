@@ -30,7 +30,7 @@ class SensingUserObjectsProcessor(SensedObjectsProcessor):
     def process_sensed_objects(self, owner_id: str, sensor_id: str, sensed_objects: List[SensedObject]):
 
         user = self.__users_manager.get_user(owner_id)
-        sensor = user.sensors.get(sensor_id)
+        sensor = user.get_sensor(sensor_id)
         sensor.update_sensed_objects(sensed_objects)
         user.update_sensor(sensor_id, sensor)
 

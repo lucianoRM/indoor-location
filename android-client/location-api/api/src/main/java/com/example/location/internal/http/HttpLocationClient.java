@@ -19,8 +19,13 @@ public interface HttpLocationClient {
 
     //TODO: Move endpoints to configuration
     String USERS_ENDPOINT = "/users";
+
     String ANCHORS_ENDPOINT = "/anchors";
-    String SENSORS_ENDPOINT = USERS_ENDPOINT + "/" + USER_ID_PLACEHOLDER + "/sensors";
+
+    String SENSOR_ID_URL_PARAM = "sensorId";
+    String SENSOR_ID_PLACEHOLDER = "/{" + SENSOR_ID_URL_PARAM + "}";
+    String MY_SENSORS_ENDPOINT = USERS_ENDPOINT + "/" + USER_ID_PLACEHOLDER + "/sensors";
+
     String SIGNAL_EMITTERS_ENDPOINT = "/signal_emitters";
     String MY_SIGNAL_EMITTERS_ENDPOINT = USERS_ENDPOINT + "/" + USER_ID_PLACEHOLDER + SIGNAL_EMITTERS_ENDPOINT;
 
@@ -40,11 +45,19 @@ public interface HttpLocationClient {
     Call<List<SignalEmitter>> getSignalEmitters();
 
     /**
+     * Get the {@link Sensor} from the server.
+     * @param sensorId the id of the sensor to get
+     * @return the sensor in the server
+     */
+    @GET(MY_SENSORS_ENDPOINT + SENSOR_ID_PLACEHOLDER)
+    Call<Sensor> getSensor(@Path(SENSOR_ID_URL_PARAM) String sensorId);
+
+    /**
      * Register a new {@link Sensor} in the server
      * @param sensor the sensor to be registered in the server
      * @return the sensor being registered
      */
-    @POST(SENSORS_ENDPOINT)
+    @POST(MY_SENSORS_ENDPOINT)
     Call<Sensor> registerSensor(@Body Sensor sensor);
 
     /**
@@ -52,7 +65,7 @@ public interface HttpLocationClient {
      * @param sensorId the id of this sensor
      * @param sensedObjects all new objects being sensed
      */
-    @PUT(SENSORS_ENDPOINT + "/{sensorId}")
-    Call<String> updateSensor(@Path("sensorId") String sensorId, @Body List<SensedObject> sensedObjects);
+    @PUT(MY_SENSORS_ENDPOINT + SENSOR_ID_PLACEHOLDER)
+    Call<String> updateSensor(@Path(SENSOR_ID_URL_PARAM) String sensorId, @Body List<SensedObject> sensedObjects);
 
 }

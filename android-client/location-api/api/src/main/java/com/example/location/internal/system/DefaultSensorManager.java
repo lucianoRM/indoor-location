@@ -33,36 +33,70 @@ public class DefaultSensorManager implements SensorManager {
     }
 
     @Override
-    public Sensor createSensor(SensorConfiguration config) throws SensorManagerException{
-        final Sensor sensor =
-                new DefaultSensor(
-                        config.getSensorId(),
-                        config.getSensorName(),
-                        config.getSensorFeed(),
-                        config.getDataTransformer(),
-                        new HttpSensorListener(httpLocationClient),
-                        emitterManager
-                );
+    public Sensor getOrCreateSensor(String sensorId, SensorConfiguration config) throws SensorManagerException {
+        Sensor sensor = createSensorLocally(config);
+        if(!isSensorAlreadyRegistered(sensorId)) {
+           registerSensorInServer(sensor);
+        }
+        return sensor;
+    }
 
-        Call<Sensor> httpCall = httpLocationClient.registerSensor(sensor);
+    @Override
+    public Sensor createSensor(SensorConfiguration config) throws SensorManagerException {
+        Sensor sensor = createSensorLocally(config);
+        registerSensorInServer(sensor);
+        return sensor;
+    }
+
+    private boolean isSensorAlreadyRegistered(String sensorId) throws SensorManagerException {
+        Call<Sensor> httpCall = httpLocationClient.getSensor(sensorId);
         try {
             Response<Sensor> httpResponse = httpCall.execute();
-            if(!httpResponse.isSuccessful()) {
+            if (!httpResponse.isSuccessful()) {
                 HttpCode responseCode = codeFrom(httpResponse.code());
                 switch (responseCode) {
-                    case CONFLICT:
-                        //TODO: see what to do here
-                        return sensor;
-//                        throw new SensorAlreadyExistsException("The sensor with id: " + config.getSensorId() + " already exists");
+                    case NOT_FOUND:
+                        return false;
                     case SERVER_ERROR:
                         throw new SensorManagerException("Internal server error");
                     default:
                         break;
                 }
             }
-        }catch (IOException e) {
-            throw new SensorManagerException("Could not connect to remote system",e);
+        } catch (IOException e) {
+            throw new SensorManagerException("Could not connect to remote system", e);
         }
-        return sensor;
+        return true;
+    }
+
+    private Sensor createSensorLocally(SensorConfiguration config) {
+        return new DefaultSensor(
+                config.getSensorId(),
+                config.getSensorName(),
+                config.getSensorFeed(),
+                config.getDataTransformer(),
+                new HttpSensorListener(httpLocationClient),
+                emitterManager
+        );
+    }
+
+    private void registerSensorInServer(Sensor sensor) throws SensorManagerException {
+        Call<Sensor> httpCall = httpLocationClient.registerSensor(sensor);
+        try {
+            Response<Sensor> httpResponse = httpCall.execute();
+            if (!httpResponse.isSuccessful()) {
+                HttpCode responseCode = codeFrom(httpResponse.code());
+                switch (responseCode) {
+                    case CONFLICT:
+                        throw new SensorAlreadyExistsException("The sensor with id: " + sensor.getId() + " already exists");
+                    case SERVER_ERROR:
+                        throw new SensorManagerException("Internal server error");
+                    default:
+                        break;
+                }
+            }
+        } catch (IOException e) {
+            throw new SensorManagerException("Could not connect to remote system", e);
+        }
     }
 }

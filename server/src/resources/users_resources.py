@@ -24,6 +24,14 @@ class AbstractUserResource(AbstractResource):
         'SignalEmitterAlreadyExistsException': {
             'code': 409,
             'message': lambda e: str(e)
+        },
+        'UnknownSensorException': {
+            'code': 404,
+            'message': lambda e: str(e)
+        },
+        'UnknownSignalEmitterException': {
+            'code': 404,
+            'message': lambda e: str(e)
         }
     }
 

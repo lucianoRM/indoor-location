@@ -103,7 +103,7 @@ class OwnedSensorResource(AbstractOwnedSensorResource):
 
     def _do_get(self, owner_id:str, sensor_id:str):
         owner = self._do_get_owner(owner_id)
-        return self._sensor_serializer.serialize(owner.sensors.get(sensor_id))
+        return self._sensor_serializer.serialize(owner.get_sensor(sensor_id))
 
     def _do_put(self, owner_id: str, sensor_id: str):
         objects = self.__sensed_objects_schema.load(self._get_post_data_as_json()).data

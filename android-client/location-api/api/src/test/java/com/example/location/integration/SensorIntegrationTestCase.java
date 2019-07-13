@@ -48,6 +48,20 @@ public class SensorIntegrationTestCase extends AbstractIntegrationTestCase {
     }
 
     @Test
+    public void getOrCrateSensorIsSuccessful() throws Exception {
+        final SensorFeed feed = new StaticSensorFeed();
+        final String sensorId = "id";
+        Sensor createdSensor = getSensorManager().getOrCreateSensor(sensorId, sensorConfigurationBuilder()
+                .withId(sensorId)
+                .withName("name")
+                .withFeed(feed)
+                .withTransformer((s,d) -> new SensorData(0,0))
+                .build());
+        Sensor sensorInServer = getSensorFromServer(createdSensor.getId());
+        assertThat(createdSensor, equalTo(sensorInServer));
+    }
+
+    @Test
     public void createAlreadyExistentSensor() throws Exception {
         final SensorFeed feed = new StaticSensorFeed();
         SensorConfiguration config = sensorConfigurationBuilder()
@@ -73,26 +87,26 @@ public class SensorIntegrationTestCase extends AbstractIntegrationTestCase {
         final String anchor1Id = "a1";
         final String se1id = "se1";
         final String se1Name = "SE1";
-        final Position position1 = new Position(0,0);
+        final Position position1 = new Position(0, 0);
 
         final String anchor2Id = "a2";
         final String se2id = "se2";
         final String se2Name = "SE2";
-        final Position position2 = new Position(10,0);
+        final Position position2 = new Position(10, 0);
 
         registerAnchorInServer(createAnchor(anchor1Id, position1));
-        SignalEmitter signalEmitter1 = new DefaultSignalEmitter(se1id,se1Name,signal);
+        SignalEmitter signalEmitter1 = new DefaultSignalEmitter(se1id, se1Name, signal);
         registerSignalEmitterInAnchor(anchor1Id, signalEmitter1);
 
         registerAnchorInServer(createAnchor(anchor2Id, position2));
-        SignalEmitter signalEmitter2 = new DefaultSignalEmitter(se2id,se2Name,signal);
+        SignalEmitter signalEmitter2 = new DefaultSignalEmitter(se2id, se2Name, signal);
         registerSignalEmitterInAnchor(anchor2Id, signalEmitter2);
 
 
         final StaticSensorFeed feed = new StaticSensorFeed();
         final DataTransformer transformer = (se, d) ->
-            //Here we should do a computation based on the sensed data and the signal being emitted. This is easier
-            new SensorData(parseLong(se.getSignal().getAttribute(signalDistanceKey).get()), 0);
+                //Here we should do a computation based on the sensed data and the signal being emitted. This is easier
+                new SensorData(parseLong(se.getSignal().getAttribute(signalDistanceKey).get()), 0);
         Sensor createdSensor = getSensorManager().createSensor(sensorConfigurationBuilder()
                 .withId("id")
                 .withName("name")

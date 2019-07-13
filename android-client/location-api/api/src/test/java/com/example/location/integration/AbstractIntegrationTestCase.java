@@ -1,7 +1,6 @@
 package com.example.location.integration;
 
 import com.example.location.api.data.Position;
-import com.example.location.api.entity.User;
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.functional.AbstractFunctionalTestCase;
@@ -21,8 +20,7 @@ import okhttp3.Response;
 import static com.example.location.internal.http.HttpCode.OK;
 import static com.example.location.internal.http.HttpCode.codeFrom;
 import static com.example.location.internal.http.HttpLocationClient.ANCHORS_ENDPOINT;
-import static com.example.location.internal.http.HttpLocationClient.SENSORS_ENDPOINT;
-import static com.example.location.internal.http.HttpLocationClient.SIGNAL_EMITTERS_ENDPOINT;
+import static com.example.location.internal.http.HttpLocationClient.MY_SENSORS_ENDPOINT;
 import static com.example.location.internal.http.HttpLocationClient.USERS_ENDPOINT;
 import static java.lang.Runtime.getRuntime;
 import static java.lang.String.format;
@@ -155,7 +153,7 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
     }
 
     protected Sensor getSensorFromServer(String id) throws IOException {
-        Request request = new Request.Builder().url(getServerUrl() + SENSORS_ENDPOINT + "/" + id).get().build();
+        Request request = new Request.Builder().url(getServerUrl() + MY_SENSORS_ENDPOINT + "/" + id).get().build();
         Response response = httpClient().newCall(request).execute();
         return getGson().fromJson(response.body().string(), Sensor.class);
     }

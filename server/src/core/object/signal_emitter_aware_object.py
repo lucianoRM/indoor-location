@@ -33,6 +33,12 @@ class SignalEmitterAwareObject:
             raise UnknownSignalEmitterException("There is no signal emitter registered with id: " + id)
         self.__signal_emitters.update({id: signal_emitter})
 
+    def get_signal_emitter(self, id: str) -> SignalEmitter:
+        try:
+            return self.__signal_emitters[id]
+        except KeyError:
+            raise UnknownSignalEmitterException("There is no signal emitter registered with id: " + id)
+
     @property
     def signal_emitters(self) -> Dict[str, SignalEmitter]:
         return self.__signal_emitters

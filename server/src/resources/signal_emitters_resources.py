@@ -93,7 +93,7 @@ class OwnedSignalEmitterResource(AbstractOwnedSignalEmitterResource):
 
     def _do_get(self, owner_id:str, signal_emitter_id:str):
         owner = self._do_get_owner(owner_id)
-        return self._signal_emitter_serializer.serialize(owner.signal_emitters.get(signal_emitter_id))
+        return self._signal_emitter_serializer.serialize(owner.get_signal_emitter(signal_emitter_id))
 
 
 

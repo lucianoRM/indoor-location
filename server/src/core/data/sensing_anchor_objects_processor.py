@@ -52,7 +52,7 @@ class SensingAnchorObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
         objects_ids = set([object.id for object in sensed_objects])
 
         anchor = self.__anchors_manager.get_anchor(owner_id)
-        sensor = anchor.sensors.get(sensor_id)
+        sensor = anchor.get_sensor(sensor_id)
 
         last_sensed_objects_ids = set(sensor.get_sensed_objects().keys())
 
@@ -93,7 +93,7 @@ class SensingAnchorObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
             anchors = []
             for sensor_id in sensors_in_range:
                 sensor_owner = self.__sensor_manager.get_owner(sensor_id)
-                sensor = sensor_owner.sensors.get(sensor_id)
+                sensor = sensor_owner.get_sensor(sensor_id)
                 sensor_position = sensor_owner.position
                 sensed_moving_object = sensor.get_sensed_objects().get(sensed_object_id)
                 anchors.append(Anchor(

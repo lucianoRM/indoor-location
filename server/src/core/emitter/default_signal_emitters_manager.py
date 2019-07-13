@@ -53,7 +53,7 @@ class DefaultSignalEmittersManager(SignalEmittersManager):
 
     def get_signal_emitter(self, signal_emitter_id: str) -> SignalEmitter:
         owner = self.get_owner(signal_emitter_id)
-        return owner.signal_emitters.get(signal_emitter_id)
+        return owner.get_signal_emitter(signal_emitter_id)
 
     def get_all_signal_emitters(self) -> List[SignalEmitter]:
         signal_emitters = []
