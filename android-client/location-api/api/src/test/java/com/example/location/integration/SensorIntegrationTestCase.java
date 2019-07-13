@@ -79,6 +79,21 @@ public class SensorIntegrationTestCase extends AbstractIntegrationTestCase {
     }
 
     @Test
+    public void createAndGetAnExistentSensor() throws Exception {
+        final String sensorId = "id";
+        final SensorFeed feed = new StaticSensorFeed();
+        SensorConfiguration config = sensorConfigurationBuilder()
+                .withId(sensorId)
+                .withName("name")
+                .withFeed(feed)
+                .withTransformer((s, d) -> new SensorData(0,0))
+                .build();
+        Sensor createdSensor = getSensorManager().createSensor(config);
+        Sensor retrievedSensor = getSensorManager().getOrCreateSensor(sensorId, config);
+        assertThat(createdSensor, equalTo(retrievedSensor));
+    }
+
+    @Test
     public void sensorSenseUpdatesPosition() throws Exception {
         final String signalDistanceKey = "distance";
         final Signal signal = new Signal();
