@@ -1,5 +1,6 @@
 package com.example.location.internal.http;
 
+import com.example.location.internal.entity.User;
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.internal.data.SensedObject;
@@ -68,4 +69,9 @@ public interface HttpLocationClient {
     @PUT(MY_SENSORS_ENDPOINT + SENSOR_ID_PLACEHOLDER)
     Call<String> updateSensor(@Path(SENSOR_ID_URL_PARAM) String sensorId, @Body List<SensedObject> sensedObjects);
 
+    /**
+     * Get the User(ME) from the server
+     */
+    @GET(USERS_ENDPOINT + "/" + USER_ID_PLACEHOLDER)
+    Call<User> getUser();
 }

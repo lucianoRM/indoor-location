@@ -1,6 +1,7 @@
 package com.example.location.internal.container;
 
 import com.example.location.api.system.EmitterManager;
+import com.example.location.api.system.Locator;
 import com.example.location.internal.config.SystemConfiguration;
 import com.example.location.internal.http.HttpLocationClient;
 import com.example.location.api.system.SensorManager;
@@ -19,7 +20,8 @@ import okhttp3.OkHttpClient;
         HttpClientModule.class,
         RetrofitModule.class,
         GsonModule.class,
-        SystemConfigurationModule.class
+        SystemConfigurationModule.class,
+        LocatorModule.class
 })
 public interface LocationSystemComponent {
 
@@ -29,4 +31,6 @@ public interface LocationSystemComponent {
     OkHttpClient httpClient();
     SystemConfiguration systemConfiguration();
     HttpLocationClient locationServiceClient();
+    Locator locator();
+
 }

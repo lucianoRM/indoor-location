@@ -7,28 +7,23 @@ import com.example.location.api.data.RawSensorData;
 import com.example.location.api.data.SensorData;
 import com.example.location.api.entity.emitter.SignalEmitter;
 
-import java.util.function.Supplier;
-
+import static com.example.location.impl.wifi.SignalUtils.computeDistance;
 import static com.example.location.impl.wifi.WiFiSensorFeed.SCAN_RESULT;
-import static java.lang.Integer.parseInt;
-import static java.lang.Math.log10;
 
 public class WifiTransformer implements DataTransformer {
 
-    private static final String MAX_SIGNAL_POWER = "MAX_POWER";
+    private static final float DEFAULT_ONE_METER_POWER = -23.0f;
+    private static final String ONE_METER_SIGNAL_POWER = "MAX_POWER";
 
     @Override
     public SensorData transform(SignalEmitter signalEmitter, RawSensorData rawData) {
-        try {
-            int maxPower = signalEmitter.getSignal().getAttribute(MAX_SIGNAL_POWER).map(Integer::parseInt).orElseThrow(() -> new RuntimeException("Signal does not have max power"));
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
+        float powerAt1Meter = signalEmitter
+                .getSignal()
+                .getAttribute(ONE_METER_SIGNAL_POWER)
+                .map(Float::parseFloat)
+                .orElse(DEFAULT_ONE_METER_POWER);
         ScanResult scanResult = rawData.getAttribute(SCAN_RESULT);
-        return new SensorData(0,0);
+        return new SensorData(computeDistance(powerAt1Meter, scanResult.level),scanResult.timestamp);
     }
 
-    private float computeDistance(int maxPower, int frequency, int sensedPower) {
-        return 0.0f;
-    }
 }

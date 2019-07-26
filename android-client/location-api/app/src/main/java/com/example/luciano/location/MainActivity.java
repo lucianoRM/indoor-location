@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         this.accesibleActivities = new HashMap<>();
         this.accesibleActivities.put("WIFI_VIEW", WifiSignalViewActivity.class);
-        this.accesibleActivities.put("SENSOR_VIEW", SensorActivity.class);
+        this.accesibleActivities.put("USER_POSITION_VIEW", UserPositionActivity.class);
 
         RecyclerView recyclerView = findViewById(R.id.availableActivitiesRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

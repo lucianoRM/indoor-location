@@ -1,6 +1,7 @@
 package com.example.location.functional;
 
 import com.example.location.api.system.EmitterManager;
+import com.example.location.api.system.Locator;
 import com.example.location.api.system.SensorManager;
 import com.example.location.internal.config.SystemConfiguration;
 import com.example.location.internal.config.LANSystemConfiguration;
@@ -54,6 +55,10 @@ public abstract class AbstractFunctionalTestCase {
 
     protected HttpLocationClient locationClient() {
         return this.locationSystemComponent.locationServiceClient();
+    }
+
+    protected Locator locator() {
+        return this.locationSystemComponent.locator();
     }
 
     protected String getServerUrl() {

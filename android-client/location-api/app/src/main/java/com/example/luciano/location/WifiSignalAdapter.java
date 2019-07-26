@@ -59,7 +59,7 @@ public class WifiSignalAdapter extends RecyclerView.Adapter<WifiSignalAdapter.Wi
             this.signalName.setText(scanResult.SSID);
             this.signalLevel.setText(format("%d dBm",scanResult.level));
 
-            double myDistance = computeDistance(scanResult.level, scanResult.frequency);
+            double myDistance = computeDistance(-23.0f , scanResult.level);
 
             this.signalDistance.setText(format("%.2f m",myDistance));
 

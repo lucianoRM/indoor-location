@@ -2,8 +2,10 @@ package com.example.location.internal.container;
 
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.api.entity.sensor.Sensor;
+import com.example.location.internal.entity.User;
 import com.example.location.internal.serialization.SensorSerializer;
 import com.example.location.internal.serialization.SignalEmitterSerializer;
+import com.example.location.internal.serialization.UserSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -21,6 +23,7 @@ public class GsonModule {
         return new GsonBuilder()
                 .registerTypeHierarchyAdapter(Sensor.class, new SensorSerializer())
                 .registerTypeHierarchyAdapter(SignalEmitter.class, new SignalEmitterSerializer())
+                .registerTypeHierarchyAdapter(User.class, new UserSerializer())
                 .create();
     }
 

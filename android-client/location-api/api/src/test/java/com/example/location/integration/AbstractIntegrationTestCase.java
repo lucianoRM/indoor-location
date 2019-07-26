@@ -1,6 +1,7 @@
 package com.example.location.integration;
 
 import com.example.location.api.data.Position;
+import com.example.location.internal.entity.User;
 import com.example.location.api.entity.emitter.SignalEmitter;
 import com.example.location.api.entity.sensor.Sensor;
 import com.example.location.functional.AbstractFunctionalTestCase;
@@ -10,12 +11,12 @@ import org.junit.Before;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import retrofit2.Call;
 
 import static com.example.location.internal.http.HttpCode.OK;
 import static com.example.location.internal.http.HttpCode.codeFrom;
@@ -144,12 +145,8 @@ public class AbstractIntegrationTestCase extends AbstractFunctionalTestCase {
         executeRequest(request);
     }
 
-    protected Position findMe() throws IOException {
-        Request request = new Request.Builder().url(getServerUrl() + USERS_ENDPOINT + "/" + USER_ID).get().build();
-        Response response = httpClient().newCall(request).execute();
-        Map user = getGson().fromJson(response.body().string(), Map.class);
-        Map<String, Double> position = (Map<String, Double>)user.get("position");
-        return new Position(position.get("x").floatValue(), position.get("y").floatValue());
+    protected Position findMe() {
+        return locator().getPosition();
     }
 
     protected Sensor getSensorFromServer(String id) throws IOException {
