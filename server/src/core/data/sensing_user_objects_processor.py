@@ -4,9 +4,8 @@ from src.core.data.sensed_object import SensedObject
 from src.core.data.sensed_objects_processor import SensedObjectsProcessor
 from src.core.emitter.signal_emitters_manager import SignalEmittersManager, UnknownSignalEmitterException
 from src.core.location.location_service import LocationService
-from src.core.location.simple_location_service import Anchor
+from src.core.location.reference_point import ReferencePoint
 from src.core.object.moving_object import MovingObject
-from src.core.object.static_objects_manager import UnknownStaticObjectException
 from src.core.sensor.sensors_manager import SensorsManager
 from src.core.user.users_manager import UsersManager
 
@@ -45,7 +44,7 @@ class SensingUserObjectsProcessor(SensedObjectsProcessor):
             try:
                 signal_emitter_owner = self.__signal_emitters_manager.get_owner(id)
                 anchor_objects.append(
-                    Anchor(position=signal_emitter_owner.position,
+                    ReferencePoint(position=signal_emitter_owner.position,
                            distance=sensed_object.data.distance,
                            timestamp=sensed_object.data.timestamp))
             except UnknownSignalEmitterException:

@@ -66,4 +66,7 @@ def create_app():
 
 
 if __name__ == '__main__':
+
+    #WARNING: THIS ONLY WORKS IF EXECUTED WITH `python api.py`
+    #OTHERWISE IT WILL USE DEFAULT VALUES
     create_app().run(host="0.0.0.0", port=8082, debug=True)

@@ -6,7 +6,7 @@ from src.core.data.sensed_objects_processor import SensedObjectsProcessor
 from src.core.database.kv_database import KeyDoesNotExistException, KVDatabase
 from src.core.emitter.signal_emitters_manager import SignalEmittersManager, UnknownSignalEmitterException
 from src.core.location.location_service import LocationService, LocationServiceException
-from src.core.location.simple_location_service import Anchor
+from src.core.location.reference_point import ReferencePoint
 from src.core.manager.kvdb_backed_manager import KVDBBackedManager
 from src.core.object.moving_objects_manager import MovingObjectsManager, UnknownMovingObjectException
 from src.core.sensor.sensor import Sensor
@@ -90,20 +90,20 @@ class SensingAnchorObjectsProcessor(KVDBBackedManager, SensedObjectsProcessor):
         for sensed_object in sensed_objects:
             sensed_object_id = sensed_object.id
             sensors_in_range = sensed_by.get(sensed_object_id, {})
-            anchors = []
+            reference_points = []
             for sensor_id in sensors_in_range:
                 sensor_owner = self.__sensor_manager.get_owner(sensor_id)
                 sensor = sensor_owner.get_sensor(sensor_id)
                 sensor_position = sensor_owner.position
                 sensed_moving_object = sensor.get_sensed_objects().get(sensed_object_id)
-                anchors.append(Anchor(
+                reference_points.append(ReferencePoint(
                     position=sensor_position,
                     distance=sensed_moving_object.data.distance,
                     timestamp=sensed_moving_object.data.timestamp
                 ))
             try:
                 signal_emitter_owner = self.__signal_emitters_manager.get_owner(sensed_object_id)
-                signal_emitter_owner.position = self.__location_service.locate_object(anchors=anchors)
+                signal_emitter_owner.position = self.__location_service.locate_object(reference_points=reference_points)
                 self.__moving_objects_manager.update_moving_object(object_id=signal_emitter_owner.id, object=signal_emitter_owner)
             except (UnknownSignalEmitterException, UnknownMovingObjectException):
                 # TODO: Check what to do in these situations

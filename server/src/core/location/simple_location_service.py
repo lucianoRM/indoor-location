@@ -1,6 +1,7 @@
-from typing import Tuple, List
+from typing import List
 
 from src.core.location.location_service import LocationService, LocationServiceException, NotEnoughPointsException
+from src.core.location.reference_point import ReferencePoint
 from src.core.location.shape.circle import Circle
 
 
@@ -9,7 +10,7 @@ class SimpleLocationService(LocationService):
     Simple implementation of a location service.
     """
 
-    def locate_object(self, anchors: List['Anchor']) -> List[float]:
+    def locate_object(self, reference_points: List[ReferencePoint]) -> List[float]:
         """
         Computes the position of an object based on other static objects and sensed distances.
         For locating the object, all sensing data will first be sorted by timestamp in descending order.
@@ -21,14 +22,14 @@ class SimpleLocationService(LocationService):
         :param anchor_objects: Other objects in range of the one being located and with an static position
         :return: approximate location of the sensed object
         """
-        if len(anchors) < 2:
+        if len(reference_points) < 2:
             raise NotEnoughPointsException("Not enough sensing points to locate object")
 
-        sorted_anchor_objects = sorted(anchors, key=lambda object: object.timestamp, reverse=True)
-        final_location_area = self.__get_location_area_intersection(sorted_anchor_objects.pop(0), sorted_anchor_objects.pop(0))
-        while(len(sorted_anchor_objects) != 0):
-            next_anchor_object = sorted_anchor_objects.pop(0)
-            location_area = Circle(center=next_anchor_object.position, radius=next_anchor_object.distance)
+        sorted_rps = sorted(reference_points, key=lambda object: object.timestamp, reverse=True)
+        final_location_area = self.__get_location_area_intersection(sorted_rps.pop(0), sorted_rps.pop(0))
+        while(len(sorted_rps) != 0):
+            next_rp = sorted_rps.pop(0)
+            location_area = Circle(center=next_rp.position, radius=next_rp.distance)
             location_area = final_location_area.intersection(location_area)
             if location_area.area == 0:
                 break
@@ -41,24 +42,3 @@ class SimpleLocationService(LocationService):
         circle1 = Circle(center=sensed_object1.position, radius=sensed_object1.distance)
         circle2 = Circle(center=sensed_object2.position, radius=sensed_object2.distance)
         return circle1.intersection(circle2)
-
-
-class Anchor:
-    """
-    Simple class to facilitate computing another object's location.
-    This class should store only required information in order for the SimpleLocationService to work
-    """
-
-    def __init__(self,
-                 position: Tuple[float, ...],
-                 distance : float,
-                 timestamp: int):
-        """
-        Create a new instance of an Anchor object
-        :param position: The position of the object
-        :param distance: The distance from that object
-        :param timestamp: timestamp for when that distance was computed
-        """
-        self.position = position
-        self.distance = distance
-        self.timestamp = timestamp
