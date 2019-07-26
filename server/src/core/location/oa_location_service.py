@@ -33,7 +33,7 @@ class OALocationService(LocationService):
                     'ftol':self.MAX_TOLERANCE,
                     'maxiter':self.MAX_ITERATIONS
                 })
-        return result.x
+        return tuple(result.x)
 
     def __compute_square_error(self, tmp_point, positions, distances):
         se = 0.0

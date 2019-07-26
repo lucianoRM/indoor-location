@@ -6,6 +6,7 @@ from src.core.data.sensing_anchor_objects_processor import SensingAnchorObjectsP
 from src.core.data.sensing_user_objects_processor import SensingUserObjectsProcessor
 from src.core.database.memory_kv_database import MemoryKVDatabase
 from src.core.emitter.default_signal_emitters_manager import DefaultSignalEmittersManager
+from src.core.location.oa_location_service import OALocationService
 from src.core.location.simple_location_service import SimpleLocationService
 from src.core.manager.default_positionable_objects_manager import PositionableObjectsManagerObserver
 from src.core.object.kvdb_moving_objects_manager import KVDBMovingObjectsManager
@@ -46,7 +47,7 @@ class DependencyContainer(DeclarativeContainer):
     anchor_schema = Singleton(AnchorSchema)
     signal_emitter_schema = Singleton(SignalEmitterSchema)
 
-    location_service = Singleton(SimpleLocationService)
+    location_service = Singleton(OALocationService)
 
     sensing_user_object_processor = Singleton(SensingUserObjectsProcessor,
                                               sensors_manager=sensors_manager,
