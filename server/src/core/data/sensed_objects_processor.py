@@ -12,6 +12,6 @@ class SensedObjectsProcessor:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def process_sensed_objects(self, sensor_id: str, sensed_objects : List[SensedObject]):
-        """Processes new sensed information from sensor with sensor_id"""
+    def process_sensed_objects(self, owner_id: str, sensor_id: str, sensed_objects : List[SensedObject], location_service : str = None):
+        """Processes new sensed information from sensor with sensor_id owned by owner"""
         raise NotImplementedError

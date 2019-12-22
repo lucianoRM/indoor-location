@@ -1,0 +1,250 @@
+#%RAML 1.0
+title: Indoor Location
+version: v1
+types:
+  Position:
+    type: object
+    properties:
+      x: number
+      y: number
+  Signal:
+    type: object
+  SignalEmitter:
+    type: object
+    properties:
+      id: string
+      name?: string
+      signal: Signal
+      position?: Position
+  Sensor:
+    type: object
+    properties:
+      id: number
+      name?: string
+      position?: Position
+  Anchor:
+    type: object
+    properties: 
+      id: string
+      name?: string
+      position: Position
+      sensors: Sensor[]
+      signal_emitters: SignalEmitter[]
+  User:
+    type: object
+    properties:
+      id: string
+      name?: string
+      position?: Position
+      sensors: Sensor[]
+      signal_emitters: SignalEmitter[]
+  SensingData:
+    type: object
+    properties:
+      distance: number
+      timestamp: number
+  SensedObject:
+    type: object
+    properties:
+      id: string
+      data: SensingData
+
+
+/users:
+  get:
+    description: Get all registered users
+    responses:
+      200:
+        body:
+          application/json:
+            type: User[]
+  post:
+    description: Register a new user
+    body:
+      application/json:
+        type: User
+    responses:
+      200:
+        description: User registered
+        body:
+          application/json:
+            type: User
+      409:
+        description: User already exists
+  /{userId}:
+    get:
+      description: Get user with id: userId
+      responses:
+        200:
+          body:
+            application/json:
+              type: User
+        404:
+          description: User with id: userId does not exist
+    /sensors:
+      get:
+        description: Get this user's sensors
+          responses:
+            200:
+              body:
+                application/json:
+                  type: Sensor[]
+      post:
+        description: Register a sensor in this user
+        body:
+          application/json:
+            type: Sensor
+      /{sensorId}:
+        get:
+          description: Get sensor with id from this user
+          responses:
+            200:
+              body:
+                application/json:
+                  type: Sensor
+        put:
+          description: Add sensed information from this sensor
+          body:
+            application/json:
+              type: SensedObject[]
+    /signal_emitters:
+      get:
+        description: Get this user's signal emitters
+        responses:
+          200:
+            body:
+              application/json:
+                type: SignalEmitter[]
+      post:
+        description: Register a new signal emitter in this user
+        body:
+          application/json:
+            type: SignalEmitter
+      /{emitterId}:
+        get:
+          description: Get the signal emitter with id: emitterId from this user
+          responses:
+            200:
+              body:
+                application/json:
+                  type: SignalEmitter
+/sensors:
+  get:
+    description: Get all registered sensors
+    responses:
+      200:
+        body:
+          application/json:
+            type: Sensor[]
+  /{sensorId}:
+    get:
+      description: Get sensor with id: sensorId
+      responses:
+        200:
+          body:
+            application/json:
+              type: Sensor
+        404:
+          description: Sensor with id: sesnorId does not exist
+/anchors:
+  get:
+    description: Get all registered anchors
+    responses:
+      200:
+        body:
+          application/json:
+            type: Anchor[]
+  post:
+    description: Register a new anchor
+    body:
+      application/json:
+        type: Anchor
+    responses:
+      200:
+        description: Anchor registered
+        body:
+          application/json:
+            type: Anchor
+      409:
+        description: Anchor already exists
+  /{anchorId}:
+    get:
+      description: Get anchor with id: anchorId
+      responses:
+        200:
+          body:
+            application/json:
+              type: Anchor
+        404:
+          description: Anchor with id: anchorId does not exist
+    /sensors:
+      get:
+        description: Get this anchor's sensors
+        responses:
+          200:
+            body:
+              application/json:
+                type: Sensor[]
+      post:
+        description: Register a sensor in this anchor
+        body:
+          application/json:
+            type: Sensor
+      /{sensorId}:
+        get:
+          description: Get sensor with id from this anchor
+          responses:
+            200:
+              body:
+                application/json:
+                  type: Sensor
+        put:
+          description: Add sensed information from this sensor
+          body:
+            application/json:
+              type: SensedObject[]
+    /signal_emitters:
+      get:
+        description: Get this anchor's signal emitters
+        responses:
+          200:
+            body:
+              application/json:
+                type: SignalEmitter[]
+      post:
+        description: Register a new signal emitter in this anchor
+        body:
+          application/json:
+            type: SignalEmitter
+      /{emitterId}:
+        get:
+          description: Get the signal emitter with id: emitterId from this anchor
+          responses:
+            200:
+              body:
+                application/json:
+                  type: SignalEmitter
+/signal_emitters:
+  get:
+    description: Get all registered signal emitters
+    responses:
+      200:
+        body:
+          application/json:
+            type: SignalEmitter[]
+  /{emitterId}:
+    get:
+      description: Get signal emitter with id: emitterId
+      responses:
+        200:
+          body:
+            application/json:
+              type: SignalEmitter
+        404:
+          description: Signal emitter with id: emitterId does not exist
+    /signal:
+      put:
+        description: Update this signal emitter's signal
+        body:
+          application/json:
+            type: Signal

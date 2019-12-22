@@ -8,6 +8,7 @@ from src.core.object.static_objects_manager import StaticObjectAlreadyExistsExce
 
 T = TypeVar("T", bound=StaticObject)
 
+
 class KVDBStaticObjectsManager(KVDBBackedManager, ObservableStaticObjectsManager):
     """StaticObject manager that stores information in a key-value database"""
 
@@ -20,16 +21,24 @@ class KVDBStaticObjectsManager(KVDBBackedManager, ObservableStaticObjectsManager
         """
         super().__init__(kv_database=kv_database)
 
-    def add_static_object(self,object_id: str, object: Generic[T]) -> T:
+    def add_static_object(self, object_id: str, object: Generic[T]) -> T:
+        key = self._build_complex_key(self.__STATIC_OBJECTS_POSITION_KEY, object_id)
         try:
             value_added = self._database.insert(
-                key=self._build_complex_key(self.__STATIC_OBJECTS_POSITION_KEY, object_id),
+                key=key,
                 value=object
             )
-            self._on_add(object_id=object_id, object=value_added)
-            return value_added
         except KeyAlreadyExistsException:
             raise StaticObjectAlreadyExistsException("Static object with id: " + object_id + " was already registered")
+
+        # update listeners
+        try:
+            self._on_add(object_id=object_id, object=value_added)
+            return value_added
+        except Exception as e:
+            # rollback
+            self._database.remove(key=key)
+            raise e
 
     def get_static_object(self, object_id: str) -> T:
         try:
@@ -40,26 +49,46 @@ class KVDBStaticObjectsManager(KVDBBackedManager, ObservableStaticObjectsManager
             raise UnknownStaticObjectException("A static object with id: " + object_id + " does not exist")
 
     def update_static_object(self, object_id: str, object: Generic[T]) -> T:
+        key = self._build_complex_key(self.__STATIC_OBJECTS_POSITION_KEY, object_id)
         try:
-            return self._database.update(
-                key=self._build_complex_key(self.__STATIC_OBJECTS_POSITION_KEY, object_id),
+            old_obj = self._database.retrieve(key=key)
+            object_updated = self._database.update(
+                key=key,
                 value=object
             )
         except KeyDoesNotExistException:
             raise UnknownStaticObjectException("A static object with id: " + object_id + " does not exist")
 
+        # update listeners
+        try:
+            self._on_update(object_id=object_id, old_obj=old_obj, new_obj=object_updated)
+            return object_updated
+        except Exception as e:
+            # rollback
+            self._database.update(key=key, value=old_obj)
+            raise e
+
     def remove_static_object(self, object_id: str) -> T:
+        key = self._build_complex_key(self.__STATIC_OBJECTS_POSITION_KEY, object_id)
         try:
             object_removed = self._database.remove(
-                key=self._build_complex_key(self.__STATIC_OBJECTS_POSITION_KEY, object_id)
+                key=key
             )
+        except KeyDoesNotExistException:
+            raise UnknownStaticObjectException(
+                "Attempting to remove a static object that does not exist. With ID: " + object_id)
+
+        # update listeners
+        try:
             self._on_remove(object_id=object_id, object=object_removed)
             return object_removed
-        except KeyDoesNotExistException:
-            raise UnknownStaticObjectException("Attempting to remove a static object that does not exist. With ID: " + object_id)
+        except Exception as e:
+            # rollback
+            self._database.insert(key=key, value=object_removed)
+            raise e
 
     def get_all_static_objects(self) -> List[T]:
         try:
-            return self._database.retrieve(key=self.__STATIC_OBJECTS_POSITION_KEY).values()
+            return list(self._database.retrieve(key=self.__STATIC_OBJECTS_POSITION_KEY).values())
         except KeyDoesNotExistException:
             return []

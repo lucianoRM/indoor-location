@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 from typing import List
 
 from src.core.emitter.signal_emitter import SignalEmitter
+from src.core.object.signal_emitter_aware_object import SignalEmitterAwareObject
 
 
 class SignalEmittersManager:
@@ -15,17 +16,6 @@ class SignalEmittersManager:
         super().__init__(**kwargs)
 
     @abstractmethod
-    def add_signal_emitter(self, signal_emitter_id: str, signal_emitter: SignalEmitter) -> SignalEmitter:
-        """
-        Add a new signal_emitter
-        :param signal_emitter_id: the signal emitter_id
-        :param signal_emitter: the signal emitter to add
-        :raise SignalEmitterAlreadyExistsException: if the signal emitter was already added
-        :return: the signal emitter added
-        """
-        raise NotImplementedError
-
-    @abstractmethod
     def get_signal_emitter(self, signal_emitter_id: str):
         """
         Get a signal emitter by id
@@ -36,23 +26,12 @@ class SignalEmittersManager:
         raise NotImplementedError
 
     @abstractmethod
-    def remove_signal_emitter(self, signal_emitter_id: str) -> SignalEmitter:
+    def get_owner(self, signal_emitter_id: str) -> SignalEmitterAwareObject:
         """
-        Remove an signal emitter by id
-        :param signal_emitter_id: The id to uniquely locate the signal emitter to remove
-        :raise: UnknownSignalEmitterException: If the signal emitter is not found
-        :return: The signal emitter with the given id
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    def update_signal_emitter(self, signal_emitter_id: str, signal_emitter: SignalEmitter) -> SignalEmitter:
-        """
-        Update an already existent signal emitter.
-        :param signal_emitter_id: The id of the signal emitter to be updated
-        :param signal_emitter: The new signal emitter that will replace the old one with new information
-        :raise: UnknownSignalEmitterException if no signal emitter is found with the given id.
-        :return: The new signal emitter updated
+        Get the object that owns this signal emitter
+        :param signal_emitter_id: the unique id of the signal emitter to get
+        :raise UnknownSignalEmitterException: if a signal emitter with that id does not exist
+        :return: The SignalEmitterAwareObject that holds the signal emitter with id: signal_emitter_id
         """
         raise NotImplementedError
 
@@ -63,7 +42,6 @@ class SignalEmittersManager:
         :return: all signal emitters
         """
         raise NotImplementedError
-
 
 
 class SignalEmittersManagerException(Exception):

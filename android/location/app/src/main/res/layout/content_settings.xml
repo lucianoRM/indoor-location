@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.location.activity.SettingsActivity"
+    tools:showIn="@layout/activity_settings_layout">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:layout_height="match_parent"
+            android:layout_margin="16sp">
+
+            <TextView
+                android:id="@+id/ipConfigTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:text="IP" />
+
+            <EditText
+                android:id="@+id/ipConfigEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="text"
+                android:hint="localhost" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_height="match_parent"
+            android:layout_margin="16sp">
+
+            <TextView
+                android:id="@+id/portConfigTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:text="PORT" />
+
+            <EditText
+                android:id="@+id/portConfigEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="numberDecimal"
+                android:hint="8082" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_height="match_parent"
+            android:layout_margin="16sp">
+
+            <TextView
+                android:id="@+id/mediumCoefTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:text="MEDIUM" />
+
+            <EditText
+                android:id="@+id/mediumCoefEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="4.0"
+                android:inputType="numberDecimal" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_height="match_parent"
+            android:layout_margin="16sp"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <Button
+                android:text="SAVE"
+                android:onClick="updateSettings"/>
+
+        </TableRow>
+
+    </TableLayout>
+</android.support.constraint.ConstraintLayout>

@@ -71,6 +71,7 @@ class UsersManagerException(Exception):
     """
     Root exception related to an UsersManager
     """
+    pass
 
 
 class UserAlreadyExistsException(UsersManagerException):

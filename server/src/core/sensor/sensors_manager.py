@@ -1,9 +1,11 @@
 from abc import ABCMeta, abstractmethod
 from typing import TypeVar, Generic, List
 
+from src.core.object.sensor_aware_object import SensorAwareObject
 from src.core.sensor.sensor import Sensor
 
 T = TypeVar('T', bound=Sensor)
+
 
 class SensorsManager:
     """
@@ -16,17 +18,6 @@ class SensorsManager:
         super().__init__(**kwargs)
 
     @abstractmethod
-    def add_sensor(self, sensor_id: str, sensor: Generic[T]) -> T:
-        """
-        Add a new sensor
-        :param sensor_id: the sensor_id
-        :param sensor: the sensor to add
-        :raise SensorAlreadyExistsException: if the sensor was already added
-        :return: the sensor added
-        """
-        raise NotImplementedError
-
-    @abstractmethod
     def get_sensor(self, sensor_id: str) -> T:
         """
         Get a sensor by id
@@ -37,23 +28,12 @@ class SensorsManager:
         raise NotImplementedError
 
     @abstractmethod
-    def remove_sensor(self, sensor_id: str) -> T:
+    def get_owner(self, sensor_id: str) -> SensorAwareObject:
         """
-        Remove an sensor by id
-        :param sensor_id: The id to uniquely locate the sensor to remove
-        :raise: UnkownSensorException: If the sensor is not found
-        :return: The sensor with the given id
-        """
-        raise NotImplementedError
-
-    @abstractmethod
-    def update_sensor(self, sensor_id:str, sensor: Generic[T]) -> T:
-        """
-        Update an already existent sensor.
-        :param sensor_id: The id of the sensor to be updated
-        :param sensor: The new sensor that will replace the old one with new information
-        :raise: UnknownSensorException if no sensor is found with the given id.
-        :return: The new sensor updated
+        Get the object that owns this sensor
+        :param sensor_id: the unique id of the sensor to get
+        :raise UnknownSensorException: if a sensor with that id does not exist
+        :return: The SensorAwareObject that holds the sensor with id: sensor_id
         """
         raise NotImplementedError
 
@@ -64,7 +44,6 @@ class SensorsManager:
         :return: all sensors
         """
         raise NotImplementedError
-
 
 
 class SensorManagerException(Exception):

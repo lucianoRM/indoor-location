@@ -1,19 +1,25 @@
-import json
-
-from api import SENSORS_ENDPOINT, USERS_ENDPOINT, SIGNAL_EMITTERS_ENDPOINT
+from api import SENSORS_ENDPOINT, USERS_ENDPOINT, SIGNAL_EMITTERS_ENDPOINT, ANCHORS_ENDPOINT
 from tests.integration.test_api import TestApi
 
 
 class TestLocation(TestApi):
 
-    def __add_sensor(self, sensor):
-        assert self._client().post(SENSORS_ENDPOINT, json=json.dumps(sensor)).status_code == 200
-
     def __add_user(self, user):
-        assert self._client().post(USERS_ENDPOINT, json=json.dumps(user)).status_code == 200
+        assert self._client().post(USERS_ENDPOINT, json=user).status_code == 200
+
+    def __add_anchor(self, anchor):
+        assert self._client().post(ANCHORS_ENDPOINT, json=anchor).status_code == 200
 
     def __add_signal_emitter(self, signal_emitter):
-        assert self._client().post(SIGNAL_EMITTERS_ENDPOINT, json=json.dumps(signal_emitter)).status_code == 200
+        assert self._client().post(SIGNAL_EMITTERS_ENDPOINT, json=signal_emitter).status_code == 200
+
+    def __update_sensor_in_user(self, user_id, sensor_id, data, service="simple"):
+        endpoint = USERS_ENDPOINT + "/" + user_id + SENSORS_ENDPOINT + "/" + sensor_id + "?location_service=" + service
+        assert self._client().put(endpoint, json=data).status_code == 200
+
+    def __update_sensor_in_anchor(self, anchor_id, sensor_id, data, service="simple"):
+        endpoint = ANCHORS_ENDPOINT + "/" + anchor_id + SENSORS_ENDPOINT + "/" + sensor_id + "?location_service=" + service
+        assert self._client().put(endpoint, json=data).status_code == 200
 
     def __assert_location(self, actual_location, expected_location, allowed_error=0.001):
         assert abs(actual_location['x'] - expected_location[0]) < allowed_error
@@ -21,286 +27,553 @@ class TestLocation(TestApi):
 
     def test_sensing_information_changes_location_on_emitter_user(self):
         #add static sensors
+        static_sensor_id1 = "sensor1"
+        static_sensor1 = {
+            "id": static_sensor_id1
+        }
 
-        sensor_id1 = "sensor1"
-        self.__add_sensor({
-            "id": sensor_id1,
-            "position": {
-                'x':0,
-                'y':0
+        anchor1 = {
+            "id" : "anchor1",
+            "position" : {
+                'x' : 0,
+                'y' : 0,
             },
-            "type": "ANCHOR"
-        })
+            "sensors" : {
+                static_sensor_id1 : static_sensor1
+            }
+        }
 
-        sensor_id2 = "sensor2"
-        self.__add_sensor({
-            "id": sensor_id2,
+        self.__add_anchor(anchor1)
+
+        static_sensor_id2 = "sensor2"
+        static_sensor2 = {
+            "id": static_sensor_id2
+        }
+
+        anchor2 = {
+            "id": "anchor2",
             "position": {
-                    'x':10,
-                    'y':0
-                },
-            "type": "ANCHOR"
-        })
+                'x': 10,
+                'y': 0,
+            },
+            "sensors": {
+                static_sensor_id2: static_sensor2
+            }
+        }
+
+        self.__add_anchor(anchor2)
+
+        moving_signal_emitter_id = "signal_emitter"
+        moving_signal_emitter = {
+            'id' : moving_signal_emitter_id
+        }
 
         #add users
         user_id = "user"
-        self.__add_user({
+        user = {
             "id": user_id,
             "position": {
-                    'x':0,
-                    'y':0
-                },
-            "type": "SIGNAL_EMITTER"
-        })
+                'x': 0,
+                'y': 0
+            },
+            'signal_emitters' : {
+                moving_signal_emitter_id : moving_signal_emitter
+            }
+        }
 
-        #update sensor information and check that user position changed
-        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id1, json=json.dumps(
-            [
+        self.__add_user(user)
+
+        sensed_objects = [
                 {
-                    'id': 'user',
+                    'id': moving_signal_emitter_id,
                     'data' : {
-                        'distance' : {
-                            'value' : 5,
-                            'unit' : 'm'
-                        },
+                        'distance' : 5,
                         'timestamp' : 1
                     }
                 }
             ]
-        ))
-        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id2, json=json.dumps(
-            [
+        #update sensor information and check that user position changed
+        self.__update_sensor_in_anchor(anchor1['id'], static_sensor_id1, sensed_objects)
+
+        sensed_objects = [
                 {
-                    'id': 'user',
+                    'id': moving_signal_emitter_id,
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 2
                     }
                 }
             ]
-        ))
+
+        self.__update_sensor_in_anchor(anchor2['id'], static_sensor_id2, sensed_objects)
 
         #get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
         assert res.status_code == 200
-        self.__assert_location(json.loads(res.get_json())["position"], (5,0))
+        self.__assert_location(res.get_json()["position"], (5,0))
 
     def test_sensing_information_changes_location_on_sensing_user(self):
         # add static signal emitters
-
         emitter_id1 = "emitter1"
-        self.__add_signal_emitter({
-            "id": emitter_id1,
+        anchor_id1 = "anchor1"
+        anchor1 = {
+            "id" : anchor_id1,
             "position": {
-                'x': 0,
-                'y': 0
+                'x':0,
+                'y':0
             },
-            "type": "ANCHOR"
-        })
+            "signal_emitters": {
+                emitter_id1 : {
+                    "id" : emitter_id1
+                }
+            }
+        }
+
+        self.__add_anchor(anchor1)
 
         emitter_id2 = "emitter2"
-        self.__add_signal_emitter({
-            "id": emitter_id2,
+        anchor_id2 = "anchor2"
+        anchor2 = {
+            "id": anchor_id2,
             "position": {
                 'x': 10,
                 'y': 0
             },
-            "type": "ANCHOR"
-        })
+            "signal_emitters": {
+                emitter_id2: {
+                    "id": emitter_id2
+                }
+            }
+        }
+
+        self.__add_anchor(anchor2)
+
+        emitter_id3 = "emitter3"
+        anchor_id3 = "anchor3"
+        anchor3 = {
+            "id": anchor_id3,
+            "position": {
+                'x': 5,
+                'y': 5
+            },
+            "signal_emitters": {
+                emitter_id3: {
+                    "id": emitter_id3
+                }
+            }
+        }
+
+        self.__add_anchor(anchor3)
 
         # add sensing user
         user_id = "user"
-        self.__add_user({
-            "id": user_id,
-            "position": {
-                'x': 0,
-                'y': 0
+        sensor_id = "sensor"
+        user = {
+            "id" : user_id,
+            "position" : {
+                'x':0,
+                'y':0
             },
-            "type": "SENSOR"
-        })
+            'sensors' : {
+                sensor_id : {
+                    'id' : sensor_id
+                }
+            }
+        }
+        self.__add_user(user)
 
-        # update sensor information and check that user position changed
-        self._client().put(SENSORS_ENDPOINT + "/" + user_id, json=json.dumps(
-            [
+        sensed_objects = [
                 {
                     'id': emitter_id1,
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 1
                     }
                 },
                 {
                     'id': emitter_id2,
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
+                        'timestamp': 1
+                    }
+                },
+                {
+                    'id': emitter_id3,
+                    'data': {
+                        'distance': 5,
                         'timestamp': 1
                     }
                 }
 
             ]
-        ))
+
+        # update sensor information and check that user position changed
+        self.__update_sensor_in_user(user_id, sensor_id, sensed_objects)
 
         # get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
         assert res.status_code == 200
-        self.__assert_location(json.loads(res.get_json())["position"], (5, 0))
+        self.__assert_location(res.get_json()["position"], (5, 0.574))
 
     def test_noise_in_sensed_information_static_sensor(self):
+        anchor_id1 = "anchor1"
         sensor_id1 = "sensor1"
-        self.__add_sensor({
-            "id": sensor_id1,
-            "position": {
+        anchor1 = {
+            "id": anchor_id1,
+            "position" : {
                 'x': 0,
-                'y': 0
+                'y': 0,
             },
-            "type": "ANCHOR"
-        })
+            "sensors" : {
+                sensor_id1: {
+                    "id" : sensor_id1
+                }
+            }
+        }
 
+        self.__add_anchor(anchor1)
+
+        anchor_id2 = "anchor2"
         sensor_id2 = "sensor2"
-        self.__add_sensor({
-            "id": sensor_id2,
+        anchor2 = {
+            "id": anchor_id2,
             "position": {
                 'x': 10,
-                'y': 0
+                'y': 0,
             },
-            "type": "ANCHOR"
-        })
+            "sensors": {
+                sensor_id2: {
+                    "id": sensor_id2
+                }
+            }
+        }
+
+        self.__add_anchor(anchor2)
 
         # add users
         user_id = "user"
-        self.__add_user({
-            "id": user_id,
-            "position": {
-                'x': 0,
-                'y': 0
+        signal_emitter_id = "signal_emitter"
+        user = {
+            "id" : user_id,
+            "position" : {
+                'x' : 0,
+                'y' : 0,
             },
-            "type": "SIGNAL_EMITTER"
-        })
+            "signal_emitters" : {
+                signal_emitter_id : {
+                    'id' : signal_emitter_id
+                }
+            }
+        }
+        self.__add_user(user)
 
-        # update sensor information and check that user position changed
-        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id1, json=json.dumps(
-            [
+        sensed_objects = [
                 {
-                    'id': 'user',
+                    'id': signal_emitter_id,
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 1
                     }
                 }, {
                     'id': 'idontexist',
                     'data' : {
-                        'distance': {
-                            'value' : 1000,
-                            'unit' : 'm'
-                        },
+                        'distance': 1000,
                         'timestamp' :20
                     }
                 }
             ]
-        ))
-        self._client().put(SENSORS_ENDPOINT + "/" + sensor_id2, json=json.dumps(
-            [
+
+        # update sensor information and check that user position changed
+        self.__update_sensor_in_anchor(anchor_id1, sensor_id1, sensed_objects)
+
+        sensed_objects = [
                 {
-                    'id': 'user',
+                    'id': signal_emitter_id,
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 2
                     }
                 }
             ]
-        ))
+
+        self.__update_sensor_in_anchor(anchor_id2, sensor_id2, sensed_objects)
 
         # get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
         assert res.status_code == 200
-        self.__assert_location(json.loads(res.get_json())["position"], (5, 0))
+        self.__assert_location(res.get_json()["position"], (5, 0))
 
     def test_sensing_information_changes_location_on_moving_sensor(self):
         # add static signal emitters
 
         emitter_id1 = "emitter1"
-        self.__add_signal_emitter({
-            "id": emitter_id1,
-            "position": {
-                'x': 0,
-                'y': 0
+        anchor_id1 = "anchor1"
+        anchor1 = {
+            "id" : anchor_id1,
+            "position" : {
+                'x' : 0,
+                'y' : 0
             },
-            "type": "ANCHOR"
-        })
+            'signal_emitters' : {
+                emitter_id1 : {
+                    'id' : emitter_id1
+                }
+            }
+        }
+
+        self.__add_anchor(anchor1)
 
         emitter_id2 = "emitter2"
-        self.__add_signal_emitter({
-            "id": emitter_id2,
+        anchor_id2 = "anchor2"
+        anchor2 = {
+            "id": anchor_id2,
             "position": {
                 'x': 10,
                 'y': 0
             },
-            "type": "ANCHOR"
-        })
+            'signal_emitters': {
+                emitter_id2: {
+                    'id': emitter_id2
+                }
+            }
+        }
+
+        self.__add_anchor(anchor2)
 
         # add sensing user
         user_id = "user"
-        self.__add_user({
-            "id": user_id,
-            "position": {
-                'x': 0,
-                'y': 0
+        sensor_id = "sensor"
+        user = {
+            "id" : user_id,
+            "position" : {
+                'x' : 0,
+                'y' : 0
             },
-            "type": "SENSOR"
-        })
+            'sensors': {
+                sensor_id : {
+                    "id" : sensor_id
+                }
+            }
+        }
 
-        # update sensor information and check that user position changed
-        self._client().put(SENSORS_ENDPOINT + "/" + user_id, json=json.dumps(
-            [
+        self.__add_user(user)
+
+        sensed_objects = [
                 {
                     'id': emitter_id1,
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 1
                     }
                 },
                 {
                     'id': emitter_id2,
                     'data': {
-                        'distance': {
-                            'value': 5,
-                            'unit': 'm'
-                        },
+                        'distance': 5,
                         'timestamp': 1
                     }
                 }, {
                     'id': 'noise',
                     'data' : {
-                        'distance' : {
-                            'value' : -1000,
-                            'unit': 'km'
-                        },
+                        'distance' : -1000000,
                         'timestamp': 45
                     }
                 }
 
             ]
-        ))
+
+        # update sensor information and check that user position changed
+        self.__update_sensor_in_user(user_id, sensor_id, sensed_objects)
 
         # get user and check position
         res = self._client().get(USERS_ENDPOINT + "/" + user_id)
         assert res.status_code == 200
-        self.__assert_location(json.loads(res.get_json())["position"], (5, 0))
+        self.__assert_location(res.get_json()["position"], (5, 0))
+
+    def test_less_than_required_sensing_points_still_returns_200(self):
+        # add static signal emitters
+
+        emitter_id = "emitter1"
+        anchor_id = "anchor1"
+        anchor = {
+            "id": anchor_id,
+            "position": {
+                'x': 0,
+                'y': 0
+            },
+            'signal_emitters': {
+                emitter_id: {
+                    'id': emitter_id
+                }
+            }
+        }
+        self.__add_anchor(anchor)
+
+        # add sensing user
+        user_id = "user"
+        sensor_id = "sensor"
+        user = {
+            "id": user_id,
+            "position": {
+                'x': 0,
+                'y': 0
+            },
+            'sensors': {
+                sensor_id: {
+                    "id": sensor_id
+                }
+            }
+        }
+
+        self.__add_user(user)
+
+        sensed_objects = [
+                {
+                    'id': emitter_id,
+                    'data': {
+                        'distance': 5,
+                        'timestamp': 1
+                    }
+                }
+            ]
+
+        # update sensor information and check that user position changed
+        self.__update_sensor_in_user(user_id, sensor_id, sensed_objects)
+
+    def test_wrong_location_service(self):
+        user_id = "user"
+        sensor_id = "sensor"
+        user = {
+            "id": user_id,
+            "position": {
+                'x': 0,
+                'y': 0
+            },
+            'sensors': {
+                sensor_id: {
+                    "id": sensor_id
+                }
+            }
+        }
+
+        self.__add_user(user)
+        endpoint = USERS_ENDPOINT + "/" + user_id + SENSORS_ENDPOINT + "/" + sensor_id + "?location_service=missing_service"
+        assert self._client().put(endpoint, json=[]).status_code == 404
+        assert "Location service with key: missing_service" in str(self._client().put(endpoint, json=[]).get_json())
+
+    def test_multiple_services(self):
+        # add static signal emitters
+        emitter_id1 = "emitter1"
+        anchor_id1 = "anchor1"
+        anchor1 = {
+            "id": anchor_id1,
+            "position": {
+                'x': 0,
+                'y': 0
+            },
+            "signal_emitters": {
+                emitter_id1: {
+                    "id": emitter_id1
+                }
+            }
+        }
+
+        self.__add_anchor(anchor1)
+
+        emitter_id2 = "emitter2"
+        anchor_id2 = "anchor2"
+        anchor2 = {
+            "id": anchor_id2,
+            "position": {
+                'x': 10,
+                'y': 0
+            },
+            "signal_emitters": {
+                emitter_id2: {
+                    "id": emitter_id2
+                }
+            }
+        }
+
+        self.__add_anchor(anchor2)
+
+        emitter_id3 = "emitter3"
+        anchor_id3 = "anchor3"
+        anchor3 = {
+            "id": anchor_id3,
+            "position": {
+                'x': 5,
+                'y': 5
+            },
+            "signal_emitters": {
+                emitter_id3: {
+                    "id": emitter_id3
+                }
+            }
+        }
+
+        self.__add_anchor(anchor3)
+
+        # add sensing user
+        user_id = "user"
+        sensor_id = "sensor"
+        user = {
+            "id": user_id,
+            "position": {
+                'x': 0,
+                'y': 0
+            },
+            'sensors': {
+                sensor_id: {
+                    'id': sensor_id
+                }
+            }
+        }
+        self.__add_user(user)
+
+        sensed_objects = [
+            {
+                'id': emitter_id1,
+                'data': {
+                    'distance': 5,
+                    'timestamp': 1
+                }
+            },
+            {
+                'id': emitter_id2,
+                'data': {
+                    'distance': 5,
+                    'timestamp': 1
+                }
+            },
+            {
+                'id': emitter_id3,
+                'data': {
+                    'distance': 5,
+                    'timestamp': 1
+                }
+            }
+
+        ]
+
+        self.__update_sensor_in_user(user_id, sensor_id, sensed_objects, "simple")
+        res = self._client().get(USERS_ENDPOINT + "/" + user_id)
+        assert res.status_code == 200
+        pos1 = res.get_json()["position"]
+
+        self.__update_sensor_in_user(user_id, sensor_id, sensed_objects, "optimized")
+        res = self._client().get(USERS_ENDPOINT + "/" + user_id)
+        assert res.status_code == 200
+        pos2 = res.get_json()["position"]
+
+        self.__update_sensor_in_user(user_id, sensor_id, sensed_objects, "geometric")
+        res = self._client().get(USERS_ENDPOINT + "/" + user_id)
+        assert res.status_code == 200
+        pos3 = res.get_json()["position"]
+
+        assert pos1 != pos2
+        assert pos2 != pos3
+        assert pos1 != pos3
+
+
+

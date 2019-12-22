@@ -6,7 +6,7 @@ from shapely.geometry import Point, Polygon
 
 class Circle(Polygon):
 
-    __NUMBER_OF_POINTS = 50
+    __NUMBER_OF_POINTS = 20
 
     def __get_polygon_points(self, center: Tuple[float], radius: float) -> Polygon:
         step_rotation_angle = 360/self.__NUMBER_OF_POINTS
@@ -20,4 +20,9 @@ class Circle(Polygon):
 
 
     def __init__(self, center: Tuple[float], radius: float):
+        self.__radius = radius
         super().__init__(shell=self.__get_polygon_points(center, radius))
+
+    @property
+    def radius(self):
+        return self.__radius

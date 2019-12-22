@@ -7,7 +7,6 @@ class PositionableObject(Object):
     """
     Abstract class to model an object that can be located within the system
     """
-
     __metaclass__ = ABCMeta
 
     @abstractmethod

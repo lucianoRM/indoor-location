@@ -8,59 +8,26 @@ from src.core.object.static_object import StaticObject
 from src.core.sensor.sensor import Sensor
 from src.core.user.user import User
 
-
-class TestStaticSensor(StaticObject, Sensor):
+class FakeAnchor(Anchor):
     def __init__(self, id, position, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
 
-    def __eq__(self, other):
-        return self.name == other.name
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-class TestMovingSensor(MovingObject, Sensor):
+class FakeStaticObject(StaticObject):
     def __init__(self, id, position, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
 
-    def __eq__(self, other):
-        return self.name == other.name
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-class TestStaticSignalEmitter(StaticObject, SignalEmitter):
+class FakeMovingObject(MovingObject):
     def __init__(self, id, position, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
 
-    def __eq__(self, other):
-        return self.name == other.name
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-class TestMovingSignalEmitter(MovingObject, SignalEmitter):
+class FakeUser(User):
     def __init__(self, id, position, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
 
-    def __eq__(self, other):
-        return self.name == other.name
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-class TestAnchor(Anchor):
-    def __init__(self, id, position, **kwargs):
+class FakeSensor(Sensor):
+    def __init__(self, id, position=None, **kwargs):
         super().__init__(id=id, position=position, **kwargs)
 
-class TestStaticObject(StaticObject):
-    def __init__(self, id, position, **kwargs):
-        super().__init__(id=id, position=position, **kwargs)
-
-class TestMovingObject(MovingObject):
-    def __init__(self, id, position, **kwargs):
-        super().__init__(id=id, position=position, **kwargs)
-
-class TestUser(User):
-    def __init__(self, id, position, **kwargs):
-        super().__init__(id=id, position=position, **kwargs)
+class FakeSignalEmitter(SignalEmitter):
+    def __init__(self, id, signal=None, position=None, **kwargs):
+        super().__init__(id=id, signal=signal, position=position, **kwargs)

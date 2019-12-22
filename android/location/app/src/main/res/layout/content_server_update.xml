@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.location.activity.ServerUpdateActivity"
+    tools:showIn="@layout/activity_server_update">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="REGISTER ANCHOR" />
+
+    </TableRow>
+
+    <TableRow
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="8">
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:id="@+id/registerAnchorIdText"
+            android:layout_weight="2"
+            android:hint="ID"/>
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:inputType="numberDecimal"
+            android:layout_weight="1"
+            android:id="@+id/registerAnchorXText"
+            android:hint="X"/>
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:inputType="numberDecimal"
+            android:layout_weight="1"
+            android:id="@+id/registerAnchorYText"
+            android:hint="Y"/>
+        <Button
+            android:id="@+id/anchorRegisterButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="ADD"
+            android:onClick="registerAnchor"/>
+        <Button
+            android:id="@+id/deleteAnchorButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="DELETE"
+            android:onClick="deleteAnchor"/>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ADD SIGNAL EMITTER" />
+
+    </TableRow>
+
+    <TableRow
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:id="@+id/addSignalEmitterAnchorIdText"
+            android:hint="ANCHOR ID"/>
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:id="@+id/addSignalEmitteIdText"
+            android:hint="ID"/>
+
+        <Button
+            android:id="@+id/addSignalEmitterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ADD"
+            android:onClick="registerSignalEmitter"/>
+    </TableRow>
+
+</TableLayout>

@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">location</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_wifi_signal_view">WifiSignalViewActivity</string>
+    <string name="title_activity_server_update">ServerUpdateActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_ble_calibration">BleCalibrationActivity</string>
+    <string name="title_activity_map">MapActivity</string>
+</resources>

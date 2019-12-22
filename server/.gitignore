@@ -15,3 +15,5 @@ venv3/
 
 #idea
 \.idea/
+
+server.log

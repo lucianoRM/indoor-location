@@ -1,4 +1,3 @@
-import json
 from abc import ABCMeta
 from copy import deepcopy
 
@@ -27,7 +26,7 @@ class TestApi:
         pass
 
     def assert_response(self, response, expected_value, ignore_fields=[]):
-        loaded_value = json.loads(response.get_json())
+        loaded_value = response.get_json(force=True)
         self.__assert_values(loaded_value, expected_value, ignore_fields)
 
     def __assert_values(self, real_object, expected_object, ignore_fields=[], sort_lists=True):
@@ -58,7 +57,12 @@ class TestApi:
 
     def __get_object_key_for_sorting(self, object):
         if isinstance(object, dict):
-            return "".join(object.keys())
+            keys = object.keys()
+            keys = sorted(keys)
+            first_value = ""
+            if len(keys) > 0:
+                first_value = object[keys[0]]
+            return str(first_value)
         return object
 
     def test_check_value_simple_object(self):

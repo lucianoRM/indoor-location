@@ -1,6 +1,8 @@
 from abc import ABCMeta
 from typing import List, Tuple
 
+from src.core.location.reference_point import ReferencePoint
+
 
 class LocationService:
     """
@@ -10,7 +12,7 @@ class LocationService:
 
     __metaclass__ = ABCMeta
 
-    def locate_object(self, anchors: List['AnchorObject']) -> Tuple[float]:
+    def locate_object(self, reference_points: List[ReferencePoint]) -> Tuple[float]:
         raise NotImplementedError
 
 
@@ -18,3 +20,10 @@ class LocationServiceException(Exception):
     """
     Base exception to raise from a location service.
     """
+    pass
+
+class NotEnoughPointsException(LocationServiceException):
+    """
+    There are not enough sensing points to properly locate the object
+    """
+    pass

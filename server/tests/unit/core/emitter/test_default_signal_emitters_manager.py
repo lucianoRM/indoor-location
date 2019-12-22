@@ -1,5 +1,3 @@
-
-
 from pytest import fixture, raises
 
 from src.core.database.memory_kv_database import MemoryKVDatabase
@@ -8,67 +6,141 @@ from src.core.emitter.signal_emitters_manager import SignalEmitterAlreadyExistsE
 from src.core.manager.default_positionable_objects_manager import PositionableObjectsManagerObserver
 from src.core.object.kvdb_moving_objects_manager import KVDBMovingObjectsManager
 from src.core.object.kvdb_static_objects_manager import KVDBStaticObjectsManager
-from tests.unit.test_implementations.implementations import TestStaticSignalEmitter, TestMovingSignalEmitter
+from tests.unit.test_implementations.implementations import FakeAnchor, FakeUser, FakeSignalEmitter
 
 
 class TestDefaultSignalEmittersManager:
-
     __STATIC_SIGNAL_EMITTER_ID = "static_signal_emitter_id"
     __MOVING_SIGNAL_EMITTER_ID = "moving_signal_emitter_id"
 
     @fixture(autouse=True)
     def setUp(self):
-        self.__test_static_signal_emitter = TestStaticSignalEmitter(id=self.__STATIC_SIGNAL_EMITTER_ID, position=None)
-        self.__test_moving_signal_emitter = TestMovingSignalEmitter(id=self.__MOVING_SIGNAL_EMITTER_ID, position=None)
         db = MemoryKVDatabase()
-        self.__signal_emitters_manager = DefaultSignalEmittersManager(
-            PositionableObjectsManagerObserver(
-                observable_static_objects_manager=KVDBStaticObjectsManager(kv_database=db),
-                observable_moving_objects_manager=KVDBMovingObjectsManager(kv_database=db)
-            )
-        )
 
-    def test_add_signal_emitter(self):
-        self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=self.__MOVING_SIGNAL_EMITTER_ID, signal_emitter=self.__test_moving_signal_emitter)
-        self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=self.__STATIC_SIGNAL_EMITTER_ID, signal_emitter=self.__test_static_signal_emitter)
-        assert self.__signal_emitters_manager.get_signal_emitter(self.__STATIC_SIGNAL_EMITTER_ID) == self.__test_static_signal_emitter
-        assert self.__signal_emitters_manager.get_signal_emitter(self.__MOVING_SIGNAL_EMITTER_ID) == self.__test_moving_signal_emitter
+        self.__fake_static_object_id = "static_object"
+        self.__fake_static_object = FakeAnchor(self.__fake_static_object_id, "position")
+
+        self.__fake_moving_object_id = "moving_object"
+        self.__fake_moving_object = FakeUser(self.__fake_moving_object_id, "position")
+
+        self.__static_objects_manager = KVDBStaticObjectsManager(kv_database=db)
+        self.__moving_objects_manager = KVDBMovingObjectsManager(kv_database=db)
+        observer = PositionableObjectsManagerObserver(
+            observable_static_objects_manager=self.__static_objects_manager,
+            observable_moving_objects_manager=self.__moving_objects_manager
+        )
+        self.__signal_emitters_manager = DefaultSignalEmittersManager(objects_manager=observer)
+
+    def test_add_static_object_and_get_signal_emitters(self):
+        s1_id = "s1"
+        s1 = FakeSignalEmitter(s1_id)
+        s2_id = "s2"
+        s2 = FakeSignalEmitter(s2_id)
+
+        self.__fake_static_object.add_signal_emitter(s1_id, s1)
+        self.__fake_static_object.add_signal_emitter(s2_id, s2)
+        self.__static_objects_manager.add_static_object(object_id=self.__fake_static_object_id,
+                                                        object=self.__fake_static_object)
+
+        assert self.__signal_emitters_manager.get_signal_emitter(s1_id) == s1
+        assert self.__signal_emitters_manager.get_signal_emitter(s2_id) == s2
+        all_signal_emitters = self.__signal_emitters_manager.get_all_signal_emitters()
+        assert s1 in all_signal_emitters
+        assert s2 in all_signal_emitters
+
+    def test_add_moving_object_and_get_signal_emitters(self):
+        s1_id = "s1"
+        s1 = FakeSignalEmitter(s1_id)
+        s2_id = "s2"
+        s2 = FakeSignalEmitter(s2_id)
+
+        self.__fake_moving_object.add_signal_emitter(s1_id, s1)
+        self.__fake_moving_object.add_signal_emitter(s2_id, s2)
+        self.__moving_objects_manager.add_moving_object(object_id=self.__fake_moving_object_id,
+                                                        object=self.__fake_moving_object)
+
+        assert self.__signal_emitters_manager.get_signal_emitter(s1_id) == s1
+        assert self.__signal_emitters_manager.get_signal_emitter(s2_id) == s2
+        all_signal_emitters = self.__signal_emitters_manager.get_all_signal_emitters()
+        assert s1 in all_signal_emitters
+        assert s2 in all_signal_emitters
 
     def test_add_signal_emitter_with_same_id(self):
-        self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=self.__STATIC_SIGNAL_EMITTER_ID, signal_emitter=self.__test_static_signal_emitter)
-        sameIdSensor = TestStaticSignalEmitter(id=self.__STATIC_SIGNAL_EMITTER_ID, position=None)
-        with raises(SignalEmitterAlreadyExistsException):
-            self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=self.__STATIC_SIGNAL_EMITTER_ID, signal_emitter=sameIdSensor)
+        s1_id = "s1"
+        s1 = FakeSignalEmitter(id=s1_id)
 
-    def test_add_multiple_signal_emitters_and_get_all(self):
+        self.__fake_moving_object.add_signal_emitter(s1_id, s1)
+        self.__fake_static_object.add_signal_emitter(s1_id, s1)
+
+        self.__moving_objects_manager.add_moving_object(object_id=self.__fake_moving_object_id,
+                                                        object=self.__fake_moving_object)
+
+        with raises(SignalEmitterAlreadyExistsException):
+            self.__static_objects_manager.add_static_object(object_id=self.__fake_static_object_id,
+                                                            object=self.__fake_static_object)
+
+        assert not self.__static_objects_manager.get_all_static_objects()
+
+    def test_add_multiple_objects_and_get_all_signal_emitters(self):
         all_signal_emitters = []
-        for i in range(100):
-            id = str(i)
-            signal_emitter = TestStaticSignalEmitter(id=id, position=None) if i % 2 == 0 else TestMovingSignalEmitter(id=id, position=None)
-            all_signal_emitters.append(signal_emitter)
-            self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=id, signal_emitter=signal_emitter)
+        for i in range(0, 100):
+            moving_object_id = str(i)
+            moving_signal_emitter_id = str(100 + i)
+            static_object_id = str(200 + i)
+            static_signal_emitter_id = str(300 + i)
+
+            user = FakeUser(id=moving_object_id, position=None)
+            user_signal_emitter = FakeSignalEmitter(id=moving_signal_emitter_id)
+            user.add_signal_emitter(moving_signal_emitter_id, user_signal_emitter)
+
+            self.__moving_objects_manager.add_moving_object(moving_signal_emitter_id, user)
+
+            anchor = FakeAnchor(id=static_object_id, position=None)
+            anchor_signal_emitter = FakeSignalEmitter(id=static_signal_emitter_id)
+            anchor.add_signal_emitter(static_signal_emitter_id, anchor_signal_emitter)
+
+            self.__static_objects_manager.add_static_object(static_object_id, anchor)
+
+            all_signal_emitters.append(anchor_signal_emitter)
+            all_signal_emitters.append(user_signal_emitter)
+
         retrieved_signal_emitters = self.__signal_emitters_manager.get_all_signal_emitters()
         for signal_emitter in all_signal_emitters:
             assert signal_emitter in retrieved_signal_emitters
-
-    def test_remove_signal_emitter_and_try_get_it(self):
-        self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=self.__STATIC_SIGNAL_EMITTER_ID, signal_emitter=self.__test_static_signal_emitter)
-        assert self.__signal_emitters_manager.get_signal_emitter(self.__STATIC_SIGNAL_EMITTER_ID) == self.__test_static_signal_emitter
-        self.__signal_emitters_manager.remove_signal_emitter(self.__STATIC_SIGNAL_EMITTER_ID)
-        with raises(UnknownSignalEmitterException):
-            self.__signal_emitters_manager.get_signal_emitter(signal_emitter_id=self.__STATIC_SIGNAL_EMITTER_ID)
 
     def test_get_signal_emitter_from_empty_db(self):
         with raises(UnknownSignalEmitterException):
             self.__signal_emitters_manager.get_signal_emitter(signal_emitter_id=self.__STATIC_SIGNAL_EMITTER_ID)
 
-    def test_update_signal_emitter(self):
-        self.__signal_emitters_manager.add_signal_emitter(self.__STATIC_SIGNAL_EMITTER_ID, self.__test_static_signal_emitter)
-        newSensor = TestStaticSignalEmitter(id=self.__STATIC_SIGNAL_EMITTER_ID, position="newPosition")
-        self.__signal_emitters_manager.update_signal_emitter(self.__STATIC_SIGNAL_EMITTER_ID,
-                                                             newSensor)
-        assert self.__signal_emitters_manager.get_signal_emitter(self.__STATIC_SIGNAL_EMITTER_ID) == newSensor
+    def test_update_object_changes_signal_emitter_on_static_object(self):
+        s1_id = "s1"
+        s1 = FakeSignalEmitter(s1_id, signal="version1")
 
-    def test_update_not_existent_signal_emitter(self):
-        with raises(UnknownSignalEmitterException):
-            self.__signal_emitters_manager.update_signal_emitter(signal_emitter_id="missingSensorId", signal_emitter={})
+        so_id = "static_object"
+        static_object = FakeAnchor(id=so_id, position=None)
+        static_object.add_signal_emitter(s1_id, s1)
+        self.__static_objects_manager.add_static_object(so_id, static_object)
+
+        assert self.__signal_emitters_manager.get_signal_emitter(s1_id) == s1
+
+        s2 = FakeSignalEmitter(s1_id, signal="version2")
+        static_object = FakeAnchor(id=so_id, position=None)
+        static_object.add_signal_emitter(s1_id, s2)
+        self.__static_objects_manager.update_static_object(so_id, static_object)
+
+        assert self.__signal_emitters_manager.get_signal_emitter(s1_id) == s2
+
+    def test_update_object_with_new_se(self):
+        so_id = "static_object"
+        static_object = FakeAnchor(id=so_id, position=None)
+        self.__static_objects_manager.add_static_object(so_id, static_object)
+
+        assert not self.__signal_emitters_manager.get_all_signal_emitters()
+
+        se_id = "se_id"
+        se = FakeSignalEmitter(se_id)
+        static_object = FakeAnchor(id=so_id, position=None)
+        static_object.add_signal_emitter(se_id, se)
+        self.__static_objects_manager.update_static_object(so_id, static_object)
+
+        assert self.__signal_emitters_manager.get_signal_emitter(se_id) == se

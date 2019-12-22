@@ -1,5 +1,6 @@
 
 from copy import deepcopy
+from threading import RLock
 from typing import List, Generic, TypeVar
 
 from src.core.database.kv_database import KeyDoesNotExistException, KVDatabase, KeyAlreadyExistsException
@@ -16,6 +17,7 @@ class MemoryKVDatabase(KVDatabase):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.__database = {}
+        self.__db_lock = RLock()
 
     def __get_keys(self, key: str) -> List[str]:
         if not isinstance(key, str):
@@ -62,23 +64,29 @@ class MemoryKVDatabase(KVDatabase):
         return value
 
     def insert(self, key: str, value: Generic[T], **kwargs) -> T:
-        createMissingKeys = kwargs.get(self.__CREATE_MISSING_KEYS_ARG, True)
-        return self.__insert(key, value, createMissingKeys=createMissingKeys, failIfPresent=True)
+        with self.__db_lock:
+            return self.__insert(key, value, createMissingKeys=True, failIfPresent=True)
 
     def update(self, key: str, value: Generic[T], **kwargs) -> T:
-        if self.__has_key(key):
-            return self.upsert(key, value, createMissingKeys=False, failIfPresent=False)
-        raise KeyDoesNotExistException("The key: " + key + " does not exists in the DB")
+        with self.__db_lock:
+            if self.__has_key(key):
+                return self.upsert(key, value, createMissingKeys=False, failIfPresent=False)
+            raise KeyDoesNotExistException("The key: " + key + " does not exists in the DB")
 
     def upsert(self, key: str, value: Generic[T], **kwargs) -> T:
-        createMissingKeys = kwargs.get(self.__CREATE_MISSING_KEYS_ARG, True)
-        return self.__insert(key, value, createMissingKeys=createMissingKeys, failIfPresent=False)
+        with self.__db_lock:
+            return self.__insert(key, value, createMissingKeys=True, failIfPresent=False)
 
     def retrieve(self, key: str, **kwargs) -> T:
-        return deepcopy(self.__retrieve(self.__get_keys(key)))
+        with self.__db_lock:
+            return deepcopy(self.__retrieve(self.__get_keys(key)))
 
     def remove(self, key: str, **kwargs) -> T:
-        keys = self.__get_keys(key)
-        last_key = keys[-1]
-        last_dicc = self.__retrieve(keys[:-1:])
-        return deepcopy(last_dicc.pop(last_key))
+        with self.__db_lock:
+            keys = self.__get_keys(key)
+            last_key = keys[-1]
+            last_dicc = self.__retrieve(keys[:-1:])
+            if not last_dicc: #is empty
+                raise KeyDoesNotExistException(
+                    'The key: \'' + key + '\' is not present in the DB')
+            return deepcopy(last_dicc.pop(last_key))

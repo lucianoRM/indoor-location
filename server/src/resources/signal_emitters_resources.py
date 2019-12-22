@@ -1,66 +1,106 @@
+from abc import ABCMeta, abstractmethod
 
-from src.core.anchor.signal_emitting_anchor import SignalEmittingAnchor
-from src.core.user.signal_emitting_user import SignalEmittingUser
-from src.core.user.user import User
 from src.dependency_container import DependencyContainer
+from src.resources.abstract_owned_object_resource import AbstractOwnedObjectResource
 from src.resources.abstract_resource import AbstractResource
-from src.resources.schemas.typed_object_schema import TypedObjectSchema
 
+from src.resources.schemas.serializer import Serializer
+from src.resources.schemas.signal_emitter_schema import SignalEmitterSchema
 
-class SignalEmitterListResource(AbstractResource):
+class AbstractSignalEmitterResource(AbstractResource):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._signal_emitters_manager = DependencyContainer.signal_emitters_manager()
+        self._signal_emitter_serializer = Serializer(SignalEmitterSchema(strict=True))
+
+class SignalEmitterListResource(AbstractSignalEmitterResource):
     """
     Resource related to signal emitters in the system
     """
 
+    __custom_error_mappings = {
+        'SignalEmitterAlreadyExistsException': {
+            'code': 409,
+            'message': lambda e: str(e)
+        }
+    }
+
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.__signal_emitters_manager = DependencyContainer.signal_emitters_manager()
-        self.__signal_emitters_schema = SignalEmitterSchema(many=True, strict=True)
-        self.__signal_emitter_schema = SignalEmitterSchema(strict=True)
+        super().__init__(custom_error_mappings=self.__custom_error_mappings, **kwargs)
 
     def _do_get(self):
-        return self.__signal_emitters_schema.dumps(self.__signal_emitters_manager.get_all_signal_emitters())
-
-    def _do_post(self):
-        signal_emitter = self.__signal_emitter_schema.loads(self._get_post_data_as_json()).data
-        return self.__signal_emitter_schema.dumps(self.__signal_emitters_manager.add_signal_emitter(signal_emitter_id=signal_emitter.id, signal_emitter=signal_emitter))
+        return self._signal_emitter_serializer.serialize(self._signal_emitters_manager.get_all_signal_emitters())
 
 
-class SignalEmitterResource(AbstractResource):
+class SignalEmitterResource(AbstractSignalEmitterResource):
     """
     Resource related to one particular signal emitter in the system
     """
+    __custom_error_mappings = {
+        'UnknownSignalEmitterException': {
+            'code': 404,
+            'message': lambda e: str(e)
+        }
+    }
+
+    def __init__(self, **kwargs):
+        super().__init__(custom_error_mappings=self.__custom_error_mappings, **kwargs)
+        self.__anchors_manager = DependencyContainer.anchors_manager()
+        self.__users_manager = DependencyContainer.users_manager()
+
+    def _do_get(self, signal_emitter_id):
+        return self._signal_emitter_serializer.serialize(self._signal_emitters_manager.get_signal_emitter(signal_emitter_id=signal_emitter_id))
+
+
+class AbstractOwnedSignalEmitterResource(AbstractSignalEmitterResource, AbstractOwnedObjectResource):
+    """
+    Abstract resource for all signal emitters that are owned by another object
+    """
+
+    __metaclass__ = ABCMeta
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.__signal_emitters_manager = DependencyContainer.signal_emitters_manager()
-        self.__signal_emitter_schema = SignalEmitterSchema(strict=True)
-
-    def _do_get(self, signal_emitter_id):
-        return self.__signal_emitter_schema.dumps(self.__signal_emitters_manager.get_signal_emitter(signal_emitter_id=signal_emitter_id))
 
 
-class SignalEmitterSchema(TypedObjectSchema):
+class OwnedSignalEmitterListResource(AbstractOwnedSignalEmitterResource):
+    """
+    Abstract resource for all endpoints related to signal emitters owned by another object
+    """
 
-    __USER_TYPE = "USER"
-    __ANCHOR_TYPE = "ANCHOR"
+    __metaclass__ = ABCMeta
 
-    def _get_valid_types(self):
-        return [self.__USER_TYPE, self.__ANCHOR_TYPE]
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-    def _do_make_object(self, type, kwargs):
-        if type == self.__USER_TYPE:
-            return SignalEmittingUser(**kwargs)
-        else:
-            return SignalEmittingAnchor(**kwargs)
+    def _do_get(self, owner_id: str):
+        owner = self._do_get_owner(owner_id)
+        signal_emitters = list(owner.get_signal_emitter(id) for id in owner.signal_emitters_ids)
+        return self._signal_emitter_serializer.serialize(signal_emitters)
 
-    def _get_object_type(self, original_object):
-        if isinstance(original_object, User):
-            return self.__USER_TYPE
-        else:
-            return self.__ANCHOR_TYPE
+    def _do_post(self, owner_id: str):
+        owner = self._do_get_owner(owner_id)
+        signal_emitter = self._signal_emitter_serializer.deserialize(self._get_post_data_as_json())
+        owner.add_signal_emitter(id=signal_emitter.id, signal_emitter=signal_emitter)
+        self._update_owner(owner_id=owner_id, owner=owner)
+        return self._signal_emitter_serializer.serialize(signal_emitter)
 
+class OwnedSignalEmitterResource(AbstractOwnedSignalEmitterResource):
+    """
+    Abstract resource for endpoints refering to an specific signal emitter that is owned by another object
+    """
+    __metaclass__ = ABCMeta
 
+    @abstractmethod
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def _do_get(self, owner_id:str, signal_emitter_id:str):
+        owner = self._do_get_owner(owner_id)
+        return self._signal_emitter_serializer.serialize(owner.get_signal_emitter(signal_emitter_id))
 
 
 

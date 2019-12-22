@@ -10,9 +10,16 @@ class MovingObject(PositionableObject):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def __init__(self, **kwargs):
+    def __init__(self, attributes=None, **kwargs):
+        if not attributes:
+            attributes = {}
+        self.__attributes = attributes
         super().__init__(**kwargs)
 
     @PositionableObject.position.setter
     def position(self, position):
         self._position = position
+
+    @property
+    def attributes(self):
+        return self.__attributes
